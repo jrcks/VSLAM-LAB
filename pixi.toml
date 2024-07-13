@@ -1,0 +1,194 @@
+[project]
+name = "VSLAM-LAB"
+version = "0.1.0"
+description = "VSLAM-LAB"
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tasks]
+
+git-clone-all     = {cmd = "pixi run -e orbslam2 git-clone && pixi run -e dso git-clone && pixi run -e anyfeature git-clone && pixi run -e monodataset git-clone"}
+git-clone-all-ssh = {cmd = "pixi run -e orbslam2 git-clone-ssh && pixi run -e dso git-clone-ssh && pixi run -e anyfeature git-clone-ssh && pixi run -e monodataset git-clone-ssh"}
+
+build-all     = {cmd = "pixi run -e orbslam2 build && pixi run -e dso build && pixi run -e anyfeature build", depends-on = ["git-clone-all"]}
+build-all-ssh = {cmd = "pixi run -e orbslam2 build && pixi run -e dso build && pixi run -e anyfeature build", depends-on = ["git-clone-all-ssh"]}
+
+vslamlab = {cmd = "python vslamlab.py"}
+
+[dependencies]
+python=""
+matplotlib=""
+pandas=""
+pyyaml=""
+py-opencv=""
+scipy=""
+requests=""
+inputimeout=""
+scikit-learn=""
+tqdm=""
+
+[environments]
+orbslam2 = ["orbslam2"]
+dso = ["dso"]
+anyfeature = ["anyfeature"]
+monodataset = ["monodataset"]
+
+[feature.anyfeature]
+channels = ["fontan", "conda-forge", "huggingface"]
+platforms = ["linux-64"]
+
+[feature.anyfeature.tasks]
+git-clone = "git-clone.sh alejandrofontan AnyFeature-VSLAM VSLAM-Baselines"
+git-clone-ssh = "pixi run -e anyfeature git-clone --ssh"
+
+build = {cmd = "./VSLAM-Baselines/AnyFeature-VSLAM/build.sh", depends-on = ["git-clone"]}
+build-ssh = {cmd = "./VSLAM-Baselines/AnyFeature-VSLAM/build.sh", depends-on = ["git-clone-ssh"]}
+
+execute = "./VSLAM-Baselines/AnyFeature-VSLAM/bin/mono"
+
+[feature.anyfeature.dependencies]
+cxx-compiler=""
+c-compiler=""
+ninja=""
+cmake=""
+pkg-config=""
+libglvnd-egl-cos7-x86_64 =""
+libglvnd-devel-cos7-x86_64 =""
+mesa-libegl-devel-cos7-x86_64 =""
+mesa-libgl-devel-cos7-x86_64 =""
+mesa-dri-drivers-cos7-x86_64 =""
+libselinux-cos7-x86_64 =""
+libxdamage-cos7-x86_64 =""
+libxxf86vm-cos7-x86_64 =""
+libxfixes-cos7-x86_64 =""
+libxext-cos7-x86_64 =""
+libxau-cos7-x86_64 =""
+libxcb-cos7-x86_64 =""
+xorg-libxext =""
+xorg-libx11 =""
+xorg-libxfixes=""
+eigen =""
+yaml-cpp=""
+pandas=""
+opencv=""
+pangolin="" 
+g2o=""
+brisk=""
+akaze=""
+siftgpu=""
+datasets=""
+
+[feature.orbslam2]
+channels = ["conda-forge", "fontan"]
+platforms = ["linux-64"]
+
+[feature.orbslam2.tasks]
+git-clone = "git-clone.sh alejandrofontan ORB_SLAM2 VSLAM-Baselines"
+git-clone-ssh = "pixi run -e orbslam2 git-clone --ssh"
+
+build = {cmd = "./VSLAM-Baselines/ORB_SLAM2/build.sh", depends-on = ["git-clone"]}
+build-ssh = {cmd = "./VSLAM-Baselines/ORB_SLAM2/build.sh", depends-on = ["git-clone-ssh"]}
+
+execute = "./VSLAM-Baselines/ORB_SLAM2/bin/mono"
+
+[feature.orbslam2.dependencies]
+cxx-compiler=""
+c-compiler=""
+ninja=""
+cmake=""
+pkg-config=""
+libglvnd-egl-cos7-x86_64 =""
+libglvnd-devel-cos7-x86_64 =""
+mesa-libegl-devel-cos7-x86_64 =""
+mesa-libgl-devel-cos7-x86_64 =""
+mesa-dri-drivers-cos7-x86_64 =""
+libselinux-cos7-x86_64 =""
+libxdamage-cos7-x86_64 =""
+libxxf86vm-cos7-x86_64 =""
+libxfixes-cos7-x86_64 =""
+libxext-cos7-x86_64 =""
+libxau-cos7-x86_64 =""
+libxcb-cos7-x86_64 =""
+xorg-libxext =""
+xorg-libx11 =""
+xorg-libxfixes=""
+opencv=""
+eigen=""
+yaml-cpp=""
+pangolin=""
+
+[feature.dso]
+channels = ["conda-forge", "fontan"]
+platforms = ["linux-64"]
+
+[feature.dso.tasks]
+git-clone = "git-clone.sh alejandrofontan dso VSLAM-Baselines"
+git-clone-ssh = "pixi run -e dso git-clone --ssh"
+
+build = {cmd = "./VSLAM-Baselines/dso/build.sh", depends-on = ["git-clone"]}
+build-ssh = {cmd = "./VSLAM-Baselines/dso/build.sh", depends-on = ["git-clone-ssh"]}
+
+execute = "./VSLAM-Baselines/dso/bin/mono"
+
+[feature.dso.dependencies]
+cxx-compiler=""
+c-compiler=""
+ninja=""
+cmake=""
+pkg-config=""
+libglvnd-egl-cos7-x86_64 =""
+libglvnd-devel-cos7-x86_64 =""
+mesa-libegl-devel-cos7-x86_64 =""
+mesa-libgl-devel-cos7-x86_64 =""
+mesa-dri-drivers-cos7-x86_64 =""
+libselinux-cos7-x86_64 =""
+libxdamage-cos7-x86_64 =""
+libxxf86vm-cos7-x86_64 =""
+libxfixes-cos7-x86_64 =""
+libxext-cos7-x86_64 =""
+libxau-cos7-x86_64 =""
+libxcb-cos7-x86_64 =""
+xorg-libxext =""
+xorg-libx11 =""
+xorg-libxfixes=""
+opencv=""
+eigen =""
+boost=""
+pangolin=""
+
+[feature.monodataset]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[feature.monodataset.tasks]
+git-clone = "git-clone.sh tum-vision mono_dataset_code VSLAM-Baselines"
+git-clone-ssh = "pixi run -e monodataset git-clone --ssh"
+build = {cmd = "./VSLAM-Baselines/mono_dataset_code/build.sh", depends-on = ["git-clone"]}
+build-ssh = {cmd = "./VSLAM-Baselines/mono_dataset_code/build.sh", depends-on = ["git-clone-ssh"]}
+undistort = {cmd = "./VSLAM-Baselines/mono_dataset_code/bin/playbackDataset"}
+
+[feature.monodataset.dependencies]
+cxx-compiler=""
+c-compiler=""
+ninja=""
+cmake=""
+pkg-config=""
+libglvnd-egl-cos7-x86_64 =""
+libglvnd-devel-cos7-x86_64 =""
+mesa-libegl-devel-cos7-x86_64 =""
+mesa-libgl-devel-cos7-x86_64 =""
+mesa-dri-drivers-cos7-x86_64 =""
+libselinux-cos7-x86_64 =""
+libxdamage-cos7-x86_64 =""
+libxxf86vm-cos7-x86_64 =""
+libxfixes-cos7-x86_64 =""
+libxext-cos7-x86_64 =""
+libxau-cos7-x86_64 =""
+libxcb-cos7-x86_64 =""
+xorg-libxext =""
+xorg-libx11 =""
+xorg-libxfixes=""
+opencv=""
+eigen =""
+libzip = ""
+

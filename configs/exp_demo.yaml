@@ -1,0 +1,17 @@
+exp_demo_dso:
+  Config: config_demo.yaml
+  NumRuns: 81
+  Parameters: {}
+  VSLAM: dso
+  
+exp_demo_orbslam2:
+  Config: config_demo.yaml
+  NumRuns: 81
+  Parameters: {Visualization: Vis:1, Vocabulary_folder: Voc:VSLAM-LAB/VSLAM-Baselines/ORB_SLAM2/Vocabulary}
+  VSLAM: orbslam2
+  
+#exp_demo_anyfeature:
+#  Config: config_demo.yaml
+#  NumRuns: 0
+#  Parameters: {Visualization: Vis:1, Feature: Feat:brisk48, AnyFeature Path: anyfeat:VSLAM-LAB/VSLAM-Baselines/AnyFeature-VSLAM}
+#  VSLAM: anyfeature     

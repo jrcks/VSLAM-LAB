@@ -1,0 +1,10 @@
+rgbdtum: 
+  - 'rgbd_dataset_freiburg1_xyz'
+eth: 
+  - 'table_3'
+kitti:
+  - '04'
+euroc:
+  - 'MH_01_easy'
+monotum:
+  - 'sequence_01'

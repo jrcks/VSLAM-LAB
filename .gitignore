@@ -1,0 +1,11 @@
+build/
+venv/
+vlamlab.egg-info/
+.idea/
+__pycache__/
+Evaluate/__pycache__/
+Compare/__pycache__/
+VSLAM-Baselines/
+# pixi environments
+.pixi
+*.egg-info
