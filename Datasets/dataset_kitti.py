@@ -55,7 +55,7 @@ class KITTI_dataset(DatasetVSLAMLab):
             downloadFile(download_url, self.dataset_path)
             downloadFile(self.url_download_root_gt, self.dataset_path)
 
-            # Decompress the file
+        # Decompress the file
         if not os.path.exists(decompressed_folder):
             decompressFile(compressed_file, self.dataset_path)
             decompressFile(os.path.join(self.dataset_path, 'data_odometry_poses.zip'), self.dataset_path)
