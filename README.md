@@ -43,6 +43,11 @@ pixi run -e anyfeature build
 pixi run -e orbslam2 build
 pixi run -e dso build
 ```
+*To change the paths where VSLAM-LAB-Benchmark or/and VSLAM-LAB-Evaluation data are stored (for example, to /media/${USER}/data), use the following commands:*
+```
+pixi run set-benchmark-path /media/${USER}/data
+pixi run set-evaluation-path /media/${USER}/data
+```
 To **run** the demo, use the following command:
 
 ```

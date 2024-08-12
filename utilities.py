@@ -184,3 +184,25 @@ def list_image_files_in_folder(folder_path):
         if os.path.isfile(file_path) and is_image_file(file_path):
             image_files.append(filename)
     return image_files
+    
+def set_VSLAMLAB_path(new_path, file_path, target_line_start):
+    new_line = f"{target_line_start} \"{new_path}\""
+    print(f"Set {new_path}")
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    with open(file_path, 'w') as file:
+        for line in lines:
+            if line.strip().startswith(target_line_start):
+                file.write(new_line + '\n')
+            else:
+                file.write(line)
+    
+if __name__ == "__main__":
+
+    if len(sys.argv) > 2:
+        function_name = sys.argv[1]
+        if function_name == 'set_VSLAMLAB_BENCHMARK_path':
+            set_VSLAMLAB_path(os.path.join(sys.argv[2], 'VSLAM-LAB-Benchmark'), __file__, "VSLAMLAB_BENCHMARK =")
+        if function_name == 'set_VSLAMLAB_EVALUATION_path':
+            set_VSLAMLAB_path(os.path.join(sys.argv[2], 'VSLAM-LAB-Evaluation'), __file__, "VSLAMLAB_EVALUATION =")    

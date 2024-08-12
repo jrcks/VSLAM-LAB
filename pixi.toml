@@ -14,6 +14,8 @@ build-all     = {cmd = "pixi run -e orbslam2 build && pixi run -e dso build && p
 build-all-ssh = {cmd = "pixi run -e orbslam2 build && pixi run -e dso build && pixi run -e anyfeature build", depends-on = ["git-clone-all-ssh"]}
 
 vslamlab = {cmd = "python vslamlab.py"}
+set-benchmark-path  = {cmd = "python utilities.py set_VSLAMLAB_BENCHMARK_path"}
+set-evaluation-path = {cmd = "python utilities.py set_VSLAMLAB_EVALUATION_path"}
 
 [dependencies]
 python=""
