@@ -9,7 +9,7 @@ from PIL import Image
 
 VSLAM_LAB_DIR = os.path.dirname(os.path.abspath(__file__))
 VSLAM_LAB_PATH = os.path.dirname(VSLAM_LAB_DIR)
-VSLAMLAB_BENCHMARK = os.path.join(VSLAM_LAB_PATH, 'VSLAM-LAB-Benchmark')
+VSLAMLAB_BENCHMARK = "/media/fontan/data/VSLAM-LAB-Benchmark"
 VSLAMLAB_EVALUATION = os.path.join(VSLAM_LAB_PATH, 'VSLAM-LAB-Evaluation')
 
 COMPARISONS_YAML_DEFAULT = os.path.join(VSLAM_LAB_DIR, 'configs', 'comp_complete.yaml')
@@ -197,7 +197,36 @@ def set_VSLAMLAB_path(new_path, file_path, target_line_start):
                 file.write(new_line + '\n')
             else:
                 file.write(line)
-    
+
+def check_sequence_integrity(dataset_path, sequence_name, verbose):
+    sequence_path = os.path.join(dataset_path, sequence_name)
+    rgb_path = os.path.join(sequence_path, 'rgb')
+    rgb_txt = os.path.join(sequence_path, 'rgb.txt')
+    calibration_yaml = os.path.join(sequence_path, "calibration.yaml")
+
+    complete_sequence = True
+    if not os.path.exists(sequence_path):
+        if verbose:
+            print(f"        The folder {sequence_path} doesn't exist !!!!!")
+        complete_sequence = False
+
+    if not os.path.exists(rgb_path):
+        if verbose:
+            print(f"        The folder {rgb_path} doesn't exist !!!!!")
+        complete_sequence = False
+
+    if not os.path.exists(rgb_txt):
+        if verbose:
+            print(f"        The file {rgb_txt} doesn't exist !!!!!")
+        complete_sequence = False
+
+    if not os.path.exists(calibration_yaml):
+        if verbose:
+            print(f"        The file {calibration_yaml} doesn't exist !!!!!")
+        complete_sequence = False
+
+    return complete_sequence
+
 if __name__ == "__main__":
 
     if len(sys.argv) > 2:

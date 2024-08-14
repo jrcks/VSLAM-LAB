@@ -27,6 +27,7 @@ import yaml
 from utilities import VSLAM_LAB_DIR
 from utilities import find_files_with_string
 from utilities import ws
+from utilities import check_sequence_integrity
 
 SCRIPT_LABEL = f"[{os.path.basename(__file__)}] "
 
@@ -57,7 +58,7 @@ class DatasetVSLAMLab:
         # Check if sequence is already available
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         if os.path.exists(sequence_path):
-            sequence_complete = self.check_sequence_integrity(sequence_name, True)
+            sequence_complete = check_sequence_integrity(self.dataset_path, sequence_name, True)
             if sequence_complete:
                 print(f"{ws(4)}Sequence '{sequence_name}' is already downloaded.")
                 return
@@ -217,34 +218,6 @@ class DatasetVSLAMLab:
 
     ####################################################################################################################
     # Utils
-    def check_sequence_integrity(self, sequence_name, verbose):
-        sequence_path = os.path.join(self.dataset_path, sequence_name)
-        rgb_path = os.path.join(sequence_path, 'rgb')
-        rgb_txt = os.path.join(sequence_path, 'rgb.txt')
-        calibration_yaml = os.path.join(sequence_path, "calibration.yaml")
-
-        complete_sequence = True
-        if not os.path.exists(sequence_path):
-            if verbose:
-                print(f"        The folder {sequence_path} doesn't exist !!!!!")
-            complete_sequence = False
-
-        if not os.path.exists(rgb_path):
-            if verbose:
-                print(f"        The folder {rgb_path} doesn't exist !!!!!")
-            complete_sequence = False
-
-        if not os.path.exists(rgb_txt):
-            if verbose:
-                print(f"        The file {rgb_txt} doesn't exist !!!!!")
-            complete_sequence = False
-
-        if not os.path.exists(calibration_yaml):
-            if verbose:
-                print(f"        The file {calibration_yaml} doesn't exist !!!!!")
-            complete_sequence = False
-
-        return complete_sequence
 
     def contains_sequence(self, sequence_name_ref):
         for sequence_name in self.sequence_names:
