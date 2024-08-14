@@ -1,3 +1,4 @@
+# ADD your imports here
 from Datasets.dataset_7scenes import SEVENSCENES_dataset
 from Datasets.dataset_eth import ETH_dataset
 from Datasets.dataset_euroc import EUROC_dataset
@@ -13,6 +14,7 @@ SCRIPT_LABEL = "[dataset_utilities.py] "
 def get_dataset(dataset_name, benchmark_path):
     dataset_name = dataset_name.lower()
     switcher = {
+        # ADD your datasets here
         "rgbdtum": lambda: RGBDTUM_dataset(benchmark_path),
         "eth": lambda: ETH_dataset(benchmark_path),
         "kitti": lambda: KITTI_dataset(benchmark_path),

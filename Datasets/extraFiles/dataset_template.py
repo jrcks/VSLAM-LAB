@@ -28,6 +28,12 @@ class DATASET_NAME_TEMPLATE_dataset(DatasetVSLAMLab):
     def download_sequence_data(self, sequence_name):
         return
 
+    def create_rgb_folder(self, sequence_name):
+        return
+
+    def create_rgb_txt(self, sequence_name):
+        return
+
     def create_calibration_yaml(self, sequence_name):
         return
 
