@@ -34,6 +34,7 @@ orbslam2 = ["orbslam2"]
 dso = ["dso"]
 anyfeature = ["anyfeature"]
 monodataset = ["monodataset"]
+ros-env = ["ros-env"]
 
 [feature.anyfeature]
 channels = ["fontan", "conda-forge", "huggingface"]
@@ -157,6 +158,16 @@ opencv=""
 eigen =""
 boost=""
 pangolin=""
+
+[feature.ros-env]
+channels = ["conda-forge", "robostack-staging"]
+platforms = ["linux-64"]
+
+[feature.ros-env.dependencies]
+ros-noetic-desktop=""
+
+[feature.ros-env.tasks]
+extract-rosbag-frames = "python Datasets/extraFiles/extract_rosbag_frames.py"
 
 [feature.monodataset]
 channels = ["conda-forge"]
