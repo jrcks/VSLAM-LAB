@@ -7,7 +7,7 @@ platforms = ["linux-64"]
 
 [tasks]
 
-git-clone-all     = {cmd = "pixi run -e orbslam2 git-clone && pixi run -e dso git-clone && pixi run -e anyfeature git-clone && pixi run -e monodataset git-clone"}
+git-clone-all     = {cmd = "pixi run -e orbslam2 git-clone && pixi run -e dso git-clone && pixi run -e anyfeature git-clone && pixi run -e dust3r git-clone && pixi run -e monodataset git-clone"}
 git-clone-all-ssh = {cmd = "pixi run -e orbslam2 git-clone-ssh && pixi run -e dso git-clone-ssh && pixi run -e anyfeature git-clone-ssh && pixi run -e monodataset git-clone-ssh"}
 
 build-all     = {cmd = "pixi run -e orbslam2 build && pixi run -e dso build && pixi run -e anyfeature build", depends-on = ["git-clone-all"]}
@@ -33,6 +33,7 @@ tqdm=""
 orbslam2 = ["orbslam2"]
 dso = ["dso"]
 anyfeature = ["anyfeature"]
+dust3r = ["dust3r"]
 monodataset = ["monodataset"]
 ros-env = ["ros-env"]
 
@@ -158,6 +159,37 @@ opencv=""
 eigen =""
 boost=""
 pangolin=""
+
+[feature.dust3r]
+channels = ["conda-forge", "nvidia", "pytorch"]
+platforms = ["linux-64"]
+
+[feature.dust3r.tasks]
+git-clone = "git-clone.sh naver dust3r VSLAM-Baselines && pixi run -e dust3r setup"
+git-clone-ssh = "pixi run -e dust3r git-clone --ssh && pixi run -e dust3r setup"
+setup = "cp snippets/dust3r_execute.py  VSLAM-Baselines/dust3r/dust3r_execute.py && cp snippets/downsample_rgb_frames.py  VSLAM-Baselines/dust3r/downsample_rgb_frames.py"
+
+execute = "python VSLAM-Baselines/dust3r/dust3r_execute.py"
+
+[feature.dust3r.dependencies]
+cmake=""
+python = ""
+pytorch-cuda=""
+huggingface_hub=""
+gradio=""
+matplotlib=""
+tqdm=""
+opencv=""
+scipy=""
+einops=""
+trimesh=""
+tensorboard=""
+pyglet=""
+safetensors=""
+
+[feature.dust3r.pypi-dependencies]
+torchvision=""
+roma=""
 
 [feature.ros-env]
 channels = ["conda-forge", "robostack-staging"]
