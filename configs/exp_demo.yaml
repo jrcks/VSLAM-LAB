@@ -15,3 +15,9 @@ exp_demo_orbslam2:
 #  NumRuns: 0
 #  Parameters: {Visualization: Vis:1, Feature: Feat:brisk48, AnyFeature Path: anyfeat:VSLAM-LAB/VSLAM-Baselines/AnyFeature-VSLAM}
 #  VSLAM: anyfeature     
+
+#exp_demo_colmap:
+#  Config: config_demo.yaml
+#  NumRuns: 1
+#  Parameters: {Verbose: verbose:0}
+#  VSLAM: colmap
