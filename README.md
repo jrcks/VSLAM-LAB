@@ -137,7 +137,7 @@ If you're using **VSLAM-LAB** in your research, please cite. If you're specifica
 To [awesome-slam-datasets](https://github.com/youngguncho/awesome-slam-datasets)
 # VSLAM-LAB Leaderboard
 
-| VSLAM                                                                       | System |     Sensors      |                                   License                                   |    Label     |
+|                                                                             | System |     Sensors      |                                   License                                   |    Label     |
 |:----------------------------------------------------------------------------|:------:|:----------------:|:---------------------------------------------------------------------------:|:------------:|
 | [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM) | VSLAM  |       mono       | [GPLv3](https://github.com/alejandrofontan/VSLAM-LAB/blob/main/LICENSE.txt) | `anyfeature` |
 | [**DSO**](https://github.com/alejandrofontan/dso)                           |   VO   |       mono       |       [GPLv3](https://github.com/JakobEngel/dso/blob/master/LICENSE)        |    `dso`     |
