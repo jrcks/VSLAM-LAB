@@ -3,13 +3,13 @@ exp_demo_dso:
   NumRuns: 81
   Parameters: {}
   VSLAM: dso
-  
+
 exp_demo_orbslam2:
   Config: config_demo.yaml
   NumRuns: 81
   Parameters: {Visualization: Vis:1, Vocabulary_folder: Voc:VSLAM-LAB/VSLAM-Baselines/ORB_SLAM2/Vocabulary}
   VSLAM: orbslam2
-  
+
 #exp_demo_anyfeature:
 #  Config: config_demo.yaml
 #  NumRuns: 0
@@ -21,3 +21,9 @@ exp_demo_orbslam2:
 #  NumRuns: 1
 #  Parameters: {Verbose: verbose:0}
 #  VSLAM: colmap
+
+#exp_demo_dust3r:
+#  Config: config_demo.yaml
+#  NumRuns: 1
+#  Parameters: {} # {Verbose: -v}
+#  VSLAM: dust3r
