@@ -1,7 +1,7 @@
 exp_demo_dso:
   Config: config_demo.yaml
   NumRuns: 81
-  Parameters: {}
+  Parameters: {Preset: preset:0, Mode: mode:1}
   VSLAM: dso
 
 exp_demo_orbslam2:

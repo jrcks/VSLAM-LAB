@@ -166,10 +166,3 @@ class MONOTUM_dataset(DatasetVSLAMLab):
 
         rmse_ate = metrics.rmse_ate(traj_xyz_aligned, gt_xyz)
         return rmse_ate, len(traj_xyz_aligned), traj_xyz_aligned, gt_xyz, gt_xyz_full
-
-    def run_executable(self, command, log_file_path):
-        command += f" preset:0"
-        command += f" mode:1"
-        with open(log_file_path, 'w') as log_file:
-            print(f"{ws(6)} log file: {log_file_path}")
-            subprocess.run(command, stdout=log_file, stderr=log_file, shell=True)
