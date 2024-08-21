@@ -35,13 +35,15 @@ git clone https://github.com/alejandrofontan/VSLAM-LAB.git && cd VSLAM-LAB
 ```
 Next, **download** and **build** the following V-SLAM systems: [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM), [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2) and [**DSO**](https://github.com/alejandrofontan/dso). You can build all components at once using the command:
 ```
-pixi run build-all
+pixi run setup-all
 ```
 *Alternatively, you can build each system separately with the following commands:*
 ```
 pixi run -e anyfeature build
 pixi run -e orbslam2 build
 pixi run -e dso build
+pixi run -e colmap setup
+pixi run -e dust3r setup
 ```
 *To change the paths where VSLAM-LAB-Benchmark or/and VSLAM-LAB-Evaluation data are stored (for example, to /media/${USER}/data), use the following commands:*
 ```
@@ -135,11 +137,13 @@ If you're using **VSLAM-LAB** in your research, please cite. If you're specifica
 To [awesome-slam-datasets](https://github.com/youngguncho/awesome-slam-datasets)
 # VSLAM-LAB Leaderboard
 
-| VSLAM                                                                                                               | Parameters    | License | Label         |
-|:--------------------------------------------------------------------------------------------------------------------|:-------------:|:-------:|:-------------:|
-| [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM)                                         |  --           | ---- -- | `anyfeature`  |
-| [**DSO**](https://github.com/alejandrofontan/dso)                                                                   |  --           | ---- -- | `dso`         |
-| [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2)                                                       |  --           | ---- -- | `orbslam2`    | 
+| VSLAM                                                                       | System |     Sensors      |                                License                                |    Label     |
+|:----------------------------------------------------------------------------|:------:|:----------------:|:---------------------------------------------------------------------:|:------------:|
+| [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM) | VSLAM  |       mono       |                                 GPLv3                                 | `anyfeature` |
+| [**DSO**](https://github.com/alejandrofontan/dso)                           |   VO   |       mono       |    [GPLv3](https://github.com/JakobEngel/dso/blob/master/LICENSE)     |    `dso`     |
+| [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2)               | VSLAM  | mono/RGBD/Stereo | [GPLv3](https://github.com/raulmur/ORB_SLAM2/blob/master/LICENSE.txt) |  `orbslam2`  | 
+| [**COLMAP**](https://colmap.github.io/)                                     |  SfM   |       mono       |             [BSD](https://colmap.github.io/license.html)              |   `colmap`   | 
+| [**Dust3r**](https://dust3r.europe.naverlabs.com)                           |  SfM   |       mono       | [CC BY-NC-SA 4.0](https://github.com/naver/dust3r/blob/main/LICENSE)  |   `dust3r`   | 
 
 
 | Dataset                                                                                                             | Seq    | Size    | Label         |

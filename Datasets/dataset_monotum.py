@@ -136,6 +136,9 @@ class MONOTUM_dataset(DatasetVSLAMLab):
 
         if not os.path.exists(os.path.join(self.mono_dataset_code_directory, 'bin', 'playbackDataset')):
 
+            command = f"pixi run -e monodataset git-clone"
+            subprocess.run(command, shell=True)
+
             replace_string_in_files(self.mono_dataset_code_directory, 'CV_LOAD_IMAGE_UNCHANGED', 'cv::IMREAD_UNCHANGED')
             replace_string_in_files(self.mono_dataset_code_directory, 'CV_LOAD_IMAGE_GRAYSCALE', 'cv::IMREAD_GRAYSCALE')
 
