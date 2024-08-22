@@ -8,6 +8,7 @@ from Datasets.dataset_monotum import MONOTUM_dataset
 from Datasets.dataset_nuim import NUIM_dataset
 from Datasets.dataset_rgbdtum import RGBDTUM_dataset
 from Datasets.dataset_tartanair import TARTANAIR_dataset
+from Datasets.dataset_drunkards import DRUNKARDS_dataset
 
 SCRIPT_LABEL = "[dataset_utilities.py] "
 
@@ -16,6 +17,7 @@ def get_dataset(dataset_name, benchmark_path):
     dataset_name = dataset_name.lower()
     switcher = {
         # ADD your datasets here
+        "drunkards": lambda: DRUNKARDS_dataset(benchmark_path),
         "ariel": lambda: ARIEL_dataset(benchmark_path),
         "rgbdtum": lambda: RGBDTUM_dataset(benchmark_path),
         "eth": lambda: ETH_dataset(benchmark_path),

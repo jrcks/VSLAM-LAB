@@ -28,6 +28,8 @@ requests="*"
 inputimeout="*"
 scikit-learn="*"
 tqdm="*"
+google-api-python-client="*"
+google-auth-oauthlib="*"
 
 [environments]
 orbslam2 = ["orbslam2"]
