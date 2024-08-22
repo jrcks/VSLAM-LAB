@@ -101,7 +101,7 @@ class DatasetVSLAMLab:
         return
 
     def get_download_issues(self, sequence_name):
-        return
+        return {}
 
     def solve_download_issue(self, download_issue):
         return
