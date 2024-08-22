@@ -285,28 +285,41 @@ def find_download_issues(config_files):
                 download_issues[dataset.dataset_name] = {}
                 for sequence_name in sequence_names:
                     issues_seq = dataset.get_download_issues(sequence_name)
+                    if issues_seq == {}:
+                        continue
                     for issue_name, issue_topic in issues_seq.items():
                         download_issues[dataset.dataset_name][issue_name] = issue_topic
 
     print(f"\n{SCRIPT_LABEL}Finding download issues...")
+    num_download_issues = 0
     for dataset_name, issues_dataset in download_issues.items():
         for issue_name, issue_topic in issues_dataset.items():
             print(f"{ws(4)}[{dataset_name}][{issue_name}]: {issue_topic}")
+            num_download_issues += 1
 
-    message = (f"\n{SCRIPT_LABEL}Found download issues: your experiments have {len(download_issues)} download "
-               f"issues. Would you like to continue solving them and download the datasets (Y/n):")
-    try:
-        user_input = inputimeout(prompt=message, timeout=120).strip().upper()
-    except TimeoutOccurred:
-        user_input = 'Y'
-        print("        No input detected. Defaulting to 'Y'.")
-    if user_input != 'Y':
-        exit()
+    if num_download_issues > 0:
+        message = (f"\n{SCRIPT_LABEL}Found download issues: your experiments have {num_download_issues} download "
+                   f"issues. Would you like to continue solving them and download the datasets (Y/n):")
+        try:
+            user_input = inputimeout(prompt=message, timeout=120).strip().upper()
+        except TimeoutOccurred:
+            user_input = 'Y'
+            print("        No input detected. Defaulting to 'Y'.")
+        if user_input != 'Y':
+            exit()
+    else:
+        message = (f"{ws(4)}Found download issues: your experiments have {num_download_issues} download "
+                   f"issues.")
+        print(message)
+        download_issues = {}
 
     return download_issues
 
 
 def solve_download_issues(download_issues):
+    if download_issues == {}:
+        return
+
     print(f"\n{SCRIPT_LABEL}Solving download issues: ")
     for dataset_name, issues_dataset in download_issues.items():
         dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)

@@ -3,11 +3,13 @@ import yaml
 import shutil
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+from inputimeout import inputimeout, TimeoutOccurred
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
 from utilities import downloadFile
 from utilities import decompressFile
 from utilities import VSLAMLAB_BENCHMARK
+from utilities import ws
 
 from Evaluate.align_trajectories import align_trajectory_with_groundtruth
 from Evaluate import metrics
@@ -127,3 +129,20 @@ class REPLICA_dataset(DatasetVSLAMLab):
 
         rmse_ate = metrics.rmse_ate(traj_xyz_aligned, gt_xyz)
         return rmse_ate, len(traj_xyz_aligned), traj_xyz_aligned, gt_xyz, gt_xyz_full
+
+    def get_download_issues(self, sequence_name):
+        issues = {'Complete dataset': f"The \'{self.dataset_name}\' dataset does not permit downloading individual sequences."}
+
+        return issues
+
+    def solve_download_issue(self, download_issue):
+        if download_issue[0] == 'Complete dataset':
+            print(f"{ws(4)}[{self.dataset_name}][{download_issue[0]}]: {download_issue[1]} ")
+            message = f"{ws(8)}Would you like to continue downloading the full dataset (12 GB) (Y/n): "
+            try:
+                user_input = inputimeout(prompt=message, timeout=10).strip().upper()
+            except TimeoutOccurred:
+                user_input = 'Y'
+                print(f"{ws(8)}No input detected. Defaulting to 'Y'.")
+            if user_input != 'Y':
+                exit()
