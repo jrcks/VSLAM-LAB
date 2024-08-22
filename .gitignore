@@ -9,3 +9,4 @@ VSLAM-Baselines/
 # pixi environments
 .pixi
 *.egg-info
+Datasets/extraFiles/client_secret_936861537437-3evt7mv4c08c5gie6e2updpvn16eqlgo.apps.googleusercontent.com.json
