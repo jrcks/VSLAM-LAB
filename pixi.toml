@@ -5,8 +5,12 @@ description = "VSLAM-LAB"
 channels = ["conda-forge"]
 platforms = ["linux-64"]
 
-[tasks]
+# When installing environments on old versions of linux.
+#[system-requirements]
+#linux = "4.12.14"
+#libc = { family="glibc", version="2.22" }
 
+[tasks]
 git-clone-all     = {cmd = "pixi run -e orbslam2 git-clone && pixi run -e dso git-clone && pixi run -e anyfeature git-clone && pixi run -e dust3r git-clone "}
 git-clone-all-ssh = {cmd = "pixi run -e orbslam2 git-clone-ssh && pixi run -e dso git-clone-ssh && pixi run -e anyfeature git-clone-ssh && pixi run -e dust3r git-clone-ssh"}
 
