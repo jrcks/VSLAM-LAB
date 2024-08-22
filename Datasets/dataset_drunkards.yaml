@@ -1,33 +1,7 @@
 dataset_name: drunkards
 
 rgb_hz: 30.0
-url_download_root: 'https://www.googleapis.com/auth/drive'
-client_secrets_file: 'client_secret_936861537437-3evt7mv4c08c5gie6e2updpvn16eqlgo.apps.googleusercontent.com.json'
+url_download_root: 'vslamlab/The_Drunkards_Dataset'
 
 sequence_names:
   - 00000_1024_level0
-  - 00001_1024_level0
-  - 00002_1024_level0
-  - 00003_1024_level0
-  - 00004_1024_level0
-  - 00001_320_level0
-
-rgb_ids:
-  00000_1024_level0: '1WYexixtv4kY_xO_p2TfY7853dhoOrPU3'
-  00001_1024_level0: '1OpTt7Zpo5sVk9FbSjjMK80kTagCDpHq0'
-  00002_1024_level0: '1ZW533xfOnJyEtGwwIe0B0sK8Afe1eylc'
-  00003_1024_level0: '1F7e6H5sSxxaE-VL8BMScntmYkVxpbVK3'
-  00004_1024_level0: '1XwtrB7En9Gcvs6YlWcdtUfyf4skfZI3-'
-  00001_320_level0: '1gYXuHC91OxySaJZlIT0ouNOL62GqlBTj'
-
-ground_truth_ids:
-  00000_1024_level0: '1C0H2OrQbN85RkC3ta-I6M22ya8JQItyz'
-  00001_1024_level0: '1Uot1H9u3vygZTJqeLrRflaWvpausB1ny'
-  00002_1024_level0: '1NQ7DQddiTuSrKoJI1nqP7oZ5cWvR7SpA'
-  00003_1024_level0: '1BRztqgNaUwYvfRpa0wi8WVCYnZcDLF_j'
-  00004_1024_level0: '1gNaxNI45-CtugjGge78l8JTnD3bCQ5Tf'
-  00001_320_level0: '1982bQz5C5d9uwLIzunsjoyFvJxTDQQMa'
-
-intrinsics_ids:
-  1024: '1AsKBqkAsS3ioBJ07cbxphyLHo_XrhxB1'
-  320: '1FUSgb6PCerChZZPWB-B9VjI4NaTFedwh'

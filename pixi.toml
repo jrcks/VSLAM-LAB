@@ -30,6 +30,7 @@ scikit-learn="*"
 tqdm="*"
 google-api-python-client="*"
 google-auth-oauthlib="*"
+huggingface_hub="*"
 
 [environments]
 orbslam2 = ["orbslam2"]

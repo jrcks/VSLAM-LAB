@@ -1,25 +1,16 @@
 import os
 import yaml
-import re
 import pandas as pd
+import re
+from huggingface_hub import hf_hub_download
+from zipfile import ZipFile
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
-from utilities import decompressFile
-
-from Datasets.download_utilities import download_file_from_google_drive
-from Datasets.download_utilities import create_google_drive_service
 
 from Evaluate.align_trajectories import align_trajectory_with_groundtruth
 from Evaluate import metrics
 
-from utilities import ws
-from utilities import VSLAM_LAB_DIR
-
-
 class DRUNKARDS_dataset(DatasetVSLAMLab):
-
-    google_drive_service = 0
-
     def __init__(self, benchmark_path):
         # Initialize the dataset
         super().__init__('drunkards', benchmark_path)
@@ -30,41 +21,30 @@ class DRUNKARDS_dataset(DatasetVSLAMLab):
 
         # Get download url
         self.url_download_root = data['url_download_root']
-        self.client_secrets_file = os.path.join(VSLAM_LAB_DIR, 'Datasets', 'extraFiles', data['client_secrets_file'])
 
         # Create sequence_nicknames
         self.sequence_nicknames = [s.replace('_', ' ') for s in self.sequence_names]
 
-        # Ground-Truth ids
-        self.rgb_ids = data['rgb_ids']
-
-        # Ground-Truth ids
-        self.ground_truth_ids = data['ground_truth_ids']
-
-        # Intrinsics_id
-        self.intrinsics_ids = data['intrinsics_ids']
-
     def download_sequence_data(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
 
-        # Download rgb images
-        rgb_id = self.rgb_ids[sequence_name]
-        compressed_name_ext = sequence_name + '.zip'
-        compressed_file = os.path.join(self.dataset_path, compressed_name_ext)
-        decompressed_folder = os.path.join(self.dataset_path, sequence_name)
-        download_file_from_google_drive(rgb_id, compressed_file, DRUNKARDS_dataset.google_drive_service)
-        decompressFile(compressed_file, decompressed_folder)
+        # Variables
+        compressed_name = sequence_name
+        compressed_name_ext = compressed_name + '.zip'
+        repo_id = self.url_download_root
 
-        # Download ground truth
-        groundtruth_id = self.ground_truth_ids[sequence_name]
-        groundtruth_txt = os.path.join(sequence_path, 'pose.txt')
-        download_file_from_google_drive(groundtruth_id, groundtruth_txt, DRUNKARDS_dataset.google_drive_service)
+        # Download the compressed file
+        file_path = hf_hub_download(repo_id=repo_id, filename=compressed_name_ext, repo_type='dataset')
+        with ZipFile(file_path, 'r') as zip_ref:
+            zip_ref.extractall(self.dataset_path)
 
-        # Download intrinsics
+        # Download instrinsics file
         resolution = self.get_sequence_resolution(sequence_name)
-        intrinsics_id = self.intrinsics_ids[resolution]
-        intrinsics_txt = os.path.join(sequence_path, f'intrinsics_{resolution}.txt')
-        download_file_from_google_drive(intrinsics_id, intrinsics_txt, DRUNKARDS_dataset.google_drive_service)
+        intrinsics_file = f"intrinsics_{resolution}.txt"
+        file_path = hf_hub_download(repo_id=repo_id, filename=intrinsics_file, repo_type='dataset')
+        intrinsics_txt = os.path.join(sequence_path, intrinsics_file)
+        with open(file_path, 'rb') as f_src, open(intrinsics_txt, 'wb') as f_dest:
+            f_dest.write(f_src.read())
 
     def create_rgb_folder(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
@@ -111,9 +91,6 @@ class DRUNKARDS_dataset(DatasetVSLAMLab):
             data.to_csv(groundtruth_txt, sep=' ', header=False, index=False, float_format='%.16f')
 
     def remove_unused_files(self, sequence_name):
-        compressed_file = os.path.join(self.dataset_path, sequence_name + '.zip')
-        os.remove(compressed_file)
-
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         resolution = self.get_sequence_resolution(sequence_name)
         intrinsics_txt = os.path.join(sequence_path, f'intrinsics_{resolution}.txt')
@@ -128,15 +105,3 @@ class DRUNKARDS_dataset(DatasetVSLAMLab):
 
     def get_sequence_resolution(self, sequence_name):
         return int(re.search(r'_(\d+)_', sequence_name).group(1))
-
-    def get_download_issues(self, sequence_name):
-        issues = {'Google Drive': f"Downloading this dataset requires to grant access to Google Drive."}
-
-        return issues
-
-    def solve_download_issue(self, download_issue):
-        if download_issue[0] == 'Google Drive':
-            print(f"{ws(4)}[{self.dataset_name}][{download_issue[0]}]: {download_issue[1]} ")
-            DRUNKARDS_dataset.google_drive_service = create_google_drive_service(self.url_download_root,
-                                                                                 self.client_secrets_file)
-            print(f"{ws(4)}[{self.dataset_name}][{download_issue[0]}]: Access to Google Drive granted. ")
