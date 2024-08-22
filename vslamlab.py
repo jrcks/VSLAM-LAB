@@ -17,6 +17,7 @@ import time
 import shutil
 import re
 import yaml
+from inputimeout import inputimeout, TimeoutOccurred
 
 from Compare import compare_functions
 from Datasets.dataset_utilities import get_dataset
@@ -59,10 +60,10 @@ def main():
     # Stuff to run demo
     if not os.path.exists(os.path.join(VSLAMLAB_EVALUATION, "exp_demo_dso")):
         shutil.copytree(os.path.join(VSLAM_LAB_DIR, "docs", "exp_demo_dso"),
-                    os.path.join(VSLAMLAB_EVALUATION, "exp_demo_dso"))
+                        os.path.join(VSLAMLAB_EVALUATION, "exp_demo_dso"))
     if not os.path.exists(os.path.join(VSLAMLAB_EVALUATION, "exp_demo_orbslam2")):
         shutil.copytree(os.path.join(VSLAM_LAB_DIR, "docs", "exp_demo_orbslam2"),
-                    os.path.join(VSLAMLAB_EVALUATION, "exp_demo_orbslam2"))
+                        os.path.join(VSLAMLAB_EVALUATION, "exp_demo_orbslam2"))
 
     print(f"\n[vslamlab] Created folder to store data: {VSLAMLAB_BENCHMARK}")
     print(f"[vslamlab] Created folder to store evaluation: {VSLAMLAB_EVALUATION}")
@@ -163,7 +164,6 @@ def load_experiments(exp_yaml):
 
 
 def compare(experiments, exp_yaml):
-
     comparison_path = os.path.join(VSLAMLAB_EVALUATION, f"comp_{str(os.path.basename(exp_yaml)).replace('.yaml', '')}")
     print(f"\n[vslamlab] Create folder to save comparison: {comparison_path}")
     print(f"\n[vslamlab] Comparing (in {comparison_path}) ...")
@@ -217,7 +217,11 @@ def run(experiments):
 
 
 def download(config_files):
+    download_issues = find_download_issues(config_files)
+    solve_download_issues(download_issues)
+
     print(f"\n[vslamlab] Downloading (to {VSLAMLAB_BENCHMARK}) ...")
+
     for config_file in config_files:
         with open(config_file, 'r') as file:
             config_file_data = yaml.safe_load(file)
@@ -269,6 +273,45 @@ def estimate_experiments_time(experiments):
                     num_frames = dataset.get_sequence_num_rgb(sequence_name)
                     running_time += exp.num_runs * num_frames / dataset.rgb_hz
     return 1.5 * running_time / 60
+
+
+def find_download_issues(config_files):
+    download_issues = {}
+    for config_file in config_files:
+        with open(config_file, 'r') as file:
+            config_file_data = yaml.safe_load(file)
+            for dataset_name, sequence_names in config_file_data.items():
+                dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
+                download_issues[dataset.dataset_name] = {}
+                for sequence_name in sequence_names:
+                    issues_seq = dataset.get_download_issues(sequence_name)
+                    for issue_name, issue_topic in issues_seq.items():
+                        download_issues[dataset.dataset_name][issue_name] = issue_topic
+
+    print(f"\n{SCRIPT_LABEL}Finding download issues...")
+    for dataset_name, issues_dataset in download_issues.items():
+        for issue_name, issue_topic in issues_dataset.items():
+            print(f"{ws(4)}[{dataset_name}][{issue_name}]: {issue_topic}")
+
+    message = (f"\n{SCRIPT_LABEL}Found download issues: your experiments have {len(download_issues)} download "
+               f"issues. Would you like to continue solving them and download the datasets (Y/n):")
+    try:
+        user_input = inputimeout(prompt=message, timeout=120).strip().upper()
+    except TimeoutOccurred:
+        user_input = 'Y'
+        print("        No input detected. Defaulting to 'Y'.")
+    if user_input != 'Y':
+        exit()
+
+    return download_issues
+
+
+def solve_download_issues(download_issues):
+    print(f"\n{SCRIPT_LABEL}Solving download issues: ")
+    for dataset_name, issues_dataset in download_issues.items():
+        dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
+        for download_issue in issues_dataset.items():
+            dataset.solve_download_issue(download_issue)
 
 
 if __name__ == "__main__":

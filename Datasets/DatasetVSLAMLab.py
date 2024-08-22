@@ -100,6 +100,12 @@ class DatasetVSLAMLab:
     def remove_unused_files(self, sequence_name):
         return
 
+    def get_download_issues(self, sequence_name):
+        return
+
+    def solve_download_issue(self, download_issue):
+        return
+
     def write_calibration_yaml(self, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name):
 
         sequence_path = os.path.join(self.dataset_path, sequence_name)
