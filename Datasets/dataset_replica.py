@@ -146,3 +146,7 @@ class REPLICA_dataset(DatasetVSLAMLab):
                 print(f"{ws(8)}No input detected. Defaulting to 'Y'.")
             if user_input != 'Y':
                 exit()
+
+    def download_process(self, _):
+        for sequence_name in self.sequence_names:
+            super().download_process(sequence_name)

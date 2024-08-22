@@ -69,12 +69,14 @@ class DatasetVSLAMLab:
                 sys.exit(1)
 
         # Download process
-        msg = f"Downloading sequence '{sequence_name}' from dataset '{self.dataset_name}' ..."
-        print(SCRIPT_LABEL + msg)
-
         if not os.path.exists(self.dataset_path):
             os.makedirs(self.dataset_path, exist_ok=True)
 
+        self.download_process(sequence_name)
+
+    def download_process(self, sequence_name):
+        msg = f"Downloading sequence '{sequence_name}' from dataset '{self.dataset_name}' ..."
+        print(SCRIPT_LABEL + msg)
         self.download_sequence_data(sequence_name)
         self.create_rgb_folder(sequence_name)
         self.create_rgb_txt(sequence_name)
