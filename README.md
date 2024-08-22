@@ -136,8 +136,9 @@ If you're using **VSLAM-LAB** in your research, please cite. If you're specifica
 
 To [awesome-slam-datasets](https://github.com/youngguncho/awesome-slam-datasets)
 # VSLAM-LAB Leaderboard
+We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6x_TXkgLsw9zWszHU9M-0mGgDT92TEs/edit?usp=drive_link) with more detailed information for each system and dataset.
 
-|                                                                             | System |     Sensors      |                                   License                                   |    Label     |
+| Tools                                                                       | System |     Sensors      |                                   License                                   |    Label     |
 |:----------------------------------------------------------------------------|:------:|:----------------:|:---------------------------------------------------------------------------:|:------------:|
 | [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM) | VSLAM  |       mono       | [GPLv3](https://github.com/alejandrofontan/VSLAM-LAB/blob/main/LICENSE.txt) | `anyfeature` |
 | [**DSO**](https://github.com/alejandrofontan/dso)                           |   VO   |       mono       |       [GPLv3](https://github.com/JakobEngel/dso/blob/master/LICENSE)        |    `dso`     |
@@ -146,14 +147,14 @@ To [awesome-slam-datasets](https://github.com/youngguncho/awesome-slam-datasets)
 | [**DUST3R**](https://dust3r.europe.naverlabs.com)                           |  SfM   |       mono       |    [CC BY-NC-SA 4.0](https://github.com/naver/dust3r/blob/main/LICENSE)     |   `dust3r`   | 
 
 
-| Dataset                                                                                                             |   Data    |   Mode   |    Label    |
-|:--------------------------------------------------------------------------------------------------------------------|:---------:|:--------:|:-----------:|
-| [**ETH3D SLAM Benchmarks**](https://www.eth3d.net/slam_datasets)                                                    |   real    | handheld |    `eth`    |
-| [**RGB-D SLAM Dataset and Benchmark**](https://cvg.cit.tum.de/data/datasets/rgbd-dataset)                           |   real    | handheld |  `rgbdtum`  |
-| [**ICL-NUIM RGB-D Benchmark Dataset**](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.html)                        | synthetic | handheld |   `nuim`    | 
-| [**Monocular Visual Odometry Dataset**](https://cvg.cit.tum.de/data/datasets/mono-dataset)                          |   real    | handheld |  `monotum`  |
-| [**The KITTI Vision Benchmark Suite**](https://www.cvlibs.net/datasets/kitti/eval_odometry.php)                     |   real    | Vehicle  |   `kitti`   |
-| [**RGB-D Dataset 7-Scenes**](https://www.microsoft.com/en-us/research/project/rgb-d-dataset-7-scenes/)              |   real    | handheld |  `7scenes`  |
-| [**The EuRoC MAV Dataset**](https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets)           |   real    |   UAV    |   `euroc`   |
-| [**TartanAir: A Dataset to Push the Limits of Visual SLAM**](https://theairlab.org/tartanair-dataset/)              | synthetic | handheld  | `tartanair` |
-| [**The Drunkard's Dataset**](https://davidrecasens.github.io/TheDrunkard%27sOdometry)              |     synthetic     |    handheld     | `drunkards` |
+| Datasets                                                                                                  |   Data    |   Mode   |    Label    |
+|:----------------------------------------------------------------------------------------------------------|:---------:|:--------:|:-----------:|
+| [**ETH3D SLAM Benchmarks**](https://www.eth3d.net/slam_datasets)                                          |   real    | handheld |    `eth`    |
+| [**RGB-D SLAM Dataset and Benchmark**](https://cvg.cit.tum.de/data/datasets/rgbd-dataset)                 |   real    | handheld |  `rgbdtum`  |
+| [**ICL-NUIM RGB-D Benchmark Dataset**](https://www.doc.ic.ac.uk/~ahanda/VaFRIC/iclnuim.html)              | synthetic | handheld |   `nuim`    | 
+| [**Monocular Visual Odometry Dataset**](https://cvg.cit.tum.de/data/datasets/mono-dataset)                |   real    | handheld |  `monotum`  |
+| [**The KITTI Vision Benchmark Suite**](https://www.cvlibs.net/datasets/kitti/eval_odometry.php)           |   real    | Vehicle  |   `kitti`   |
+| [**RGB-D Dataset 7-Scenes**](https://www.microsoft.com/en-us/research/project/rgb-d-dataset-7-scenes/)    |   real    | handheld |  `7scenes`  |
+| [**The EuRoC MAV Dataset**](https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets) |   real    |   UAV    |   `euroc`   |
+| [**TartanAir: A Dataset to Push the Limits of Visual SLAM**](https://theairlab.org/tartanair-dataset/)    | synthetic | handheld  | `tartanair` |
+| [**The Drunkard's Dataset**](https://davidrecasens.github.io/TheDrunkard%27sOdometry)                     |     synthetic     |    handheld     | `drunkards` |
