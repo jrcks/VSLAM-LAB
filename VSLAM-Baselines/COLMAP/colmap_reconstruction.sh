@@ -40,7 +40,7 @@ mkdir "$exp_folder_colmap"
 rgb_ds_txt="${exp_folder_colmap}/rgb_ds.txt"
 python snippets/downsample_rgb_frames.py $sequence_path --rgb_ds_txt "${rgb_ds_txt}" --min_fps ${min_fps} -v --max_rgb ${max_rgb}
 
- Run COLMAP scripts for matching and mapping
+# Run COLMAP scripts for matching and mapping
 ./VSLAM-Baselines/COLMAP/colmap_matcher.sh $sequence_path $exp_folder $exp_id $matcher_type
 ./VSLAM-Baselines/COLMAP/colmap_mapper.sh $sequence_path $exp_folder $exp_id
 
