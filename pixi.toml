@@ -35,6 +35,13 @@ tqdm="*"
 google-api-python-client="*"
 google-auth-oauthlib="*"
 huggingface_hub="*"
+# When installing environments on old versions of linux.
+#libglx="*"
+#mesa-libgl-devel-cos7-x86_64="*"
+#mesa-dri-drivers-cos7-x86_64="*"
+#libselinux-cos7-x86_64="*"
+#libxxf86vm-cos7-x86_64="*"
+#libopengl="*"
 
 [environments]
 orbslam2 = ["orbslam2"]
