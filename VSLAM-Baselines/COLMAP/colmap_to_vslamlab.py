@@ -32,7 +32,7 @@ def get_colmap_keyframes(images_file, number_of_header_lines, verbose=False):
             TX = float(elements[5])
             TY = float(elements[6])
             TZ = float(elements[7])
-            
+
             t_cw_i = np.array([TX, TY, TZ])
             q_wc_i = R.from_quat([QX, QY, QZ, QW]).inv()
             R_wc_i = q_wc_i.as_matrix()
@@ -91,5 +91,11 @@ if __name__ == "__main__":
     
     rgb_file = os.path.join(exp_folder, f'colmap_{exp_id}', 'rgb_ds.txt')
     image_ts = np.array(get_timestamps(sequence_path, rgb_file))
+    timestamps = []
+    for id in image_id:
+        timestamps.append(float(image_ts[id-1]))
+
+    timestamps = np.array(timestamps)
+
     keyFrameTrajectory_txt = os.path.join(exp_folder, exp_id + '_KeyFrameTrajectory' + '.txt')
-    write_trajectory_tum_format(keyFrameTrajectory_txt, image_ts, t_wc, q_wc_xyzw)
+    write_trajectory_tum_format(keyFrameTrajectory_txt, timestamps, t_wc, q_wc_xyzw)

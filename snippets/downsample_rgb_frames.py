@@ -35,7 +35,7 @@ def downsample_rgb_frames(rgb_txt, max_rgb_count, min_fps, verbose=False):
 
     # Determine downsampling parameters
     if verbose:
-        print(f"{SCRIPT_LABEL} Processing file: {rgb_txt}")
+        print(f"\n{SCRIPT_LABEL} Processing file: {rgb_txt}")
         print("\nDownsampling settings:")
         print(f"  Maximum number of RGB images: {max_rgb_count}")
         print(f"  Minimum FPS: {min_fps:.1f} Hz")
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     downsampled_paths, downsampled_timestamps = downsample_rgb_frames(rgb_txt, max_rgb, min_fps, args.verbose)
 
     # Write downsampled RGB data to file
-    print(f"Writing downsampled RGB list to: {rgb_ds_txt}")
+    print(f"\nWriting downsampled RGB list to: {rgb_ds_txt}")
     with open(rgb_ds_txt, 'w') as file:
         for timestamp, path in zip(downsampled_timestamps, downsampled_paths):
             file.write(f"{timestamp} {path}\n")

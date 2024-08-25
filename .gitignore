@@ -5,8 +5,15 @@ vlamlab.egg-info/
 __pycache__/
 Evaluate/__pycache__/
 Compare/__pycache__/
-VSLAM-Baselines/
+*.egg-info
+
 # pixi environments
 .pixi
-*.egg-info
-Datasets/extraFiles/client_secret_936861537437-3evt7mv4c08c5gie6e2updpvn16eqlgo.apps.googleusercontent.com.json
+
+# VSLAM-Baselines
+VSLAM-Baselines/AnyFeature-VSLAM
+VSLAM-Baselines/dso
+VSLAM-Baselines/dust3r
+VSLAM-Baselines/mono_dataset_code
+VSLAM-Baselines/ORB_SLAM2
+VSLAM-Baselines/COLMAP/*.bin

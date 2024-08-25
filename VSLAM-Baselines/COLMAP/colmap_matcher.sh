@@ -1,10 +1,12 @@
 #!/bin/bash
+echo ""
 echo "Executing colmapMatcher.sh ..."
 
 calibration_model="FULL_OPENCV" # PINHOLE, FULL_OPENCV, OPENCV_FISHEYE
 sequence_path="$1" 
 exp_folder="$2" 
 exp_id="$3" 
+matcher_type="$4" # Options: exhaustive, sequential
 
 calibration_file="${sequence_path}/calibration.yaml"
 rgb_path="${sequence_path}/rgb"
@@ -37,8 +39,22 @@ colmap database_creator --database_path ${database}
 
 ################################################################################	
 echo "    colmap feature_extractor ..."
+if [ "${calibration_model}" == "PINHOLE" ]
+then
+  echo "        camera model : $calibration_model"
+	colmap feature_extractor \
+	--database_path ${database} \
+	--image_path ${rgb_path} \
+	--image_list_path ${colmap_image_list} \
+	--ImageReader.camera_model ${calibration_model} \
+	--ImageReader.single_camera 1 \
+	--ImageReader.single_camera_per_folder 1 \
+	--ImageReader.camera_params "${fx}, ${fy}, ${cx}, ${cy}"
+fi
+
 if [ "${calibration_model}" == "FULL_OPENCV" ] 
 then
+  echo "        camera model : $calibration_model"
 	colmap feature_extractor \
 	--database_path ${database} \
 	--image_path ${rgb_path} \
@@ -49,29 +65,44 @@ then
 	--ImageReader.camera_params "${fx}, ${fy}, ${cx}, ${cy}, ${k1}, ${k2}, ${p1}, ${p2}, ${k3}, ${k4}, ${k5}, ${k6}"
 fi
 
-if [ "${calibration_model}" == "FULL_OPENCV" ] 
-then
-	colmap feature_extractor \
-	--database_path ${database} \
-	--image_path ${rgb_path} \
-	--image_list_path ${colmap_image_list} \	
-	--ImageReader.camera_model ${calibration_model} \
-	--ImageReader.single_camera 1 \
-	--ImageReader.camera_params "${fx}, ${fy}, ${cx}, ${cy}, ${k1}, ${k2}, ${p1}, ${p2}, ${k3}, ${k4}, ${k5}, ${k6}"
-fi
-
 if [ "${calibration_model}" == "OPENCV_FISHEYE" ] 
 then
+  echo "        camera model : $calibration_model"
 	colmap feature_extractor \
 	--database_path ${database} \
 	--image_path ${rgb_path} \
-	--image_list_path ${colmap_image_list} \	
+	--image_list_path ${colmap_image_list} \
 	--ImageReader.camera_model ${calibration_model} \
 	--ImageReader.single_camera 1 \
+	--ImageReader.single_camera_per_folder 1 \
 	--ImageReader.camera_params "${fx}, ${fy}, ${cx}, ${cy}, ${k1}, ${k2}, ${k3}, ${k4}" 
 fi
 
-################################################################################	
-echo "    colmap exhaustive_matcher ..."	
-colmap exhaustive_matcher \
-   --database_path ${database} 
+################################################################################
+if [ "${matcher_type}" == "exhaustive" ]
+then
+	echo "    colmap exhaustive_matcher ..."
+  colmap exhaustive_matcher \
+     --database_path ${database}
+fi
+
+if [ "${matcher_type}" == "sequential" ]
+then
+  num_rgb=$(wc -l $rgb_ds_txt)
+
+  # Pick vocabulary tree based on the number of images
+  vocabulary_tree="VSLAM-Baselines/COLMAP/vocab_tree_flickr100K_words32K.bin"
+  if [ "$num_rgb" -gt 1000 ]; then
+    vocabulary_tree="VSLAM-Baselines/COLMAP/vocab_tree_flickr100K_words256K.bin"
+  fi
+  if [ "$num_rgb" -gt 10000 ]; then
+    vocabulary_tree="VSLAM-Baselines/COLMAP/vocab_tree_flickr100K_words1M.bin"
+  fi
+
+  echo "    colmap sequential_matcher ..."
+  echo "        Vocabulary Tree: $vocabulary_tree"
+      colmap sequential_matcher \
+         --database_path ${database} \
+         --SequentialMatching.loop_detection 1 \
+         --SequentialMatching.vocab_tree_path ${vocabulary_tree}
+fi
