@@ -11,7 +11,7 @@ def colmap_setup():
 
     snippets = os.path.join(VSLAM_LAB_PATH, 'snippets')
     colmap_path = os.path.join(VSLAM_LAB_PATH, 'VSLAM-Baselines', 'COLMAP')   
-    shutil.copy(os.path.join(colmap_path_0, 'downsample_rgb_frames.py'), colmap_path)
+    shutil.copy(os.path.join(snippets, 'downsample_rgb_frames.py'), colmap_path)
     
     # Download Vocabulary trees
     download_url = "https://demuc.de/colmap"
