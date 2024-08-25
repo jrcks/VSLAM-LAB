@@ -5,6 +5,7 @@ DIVISOR="10"
 # Function to split key-value pairs and assign them to variables
 max_rgb="50" # Default value. Can be overwritten "max_rgb:500"
 matcher_type="exhaustive" # Default value. Options: exhaustive, sequential
+use_gpu="1" # Default value.
 
 split_and_assign() {
   local input=$1
@@ -26,6 +27,7 @@ echo "Experiment ID: $exp_id"
 echo "Verbose: $verbose"
 echo "max_rgb: $max_rgb"
 echo "matcher_type: $matcher_type"
+echo "use_gpu: $use_gpu"
 
 # Calculate the minimum frames per second (fps) for downsampling
 calibration_file="${sequence_path}/calibration.yaml"
@@ -36,12 +38,12 @@ exp_folder_colmap="${exp_folder}/colmap_${exp_id}"
 rm -rf "$exp_folder_colmap"
 mkdir "$exp_folder_colmap"
 
- Downsample RGB frames
+# Downsample RGB frames
 rgb_ds_txt="${exp_folder_colmap}/rgb_ds.txt"
 python snippets/downsample_rgb_frames.py $sequence_path --rgb_ds_txt "${rgb_ds_txt}" --min_fps ${min_fps} -v --max_rgb ${max_rgb}
 
 # Run COLMAP scripts for matching and mapping
-./VSLAM-Baselines/COLMAP/colmap_matcher.sh $sequence_path $exp_folder $exp_id $matcher_type
+./VSLAM-Baselines/COLMAP/colmap_matcher.sh $sequence_path $exp_folder $exp_id $matcher_type $use_gpu
 ./VSLAM-Baselines/COLMAP/colmap_mapper.sh $sequence_path $exp_folder $exp_id
 
 # Convert COLMAP outputs to a format suitable for VSLAM-Lab

@@ -7,6 +7,7 @@ sequence_path="$1"
 exp_folder="$2" 
 exp_id="$3" 
 matcher_type="$4" # Options: exhaustive, sequential
+use_gpu="$5"
 
 calibration_file="${sequence_path}/calibration.yaml"
 rgb_path="${sequence_path}/rgb"
@@ -49,6 +50,7 @@ then
 	--ImageReader.camera_model ${calibration_model} \
 	--ImageReader.single_camera 1 \
 	--ImageReader.single_camera_per_folder 1 \
+	--SiftExtraction.use_gpu ${use_gpu} \
 	--ImageReader.camera_params "${fx}, ${fy}, ${cx}, ${cy}"
 fi
 
@@ -62,6 +64,7 @@ then
 	--ImageReader.camera_model ${calibration_model} \
 	--ImageReader.single_camera 1 \
 	--ImageReader.single_camera_per_folder 1 \
+	--SiftExtraction.use_gpu ${use_gpu} \
 	--ImageReader.camera_params "${fx}, ${fy}, ${cx}, ${cy}, ${k1}, ${k2}, ${p1}, ${p2}, ${k3}, ${k4}, ${k5}, ${k6}"
 fi
 
@@ -75,6 +78,7 @@ then
 	--ImageReader.camera_model ${calibration_model} \
 	--ImageReader.single_camera 1 \
 	--ImageReader.single_camera_per_folder 1 \
+	--SiftExtraction.use_gpu ${use_gpu} \
 	--ImageReader.camera_params "${fx}, ${fy}, ${cx}, ${cy}, ${k1}, ${k2}, ${k3}, ${k4}" 
 fi
 
@@ -83,7 +87,8 @@ if [ "${matcher_type}" == "exhaustive" ]
 then
 	echo "    colmap exhaustive_matcher ..."
   colmap exhaustive_matcher \
-     --database_path ${database}
+     --database_path ${database} \
+     --SiftMatching.use_gpu ${use_gpu}
 fi
 
 if [ "${matcher_type}" == "sequential" ]
@@ -104,5 +109,6 @@ then
       colmap sequential_matcher \
          --database_path ${database} \
          --SequentialMatching.loop_detection 1 \
-         --SequentialMatching.vocab_tree_path ${vocabulary_tree}
+         --SequentialMatching.vocab_tree_path ${vocabulary_tree} \
+         --SiftMatching.use_gpu ${use_gpu}
 fi
