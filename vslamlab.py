@@ -284,11 +284,13 @@ def find_download_issues(config_files):
                 dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
                 download_issues[dataset.dataset_name] = {}
                 for sequence_name in sequence_names:
-                    issues_seq = dataset.get_download_issues(sequence_name)
-                    if issues_seq == {}:
-                        continue
-                    for issue_name, issue_topic in issues_seq.items():
-                        download_issues[dataset.dataset_name][issue_name] = issue_topic
+                    sequence_availabilty = dataset.check_sequence_availability(sequence_name)
+                    if sequence_availabilty != "available":
+                        issues_seq = dataset.get_download_issues(sequence_name)
+                        if issues_seq == {}:
+                            continue
+                        for issue_name, issue_topic in issues_seq.items():
+                            download_issues[dataset.dataset_name][issue_name] = issue_topic
 
     print(f"\n{SCRIPT_LABEL}Finding download issues...")
     num_download_issues = 0

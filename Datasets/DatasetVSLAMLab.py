@@ -56,17 +56,15 @@ class DatasetVSLAMLab:
     def download_sequence(self, sequence_name):
 
         # Check if sequence is already available
-        sequence_path = os.path.join(self.dataset_path, sequence_name)
-        if os.path.exists(sequence_path):
-            sequence_complete = check_sequence_integrity(self.dataset_path, sequence_name, True)
-            if sequence_complete:
-                print(f"{ws(4)}Sequence '{sequence_name}' is already downloaded.")
-                return
-            else:
-                print(f"{ws(8)}Some files in sequence {sequence_name} are corrupted.")
-                print(f"{ws(8)}Removing and downloading again sequence {sequence_name} ")
-                print(f"{ws(8)}THIS PART OF THE CODE IS NOT YET IMPLEMENTED. REMOVE THE FILES MANUALLY")
-                sys.exit(1)
+        sequence_availability = self.check_sequence_availability(sequence_name)
+        if sequence_availability == "available":
+            print(f"{ws(4)}Sequence '{sequence_name}' is already downloaded.")
+            return
+        if sequence_availability == "corrupted":
+            print(f"{ws(8)}Some files in sequence {sequence_name} are corrupted.")
+            print(f"{ws(8)}Removing and downloading again sequence {sequence_name} ")
+            print(f"{ws(8)}THIS PART OF THE CODE IS NOT YET IMPLEMENTED. REMOVE THE FILES MANUALLY")
+            sys.exit(1)
 
         # Download process
         if not os.path.exists(self.dataset_path):
@@ -143,6 +141,16 @@ class DatasetVSLAMLab:
         with open(calibration_yaml, 'w') as file:
             for line in yaml_content_lines:
                 file.write(f"{line}\n")
+
+    def check_sequence_availability(self, sequence_name):
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        if os.path.exists(sequence_path):
+            sequence_complete = check_sequence_integrity(self.dataset_path, sequence_name, True)
+            if sequence_complete:
+                return "available"
+            else:
+                return "corrupted"
+        return "non-available"
 
     ####################################################################################################################
     # Run methods
