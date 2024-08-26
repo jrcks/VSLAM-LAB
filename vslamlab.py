@@ -52,6 +52,8 @@ def main():
 
     parser.add_argument('--list_datasets', action='store_true', help="List available datasets.")
 
+    parser.add_argument('-ablation', action='store_true', help="")
+
     args = parser.parse_args()
 
     if not os.path.exists(VSLAMLAB_EVALUATION):
@@ -83,7 +85,7 @@ def main():
         download(config_files)
 
     if args.run:
-        run(experiments)
+        run(experiments, args.ablation)
 
     if args.evaluate:
         evaluate(experiments)
@@ -185,7 +187,7 @@ def evaluate(experiments):
                     dataset.evaluate_sequence(sequence_name, exp.folder)
 
 
-def run(experiments):
+def run(experiments, ablation=False):
     print(f"\n[vslamlab] Running ...")
     start_time = time.time()
     for [exp_name, exp] in experiments.items():
@@ -204,7 +206,8 @@ def run(experiments):
                             print(
                                 f"{ws(4)}Running (it: {num_system_output_files + 1}/{exp.num_runs}) '{exp.vslam}' "
                                 f"in: '{sequence_name}'...")
-                            dataset.run_sequence(exp, sequence_name)
+                            dataset.run_sequence(exp, sequence_name, ablation)
+
         if num_system_output_files == exp.num_runs:
             print(f"{ws(4)}Finished experiment '{exp_name}' with {num_system_output_files}/{exp.num_runs} iterations.")
     end_time = time.time()

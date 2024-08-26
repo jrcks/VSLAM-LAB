@@ -23,6 +23,7 @@ import sys
 import cv2
 import pandas as pd
 import yaml
+import numpy as np
 
 from utilities import VSLAM_LAB_DIR
 from utilities import find_files_with_string
@@ -155,7 +156,7 @@ class DatasetVSLAMLab:
     ####################################################################################################################
     # Run methods
 
-    def run_sequence(self, exp, sequence_name_):
+    def run_sequence(self, exp, sequence_name_, ablation=False):
         sequence_name = sequence_name_
 
         sequence_path = os.path.join(self.dataset_path, sequence_name)
@@ -177,12 +178,82 @@ class DatasetVSLAMLab:
         command_str = ' '.join(exec_command)
 
         full_command = f"pixi run -e {exp.vslam} execute " + command_str
+
+        if ablation:
+            self.prepare_ablation(sequence_name, exp, it)
         self.run_executable(full_command, log_file_path)
+        if ablation:
+            self.finish_ablation(sequence_name)
 
     def run_executable(self, command, log_file_path):
         with open(log_file_path, 'w') as log_file:
             print(f"{ws(6)} log file: {log_file_path}")
             subprocess.run(command, stdout=log_file, stderr=log_file, shell=True)
+
+    ####################################################################################################################
+
+    def add_gaussian_noise(self, image, mean=0, std_dev=25):
+        noise = np.random.normal(mean, std_dev, image.shape).astype(np.float32)
+        noisy_image = image + noise
+        noisy_image = np.clip(noisy_image, 0, 255).astype(np.uint8)
+        return noisy_image
+
+    # Ablation methods
+    def prepare_ablation(self, sequence_name, exp, it):
+        print(f"{ws(8)}Sequence '{sequence_name}' preparing ablation ...")
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+
+        # Save rgb folder
+        rgb_path = os.path.join(sequence_path, 'rgb')
+        rgb_path_saved = os.path.join(sequence_path, 'rgb_saved')
+        if not os.path.exists(rgb_path_saved):
+            os.rename(rgb_path, rgb_path_saved)
+        os.makedirs(os.path.join(sequence_path,'rgb'), exist_ok=True)
+
+        # update rgb.txt
+        rgb_txt = os.path.join(sequence_path, 'rgb.txt')
+        rgb_txt_saved = os.path.join(sequence_path, 'rgb_saved.txt')
+        with open(rgb_txt, 'r') as file:
+             content = file.read()
+        modified_content = content.replace('rgb', 'rgb_saved')
+        with open(rgb_txt_saved, 'w') as file:
+            file.write(modified_content)
+
+        # update rgb folder
+        rgb_files_saved = []
+        with open(rgb_txt_saved, 'r') as file:
+            for line in file:
+                timestamp, path = line.strip().split(' ')
+                rgb_files_saved.append(path)
+
+        rgb_files = []
+        with open(rgb_txt, 'r') as file:
+            for line in file:
+                timestamp, path = line.strip().split(' ')
+                rgb_files.append(path)
+
+        std_noise = (it) * 0.25
+        print(it)
+        print(std_noise)
+        for i, rgb_file_saved in enumerate(rgb_files_saved):
+            rgb_file = rgb_files[i]
+            image = cv2.imread(os.path.join(sequence_path, rgb_file_saved))
+            noisy_image = self.add_gaussian_noise(image, mean=0, std_dev= std_noise)
+            cv2.imwrite(os.path.join(sequence_path, rgb_file), noisy_image)
+
+    def finish_ablation(self, sequence_name):
+        print(f"{ws(8)}Sequence '{sequence_name}' finishing ablation ...")
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+
+        # Remove rgb_saved.txt
+        rgb_txt_saved = os.path.join(sequence_path, 'rgb_saved.txt')
+        os.remove(rgb_txt_saved)
+
+        # Restore rgb folder
+        rgb_path = os.path.join(sequence_path, 'rgb')
+        rgb_path_saved = os.path.join(sequence_path, 'rgb_saved')
+        shutil.rmtree(rgb_path)
+        os.rename(rgb_path_saved, rgb_path)
 
     ####################################################################################################################
     # Evaluation methods
@@ -207,7 +278,8 @@ class DatasetVSLAMLab:
         for iTraj, trajectory_i in enumerate(trajectory_files):
             traj_accuracy, num_eval_pts, traj_xyz_aligned, gt_xyz, gt_xyz_full \
                 = self.evaluate_trajectory_accuracy(trajectory_i, groundtruth_file)
-
+            print(trajectory_i)
+            print(traj_accuracy)
             all_traj_accuracies.append(traj_accuracy)
             all_num_evaluation_pts.append(num_eval_pts)
 

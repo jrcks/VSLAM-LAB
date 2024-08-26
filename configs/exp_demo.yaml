@@ -19,7 +19,7 @@ exp_demo_orbslam2:
 #exp_demo_colmap:
 #  Config: config_replica.yaml
 #  NumRuns: 1
-#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:exhaustive, use_gpu: use_gpu:1}
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1}
 #  VSLAM: colmap
 
 #exp_demo_dust3r:
