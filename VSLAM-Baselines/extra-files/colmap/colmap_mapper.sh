@@ -11,7 +11,7 @@ exp_folder_colmap="${exp_folder}/colmap_${exp_id}"
 echo "    colmap mapper ..."
 database="${exp_folder_colmap}/colmap_database.db"
 	
-colmap mapper \
+pixi run -e colmap colmap mapper \
     --database_path ${database} \
     --image_path ${rgb_path} \
     --output_path ${exp_folder_colmap} \
@@ -27,7 +27,7 @@ colmap mapper \
 n=5 
 for ((i=1; i<=n; i++)); do
     echo "    colmap bundle_adjuster ${i} ..."	
-    colmap bundle_adjuster \
+    pixi run -e colmap colmap bundle_adjuster \
 	--input_path ${exp_folder_colmap}/0 \
 	--output_path ${exp_folder_colmap}/0 \
 	--BundleAdjustment.refine_focal_length 0 \
@@ -35,5 +35,5 @@ for ((i=1; i<=n; i++)); do
 done    
 
 echo "    colmap model_converter ..."	
-colmap model_converter \
+pixi run -e colmap colmap model_converter \
 	--input_path ${exp_folder_colmap}/0 --output_path ${exp_folder_colmap} --output_type TXT	        

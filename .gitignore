@@ -16,5 +16,4 @@ VSLAM-Baselines/dso
 VSLAM-Baselines/dust3r
 VSLAM-Baselines/mono_dataset_code
 VSLAM-Baselines/ORB_SLAM2
-VSLAM-Baselines/COLMAP/*.bin
-VSLAM-Baselines/COLMAP/downsample_rgb_frames.py
+VSLAM-Baselines/colmap

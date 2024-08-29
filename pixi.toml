@@ -208,16 +208,74 @@ torchvision="*"
 roma="*"
 
 [feature.colmap]
-channels = ["conda-forge"]
+channels = ["conda-forge", "nvidia"]
 platforms = ["linux-64"]
 
 [feature.colmap.tasks]
-setup = "python VSLAM-Baselines/COLMAP/colmap_setup.py"
-execute = "./VSLAM-Baselines/COLMAP/colmap_reconstruction.sh"
+
+git-clone = "git-clone.sh colmap colmap VSLAM-Baselines && pixi run -e colmap setup"
+git-clone-ssh = "pixi run -e colmap git-clone --ssh && pixi run -e colmap setup"
+
+setup = "python VSLAM-Baselines/extra-files/colmap/colmap_setup.py"
+
+build = {cmd = "./VSLAM-Baselines/colmap/build.sh", depends-on = ["git-clone"]}
+build-ssh = {cmd = "./VSLAM-Baselines/colmap/build.sh", depends-on = ["git-clone-ssh"]}
+
+execute = "./VSLAM-Baselines/colmap/colmap_reconstruction.sh"
+colmap = "./VSLAM-Baselines/colmap/bin/colmap"
 
 [feature.colmap.dependencies]
-colmap="*"
-scipy="*"
+cxx-compiler="*"
+c-compiler="*"
+ninja="*"
+cmake="*"
+pkg-config="*"
+libglvnd-egl-cos7-x86_64 ="*"
+libglvnd-devel-cos7-x86_64 ="*"
+mesa-libegl-devel-cos7-x86_64 ="*"
+mesa-libgl-devel-cos7-x86_64 ="*"
+mesa-dri-drivers-cos7-x86_64 ="*"
+libselinux-cos7-x86_64 ="*"
+libxdamage-cos7-x86_64 ="*"
+libxxf86vm-cos7-x86_64 ="*"
+libxfixes-cos7-x86_64 ="*"
+libxext-cos7-x86_64 ="*"
+libxau-cos7-x86_64 ="*"
+libxcb-cos7-x86_64 ="*"
+xorg-libxext ="*"
+xorg-libx11 ="*"
+xorg-libxfixes="*"
+xorg-libxrender="*"
+xorg-libice="*"
+xorg-libsm="*"
+xorg-libxdmcp="*"
+xorg-libxau="*"
+make="*"
+llvm-openmp="*"
+libgomp="*"
+libxcb="*"
+libglu="*"
+libblas="*"
+libcblas="*"
+libboost-devel="*"
+suitesparse="*"
+eigen="*"
+freeimage="*"
+glog="*"
+gflags="*"
+glew="*"
+cgal-cpp="*"
+ceres-solver="*"
+qt-main="*"
+git="*"
+flann="*"
+sqlite="*"
+vlfeat="*"
+gmp="*"
+lz4-c="*"
+metis="*"
+libcurand-dev="*"
+cuda-nvcc="*"
 
 [feature.ros-env]
 channels = ["conda-forge", "robostack-staging"]

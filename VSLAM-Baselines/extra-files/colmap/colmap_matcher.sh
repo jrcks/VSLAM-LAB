@@ -36,14 +36,15 @@ awk '{print substr($2, 5)}' "$rgb_ds_txt" > "$colmap_image_list"
 # Create Colmap Database
 database="${exp_folder_colmap}/colmap_database.db"
 rm -rf ${database}
-colmap database_creator --database_path ${database} 
+pixi run -e colmap colmap database_creator --database_path ${database}
+echo "eureka"
 
-################################################################################	
+################################################################################
 echo "    colmap feature_extractor ..."
 if [ "${calibration_model}" == "PINHOLE" ]
 then
   echo "        camera model : $calibration_model"
-	colmap feature_extractor \
+	pixi run -e colmap colmap feature_extractor \
 	--database_path ${database} \
 	--image_path ${rgb_path} \
 	--image_list_path ${colmap_image_list} \
@@ -57,7 +58,7 @@ fi
 if [ "${calibration_model}" == "FULL_OPENCV" ] 
 then
   echo "        camera model : $calibration_model"
-	colmap feature_extractor \
+	pixi run -e colmap colmap feature_extractor \
 	--database_path ${database} \
 	--image_path ${rgb_path} \
 	--image_list_path ${colmap_image_list} \
@@ -71,7 +72,7 @@ fi
 if [ "${calibration_model}" == "OPENCV_FISHEYE" ] 
 then
   echo "        camera model : $calibration_model"
-	colmap feature_extractor \
+	pixi run -e colmap colmap feature_extractor \
 	--database_path ${database} \
 	--image_path ${rgb_path} \
 	--image_list_path ${colmap_image_list} \
@@ -86,27 +87,27 @@ fi
 if [ "${matcher_type}" == "exhaustive" ]
 then
 	echo "    colmap exhaustive_matcher ..."
-  colmap exhaustive_matcher \
+  pixi run -e colmap colmap exhaustive_matcher \
      --database_path ${database} \
      --SiftMatching.use_gpu ${use_gpu}
 fi
 
 if [ "${matcher_type}" == "sequential" ]
 then
-  num_rgb=$(wc -l $rgb_ds_txt)
+  num_rgb=$(wc -l < ${rgb_ds_txt})
 
   # Pick vocabulary tree based on the number of images
-  vocabulary_tree="VSLAM-Baselines/COLMAP/vocab_tree_flickr100K_words32K.bin"
+  vocabulary_tree="VSLAM-Baselines/colmap/vocab_tree_flickr100K_words32K.bin"
   if [ "$num_rgb" -gt 1000 ]; then
-    vocabulary_tree="VSLAM-Baselines/COLMAP/vocab_tree_flickr100K_words256K.bin"
+    vocabulary_tree="VSLAM-Baselines/colmap/vocab_tree_flickr100K_words256K.bin"
   fi
   if [ "$num_rgb" -gt 10000 ]; then
-    vocabulary_tree="VSLAM-Baselines/COLMAP/vocab_tree_flickr100K_words1M.bin"
+    vocabulary_tree="VSLAM-Baselines/colmap/vocab_tree_flickr100K_words1M.bin"
   fi
 
   echo "    colmap sequential_matcher ..."
   echo "        Vocabulary Tree: $vocabulary_tree"
-      colmap sequential_matcher \
+      pixi run -e colmap colmap sequential_matcher \
          --database_path ${database} \
          --SequentialMatching.loop_detection 1 \
          --SequentialMatching.vocab_tree_path ${vocabulary_tree} \
