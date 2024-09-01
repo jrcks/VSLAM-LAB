@@ -83,11 +83,10 @@ if __name__ == "__main__":
     sequence_path = sys.argv[1]
     exp_folder = sys.argv[2]
     exp_id = sys.argv[3]
-    verbose = bool(int(sys.argv[4]))
     images_file = os.path.join(exp_folder, f'colmap_{exp_id}', 'images.txt')
 
     number_of_header_lines = 4
-    image_id, t_wc, q_wc_xyzw = get_colmap_keyframes(images_file, number_of_header_lines, verbose)
+    image_id, t_wc, q_wc_xyzw = get_colmap_keyframes(images_file, number_of_header_lines)
     
     rgb_file = os.path.join(exp_folder, f'colmap_{exp_id}', 'rgb_ds.txt')
     image_ts = np.array(get_timestamps(sequence_path, rgb_file))

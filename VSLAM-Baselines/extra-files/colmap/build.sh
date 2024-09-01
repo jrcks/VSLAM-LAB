@@ -34,7 +34,7 @@ done
 colmap_PATH=$(realpath "$0")
 colmap_DIR=$(dirname "$colmap_PATH")
 
-## Compile AnyFeature-VSLAM   
+## Compile colmap
 source_folder="${colmap_DIR}"     
 build_folder="$source_folder/build"
 bin_folder="$source_folder/bin"

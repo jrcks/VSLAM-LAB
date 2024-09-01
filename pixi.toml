@@ -51,6 +51,7 @@ dust3r = ["dust3r"]
 monodataset = ["monodataset"]
 ros-env = ["ros-env"]
 colmap = ["colmap"]
+glomap = ["glomap"]
 
 [feature.anyfeature]
 channels = ["fontan", "conda-forge", "huggingface"]
@@ -213,22 +214,23 @@ platforms = ["linux-64"]
 
 [feature.colmap.tasks]
 
-git-clone = "git-clone.sh colmap colmap VSLAM-Baselines && pixi run -e colmap setup"
-git-clone-ssh = "pixi run -e colmap git-clone --ssh && pixi run -e colmap setup"
+git-clone = "git-clone.sh colmap colmap VSLAM-Baselines"
+git-clone-ssh = "pixi run -e colmap git-clone --ssh"
 
 setup = "python VSLAM-Baselines/extra-files/colmap/colmap_setup.py"
 
-build = {cmd = "./VSLAM-Baselines/colmap/build.sh", depends-on = ["git-clone"]}
-build-ssh = {cmd = "./VSLAM-Baselines/colmap/build.sh", depends-on = ["git-clone-ssh"]}
+build = {cmd = "./VSLAM-Baselines/colmap/build.sh", depends-on = ["git-clone", "setup"]}
+build-ssh = {cmd = "./VSLAM-Baselines/colmap/build.sh", depends-on = ["git-clone-ssh", "setup"]}
 
 execute = "./VSLAM-Baselines/colmap/colmap_reconstruction.sh"
 colmap = "./VSLAM-Baselines/colmap/bin/colmap"
+glomap = "./VSLAM-Baselines/glomap/bin/glomap"
 
 [feature.colmap.dependencies]
 cxx-compiler="*"
 c-compiler="*"
 ninja="*"
-cmake="*"
+cmake="3.28"
 pkg-config="*"
 libglvnd-egl-cos7-x86_64 ="*"
 libglvnd-devel-cos7-x86_64 ="*"
@@ -261,7 +263,7 @@ libboost-devel="*"
 suitesparse="*"
 eigen="*"
 freeimage="*"
-glog="*"
+glog="0.6.0"
 gflags="*"
 glew="*"
 cgal-cpp="*"
@@ -276,6 +278,23 @@ lz4-c="*"
 metis="*"
 libcurand-dev="*"
 cuda-nvcc="*"
+
+[feature.glomap]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[feature.glomap.tasks]
+
+git-clone = "git-clone.sh colmap glomap VSLAM-Baselines"
+git-clone-ssh = "pixi run -e glomap git-clone --ssh"
+
+setup = "python VSLAM-Baselines/extra-files/glomap/glomap_setup.py"
+
+build = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"]}
+build-ssh = {cmd = "pixi run -e colmap  ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone-ssh", "setup", "build-colmap"]}
+build-colmap =  "pixi run -e colmap build -v"
+
+execute = "pixi run -e colmap ./VSLAM-Baselines/glomap/glomap_reconstruction.sh"
 
 [feature.ros-env]
 channels = ["conda-forge", "robostack-staging"]

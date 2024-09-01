@@ -42,7 +42,7 @@ pixi run setup-all
 pixi run -e anyfeature build
 pixi run -e orbslam2 build
 pixi run -e dso build
-pixi run -e colmap setup
+pixi run -e colmap build
 pixi run -e dust3r setup
 ```
 *To change the paths where VSLAM-LAB-Benchmark or/and VSLAM-LAB-Evaluation data are stored (for example, to /media/${USER}/data), use the following commands:*

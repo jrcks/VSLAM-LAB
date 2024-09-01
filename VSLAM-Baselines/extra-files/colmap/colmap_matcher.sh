@@ -37,7 +37,6 @@ awk '{print substr($2, 5)}' "$rgb_ds_txt" > "$colmap_image_list"
 database="${exp_folder_colmap}/colmap_database.db"
 rm -rf ${database}
 pixi run -e colmap colmap database_creator --database_path ${database}
-echo "eureka"
 
 ################################################################################
 echo "    colmap feature_extractor ..."
