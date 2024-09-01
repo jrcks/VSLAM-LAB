@@ -2,7 +2,7 @@
 echo ""
 echo "Executing colmapMatcher.sh ..."
 
-calibration_model="FULL_OPENCV" # PINHOLE, FULL_OPENCV, OPENCV_FISHEYE
+calibration_model="OPENCV" # PINHOLE, OPENCV, OPENCV_FISHEYE
 sequence_path="$1" 
 exp_folder="$2" 
 exp_id="$3" 
@@ -10,7 +10,7 @@ matcher_type="$4" # Options: exhaustive, sequential
 use_gpu="$5"
 
 calibration_file="${sequence_path}/calibration.yaml"
-rgb_path="${exp_folder}/rgb"
+rgb_path="${sequence_path}/rgb"
 exp_folder_colmap="${exp_folder}/colmap_${exp_id}"
 rgb_ds_txt="${exp_folder_colmap}/rgb_ds.txt"
 
@@ -46,6 +46,7 @@ then
 	pixi run -e colmap colmap feature_extractor \
 	--database_path ${database} \
 	--image_path ${rgb_path} \
+	--image_list_path ${colmap_image_list} \
 	--ImageReader.camera_model ${calibration_model} \
 	--ImageReader.single_camera 1 \
 	--ImageReader.single_camera_per_folder 1 \
@@ -53,17 +54,18 @@ then
 	--ImageReader.camera_params "${fx}, ${fy}, ${cx}, ${cy}"
 fi
 
-if [ "${calibration_model}" == "FULL_OPENCV" ] 
+if [ "${calibration_model}" == "OPENCV" ]
 then
   echo "        camera model : $calibration_model"
 	pixi run -e colmap colmap feature_extractor \
 	--database_path ${database} \
 	--image_path ${rgb_path} \
-	--ImageReader.camera_model PINHOLE \
+	--image_list_path ${colmap_image_list} \
+	--ImageReader.camera_model ${calibration_model} \
 	--ImageReader.single_camera 1 \
 	--ImageReader.single_camera_per_folder 1 \
 	--SiftExtraction.use_gpu ${use_gpu} \
-	--ImageReader.camera_params "${fx}, ${fy}, ${cx}, ${cy}"
+	--ImageReader.camera_params "${fx}, ${fy}, ${cx}, ${cy}, ${k1}, ${k2}, ${p1}, ${p2}"
 fi
 
 if [ "${calibration_model}" == "OPENCV_FISHEYE" ] 
@@ -72,6 +74,7 @@ then
 	pixi run -e colmap colmap feature_extractor \
 	--database_path ${database} \
 	--image_path ${rgb_path} \
+	--image_list_path ${colmap_image_list} \
 	--ImageReader.camera_model ${calibration_model} \
 	--ImageReader.single_camera 1 \
 	--ImageReader.single_camera_per_folder 1 \

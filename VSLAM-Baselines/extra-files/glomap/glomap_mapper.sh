@@ -6,7 +6,7 @@ exp_folder="$2"
 exp_id="$3" 
 verbose="$4"
 
-rgb_path="${exp_folder}/rgb"
+rgb_path="${sequence_path}/rgb"
 exp_folder_colmap="${exp_folder}/colmap_${exp_id}"
 
 echo "    glomap mapper ..."
