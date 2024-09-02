@@ -2,13 +2,8 @@
 name = "VSLAM-LAB"
 version = "0.1.0"
 description = "VSLAM-LAB"
-channels = ["conda-forge", "anaconda"]
+channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
-
-# When installing environments on old versions of linux.
-#[system-requirements]
-#linux = "4.12.14"
-#libc = { family="glibc", version="2.22" }
 
 [tasks]
 git-clone-all     = {cmd = "pixi run -e orbslam2 git-clone && pixi run -e dso git-clone && pixi run -e anyfeature git-clone && pixi run -e dust3r git-clone "}
@@ -36,14 +31,6 @@ google-api-python-client="*"
 google-auth-oauthlib="*"
 huggingface_hub="*"
 
-# When installing environments on old versions of linux.
-#libglx="*"
-#mesa-libgl-devel-cos7-x86_64="*"
-#mesa-dri-drivers-cos7-x86_64="*"
-#libselinux-cos7-x86_64="*"
-#libxxf86vm-cos7-x86_64="*"
-#libopengl="*"
-
 [environments]
 orbslam2 = ["orbslam2"]
 dso = ["dso"]
@@ -63,7 +50,7 @@ python="3.12"
 evo = "*"
 
 [feature.evo]
-channels = ["conda-forge", "anaconda"]
+channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
 [feature.evo.tasks]
@@ -72,7 +59,7 @@ evo_traj = "evo_traj"
 
 # AnyFeature-VSLAM
 [feature.anyfeature]
-channels = ["fontan", "conda-forge", "huggingface"]
+channels = ["fontan", "https://fast.prefix.dev/conda-forge", "huggingface"]
 platforms = ["linux-64"]
 
 [feature.anyfeature.tasks]
@@ -116,8 +103,9 @@ akaze="*"
 siftgpu="*"
 datasets="*"
 
+# ORB-SLAM2
 [feature.orbslam2]
-channels = ["conda-forge", "fontan"]
+channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
 platforms = ["linux-64"]
 
 [feature.orbslam2.tasks]
@@ -155,8 +143,9 @@ eigen="*"
 yaml-cpp="*"
 pangolin="*"
 
+# DSO
 [feature.dso]
-channels = ["conda-forge", "fontan"]
+channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
 platforms = ["linux-64"]
 
 [feature.dso.tasks]
@@ -194,8 +183,9 @@ eigen ="*"
 boost="*"
 pangolin="*"
 
+# DUST3R
 [feature.dust3r]
-channels = ["conda-forge", "nvidia", "pytorch"]
+channels = ["https://fast.prefix.dev/conda-forge", "nvidia", "pytorch"]
 platforms = ["linux-64"]
 
 [feature.dust3r.tasks]
@@ -226,8 +216,9 @@ safetensors="*"
 torchvision="*"
 roma="*"
 
+# COLMAP
 [feature.colmap]
-channels = ["conda-forge", "nvidia"]
+channels = ["https://fast.prefix.dev/conda-forge", "nvidia"]
 platforms = ["linux-64"]
 
 [feature.colmap.tasks]
@@ -297,8 +288,9 @@ metis="*"
 libcurand-dev="*"
 cuda-nvcc="*"
 
+# GLOMAP
 [feature.glomap]
-channels = ["conda-forge"]
+channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
 [feature.glomap.tasks]
@@ -314,8 +306,9 @@ build-colmap =  "pixi run -e colmap build -v"
 
 execute = "pixi run -e colmap ./VSLAM-Baselines/glomap/glomap_reconstruction.sh"
 
+# ROS
 [feature.ros-env]
-channels = ["conda-forge", "robostack-staging"]
+channels = ["https://fast.prefix.dev/conda-forge", "robostack-staging"]
 platforms = ["linux-64"]
 
 [feature.ros-env.dependencies]
@@ -324,8 +317,9 @@ ros-noetic-desktop="*"
 [feature.ros-env.tasks]
 extract-rosbag-frames = "python Datasets/extraFiles/extract_rosbag_frames.py"
 
+# MONODATASET
 [feature.monodataset]
-channels = ["conda-forge"]
+channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
 [feature.monodataset.tasks]
