@@ -2,7 +2,7 @@
 name = "VSLAM-LAB"
 version = "0.1.0"
 description = "VSLAM-LAB"
-channels = ["conda-forge"]
+channels = ["conda-forge", "anaconda"]
 platforms = ["linux-64"]
 
 # When installing environments on old versions of linux.
@@ -35,6 +35,7 @@ tqdm="*"
 google-api-python-client="*"
 google-auth-oauthlib="*"
 huggingface_hub="*"
+
 # When installing environments on old versions of linux.
 #libglx="*"
 #mesa-libgl-devel-cos7-x86_64="*"
@@ -52,7 +53,24 @@ monodataset = ["monodataset"]
 ros-env = ["ros-env"]
 colmap = ["colmap"]
 glomap = ["glomap"]
+evo = ["evo"]
 
+# EVO
+[feature.evo.dependencies]
+python="3.12"
+
+[feature.evo.pypi-dependencies]
+evo = "*"
+
+[feature.evo]
+channels = ["conda-forge", "anaconda"]
+platforms = ["linux-64"]
+
+[feature.evo.tasks]
+evo = "evo"
+evo_traj = "evo_traj"
+
+# AnyFeature-VSLAM
 [feature.anyfeature]
 channels = ["fontan", "conda-forge", "huggingface"]
 platforms = ["linux-64"]
