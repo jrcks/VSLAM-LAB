@@ -85,7 +85,7 @@ def plot_trajectories(dataset_sequences, exp_names, dataset_nicknames, experimen
                                                                sequence_name, VSLAM_LAB_EVALUATION_FOLDER)
 
                 if i_exp == 0:
-                    gt_file = os.path.join(vslam_lab_evaluation_folder_seq, 'gt.csv')
+                    gt_file = os.path.join(vslam_lab_evaluation_folder_seq, 'gt.tum')
                     gt_traj = pd.read_csv(gt_file)
                     pca_df = pd.DataFrame(gt_traj, columns=['tx gt', 'ty gt', 'tz gt'])
                     pca = PCA(n_components=2)
@@ -94,9 +94,9 @@ def plot_trajectories(dataset_sequences, exp_names, dataset_nicknames, experimen
                     axs[i_dataset].plot(gt_transformed[:, 0], gt_transformed[:, 1], label='gt', linestyle='-',
                                         color='black')
 
-                search_pattern = os.path.join(vslam_lab_evaluation_folder_seq, '*aligned_traj_*')
+                search_pattern = os.path.join(vslam_lab_evaluation_folder_seq, '*_KeyFrameTrajectory.tum*')
                 files = glob.glob(search_pattern)
-                idx = accuracies[dataset_name][sequence_name][exp_name]['Trajectory Accuracy'].idxmin()
+                idx = accuracies[dataset_name][sequence_name][exp_name]['rmse'].idxmin()
                 aligned_traj = pd.read_csv(files[idx])
                 pca_df = pd.DataFrame(aligned_traj, columns=['tx', 'ty', 'tz'])
                 pca_df.rename(columns={'tx': 'tx gt', 'ty': 'ty gt', 'tz': 'tz gt'}, inplace=True)
@@ -169,7 +169,7 @@ def boxplot_exp_seq(values, dataset_sequences, exp_names, dataset_nicknames, met
                              for i in range(len(sequence_names))]
 
                 boxplot_accuracy = axs[num_cols * i_dataset].boxplot(
-                    values[dataset_name][sequence_name][exp_name]['Trajectory Accuracy'],
+                    values[dataset_name][sequence_name][exp_name]['rmse'],
                     positions=positions, widths=width_per_series,
                     patch_artist=False,
                     boxprops=boxprops, medianprops=medianprops,
@@ -183,7 +183,7 @@ def boxplot_exp_seq(values, dataset_sequences, exp_names, dataset_nicknames, met
                     flier_counts.append(len(flier.get_ydata()))
 
                 boxplot_accuracy_zoom = axs[num_cols * i_dataset].boxplot(
-                    values[dataset_name][sequence_name][exp_name]['Trajectory Accuracy'],
+                    values[dataset_name][sequence_name][exp_name]['rmse'],
                     positions=positions, widths=width_per_series,
                     patch_artist=False,
                     boxprops=boxprops, medianprops=medianprops,
@@ -202,7 +202,7 @@ def boxplot_exp_seq(values, dataset_sequences, exp_names, dataset_nicknames, met
                                                                             color=colors[i_exp])
                 bar_diagram_num_runs = axs[num_cols * i_dataset + 3].bar(positions,
                                                                          len(values[dataset_name][sequence_name][
-                                                                                 exp_name]['Trajectory Accuracy']),
+                                                                                 exp_name]['rmse']),
                                                                          width_per_series, color=colors[i_exp])
 
                 max_whisker_ = np.max(whiskers)
@@ -307,14 +307,14 @@ def radar_seq(values, dataset_sequences, exp_names, dataset_nicknames, metric_na
 
             for exp_name in exp_names:
                 medians[dataset_name][sequence_name][exp_name] = np.median(
-                    values[dataset_name][sequence_name][exp_name]['Trajectory Accuracy'])
+                    values[dataset_name][sequence_name][exp_name]['rmse'])
                 if values_sequence[sequence_name].empty:
                     values_sequence[sequence_name] = values[dataset_name][sequence_name][exp_name][
-                        'Trajectory Accuracy']
+                        'rmse']
                 else:
                     values_sequence[sequence_name] = pd.concat([values_sequence[sequence_name],
                                                                 values[dataset_name][sequence_name][exp_name][
-                                                                    'Trajectory Accuracy']],
+                                                                    'rmse']],
                                                                ignore_index=True)
 
             median_sequence[sequence_name] = np.median(values_sequence[sequence_name])
@@ -390,7 +390,7 @@ def plot_cum_error(values, dataset_sequences, exp_names, dataset_nicknames, metr
     for dataset_name, sequence_names in dataset_sequences.items():
         for i_seq, sequence_name in enumerate(sequence_names):
             for i_exp, experiment_name in enumerate(exp_names):
-                data = values[dataset_name][sequence_name][experiment_name]['Trajectory Accuracy'].tolist()
+                data = values[dataset_name][sequence_name][experiment_name]['rmse'].tolist()
                 sorted_data = sorted(data)
                 cumulated_vector = []
                 for data_i in sorted_data:

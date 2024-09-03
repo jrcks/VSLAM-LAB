@@ -9,6 +9,7 @@ from utilities import decompressFile
 from Evaluate.align_trajectories import align_trajectory_with_groundtruth
 from Evaluate import metrics
 
+from Evaluate.evo import evo_ape_zip
 
 class ETH_dataset(DatasetVSLAMLab):
     def __init__(self, benchmark_path):
@@ -76,12 +77,4 @@ class ETH_dataset(DatasetVSLAMLab):
 
     def remove_unused_files(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
-
         os.remove(os.path.join(sequence_path, 'calibration.txt'))
-
-    def evaluate_trajectory_accuracy(self, trajectory_txt, groundtruth_txt):
-        traj_xyz_aligned, gt_xyz, traj_xyz_full_aligned, gt_xyz_full = align_trajectory_with_groundtruth(
-            trajectory_txt, groundtruth_txt, 1.0 / self.rgb_hz, 1.0, 0)
-
-        rmse_ate = metrics.rmse_ate(traj_xyz_aligned, gt_xyz)
-        return rmse_ate, len(traj_xyz_aligned), traj_xyz_aligned, gt_xyz, gt_xyz_full

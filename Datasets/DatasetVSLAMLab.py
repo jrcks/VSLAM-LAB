@@ -19,17 +19,24 @@ import os
 import shutil
 import subprocess
 import sys
+from tqdm import tqdm
+import re
+import zipfile
 
 import cv2
 import pandas as pd
 import yaml
 import numpy as np
+import io
+import scipy.stats as stats
+from sklearn.covariance import EllipticEnvelope
 
 from utilities import VSLAM_LAB_DIR
 from utilities import find_files_with_string
 from utilities import ws
 from utilities import check_sequence_integrity
-
+from Evaluate.evo import evo_ape_zip
+from Evaluate.evo import evo_get_accuracy
 SCRIPT_LABEL = f"[{os.path.basename(__file__)}] "
 
 
@@ -232,7 +239,7 @@ class DatasetVSLAMLab:
                 timestamp, path = line.strip().split(' ')
                 rgb_files.append(path)
 
-        std_noise = (it) * 0.25
+        std_noise = (it) * 1.0
         print(it)
         print(std_noise)
         for i, rgb_file_saved in enumerate(rgb_files_saved):
@@ -257,52 +264,29 @@ class DatasetVSLAMLab:
 
     ####################################################################################################################
     # Evaluation methods
+
     def evaluate_sequence(self, sequence_name, experiment_folder):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         groundtruth_file = os.path.join(sequence_path, 'groundtruth.txt')
 
         trajectories_path = os.path.join(experiment_folder, self.dataset_folder, sequence_name)
         evaluation_folder = os.path.join(trajectories_path, 'vslamlab_evaluation')
-        if os.path.exists(evaluation_folder):
-            shutil.rmtree(evaluation_folder)
+
         os.makedirs(evaluation_folder, exist_ok=True)
-
         trajectory_files = find_files_with_string(trajectories_path, "_KeyFrameTrajectory.txt")
-
         print(f"{ws(4)}Evaluation of '{os.path.basename(experiment_folder)}"
               f"' in '{sequence_name}': {len(trajectory_files)} trajectories")
 
-        # Compute accuracy
-        all_traj_accuracies = []
-        all_num_evaluation_pts = []
-        for iTraj, trajectory_i in enumerate(trajectory_files):
-            traj_accuracy, num_eval_pts, traj_xyz_aligned, gt_xyz, gt_xyz_full \
-                = self.evaluate_trajectory_accuracy(trajectory_i, groundtruth_file)
-            print(trajectory_i)
-            print(traj_accuracy)
-            all_traj_accuracies.append(traj_accuracy)
-            all_num_evaluation_pts.append(num_eval_pts)
+        for trajectory_file in tqdm(trajectory_files):
+            self.evaluate_trajectory_accuracy(groundtruth_file, trajectory_file, evaluation_folder)
 
-            df_traj = pd.DataFrame(traj_xyz_aligned, columns=['tx', 'ty', 'tz'])
-            df_gt = pd.DataFrame(gt_xyz, columns=['tx gt', 'ty gt', 'tz gt'])
-            df_traj_gt = pd.concat([df_traj, df_gt], axis=1)
+        self.get_accuracy(evaluation_folder)
 
-            trajectory_csv = os.path.join(evaluation_folder, f'aligned_traj_{os.path.basename(trajectory_i)}.csv')
-            trajectory_csv = trajectory_csv.replace("_KeyFrameTrajectory.txt", '')
+    def evaluate_trajectory_accuracy(self, groundtruth_file, trajectory_file, evaluation_folder):
+        evo_ape_zip(groundtruth_file, trajectory_file, evaluation_folder, 1.0 / self.rgb_hz)
 
-            with open(trajectory_csv, 'w', newline='') as file:
-                df_traj_gt.to_csv(file, index=False)
-
-        df_gt_full = pd.DataFrame(gt_xyz_full, columns=['tx gt', 'ty gt', 'tz gt'])
-        gt_csv = os.path.join(evaluation_folder, f'gt.csv')
-        with open(gt_csv, 'w', newline='') as file:
-            df_gt_full.to_csv(file, index=False)
-
-        accuracy_csv = os.path.join(evaluation_folder, 'accuracy.csv')
-        with open(accuracy_csv, 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(['Trajectory Accuracy', 'Number of Evaluation Points'])
-            writer.writerows(zip(all_traj_accuracies, all_num_evaluation_pts))
+    def get_accuracy(self, evaluation_folder):
+        evo_get_accuracy(evaluation_folder)
 
     ####################################################################################################################
     # Utils
