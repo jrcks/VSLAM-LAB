@@ -8,6 +8,7 @@ exp_folder="$2"
 exp_id="$3" 
 matcher_type="$4" # Options: exhaustive, sequential
 use_gpu="$5"
+settings_yaml="$6"
 
 calibration_file="${sequence_path}/calibration.yaml"
 rgb_path="${sequence_path}/rgb"

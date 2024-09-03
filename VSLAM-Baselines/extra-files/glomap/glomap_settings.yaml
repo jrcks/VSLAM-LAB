@@ -1,0 +1,5 @@
+BundleAdjustment:
+  thres_loss_function: 1.0
+
+RelPoseEstimation:
+  max_epipolar_error: 1.0

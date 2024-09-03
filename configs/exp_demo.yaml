@@ -25,7 +25,8 @@ exp_demo_orbslam2:
 #exp_demo_glomap:
 #  Config: config_demo.yaml
 #  NumRuns: 1
-#  Parameters: {Verbose: verbose:1, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50}
+#  Parameters: {Verbose: verbose:1, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:VSLAM-Baselines/glomap/glomap_settings2.yaml }
 #  VSLAM: glomap
 
 #exp_demo_dust3r:
