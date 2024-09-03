@@ -123,12 +123,6 @@ class ARIEL_dataset(DatasetVSLAMLab):
     def remove_unused_files(self, sequence_name):
         return
 
-    def evaluate_trajectory_accuracy(self, trajectory_txt, groundtruth_txt):
-        traj_xyz_aligned, gt_xyz, traj_xyz_full_aligned, gt_xyz_full = align_trajectory_with_groundtruth(
-            trajectory_txt, groundtruth_txt, 1.0 / self.rgb_hz, 1.0, 0)
-
-        rmse_ate = metrics.rmse_ate(traj_xyz_aligned, gt_xyz)
-        return rmse_ate, len(traj_xyz_aligned), traj_xyz_aligned, gt_xyz, gt_xyz_full
 
     def get_camera_calibration(self, sequence_name):
         cam = self.get_camera(sequence_name)

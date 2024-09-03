@@ -167,10 +167,3 @@ class KITTI_dataset(DatasetVSLAMLab):
         if os.path.exists(dataset_folder):
             if not os.listdir(dataset_folder):
                 shutil.rmtree(dataset_folder)
-
-    def evaluate_trajectory_accuracy(self, trajectory_txt, groundtruth_txt):
-        traj_xyz_aligned, gt_xyz, traj_xyz_full_aligned, gt_xyz_full = align_trajectory_with_groundtruth(
-            trajectory_txt, groundtruth_txt, 1.0 / self.rgb_hz, 1.0, 0)
-
-        rmse_ate = metrics.rmse_ate(traj_xyz_aligned, gt_xyz)
-        return rmse_ate, len(traj_xyz_aligned), traj_xyz_aligned, gt_xyz, gt_xyz_full
