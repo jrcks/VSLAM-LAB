@@ -44,6 +44,7 @@ pixi run -e anyfeature build
 pixi run -e orbslam2 build
 pixi run -e dso build
 pixi run -e colmap build
+pixi run -e glomap build
 pixi run -e dust3r build
 ```
 *Alternatively, you can build all modules at once with the following command:*
