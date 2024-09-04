@@ -37,6 +37,9 @@ from utilities import ws
 from utilities import check_sequence_integrity
 from Evaluate.evo import evo_ape_zip
 from Evaluate.evo import evo_get_accuracy
+
+from Evaluate import ablations
+
 SCRIPT_LABEL = f"[{os.path.basename(__file__)}] "
 
 
@@ -199,68 +202,18 @@ class DatasetVSLAMLab:
 
     ####################################################################################################################
 
-    def add_gaussian_noise(self, image, mean=0, std_dev=25):
-        noise = np.random.normal(mean, std_dev, image.shape).astype(np.float32)
-        noisy_image = image + noise
-        noisy_image = np.clip(noisy_image, 0, 255).astype(np.uint8)
-        return noisy_image
-
     # Ablation methods
     def prepare_ablation(self, sequence_name, exp, it):
         print(f"{ws(8)}Sequence '{sequence_name}' preparing ablation ...")
         sequence_path = os.path.join(self.dataset_path, sequence_name)
-
-        # Save rgb folder
-        rgb_path = os.path.join(sequence_path, 'rgb')
-        rgb_path_saved = os.path.join(sequence_path, 'rgb_saved')
-        if not os.path.exists(rgb_path_saved):
-            os.rename(rgb_path, rgb_path_saved)
-        os.makedirs(os.path.join(sequence_path,'rgb'), exist_ok=True)
-
-        # update rgb.txt
-        rgb_txt = os.path.join(sequence_path, 'rgb.txt')
-        rgb_txt_saved = os.path.join(sequence_path, 'rgb_saved.txt')
-        with open(rgb_txt, 'r') as file:
-             content = file.read()
-        modified_content = content.replace('rgb', 'rgb_saved')
-        with open(rgb_txt_saved, 'w') as file:
-            file.write(modified_content)
-
-        # update rgb folder
-        rgb_files_saved = []
-        with open(rgb_txt_saved, 'r') as file:
-            for line in file:
-                timestamp, path = line.strip().split(' ')
-                rgb_files_saved.append(path)
-
-        rgb_files = []
-        with open(rgb_txt, 'r') as file:
-            for line in file:
-                timestamp, path = line.strip().split(' ')
-                rgb_files.append(path)
-
-        std_noise = (it) * 1.0
-        print(it)
-        print(std_noise)
-        for i, rgb_file_saved in enumerate(rgb_files_saved):
-            rgb_file = rgb_files[i]
-            image = cv2.imread(os.path.join(sequence_path, rgb_file_saved))
-            noisy_image = self.add_gaussian_noise(image, mean=0, std_dev= std_noise)
-            cv2.imwrite(os.path.join(sequence_path, rgb_file), noisy_image)
+        #ablations.add_noise_to_images_start(sequence_path, it)
+        ablations.glomap_parameter_ablation_start(it)
 
     def finish_ablation(self, sequence_name):
         print(f"{ws(8)}Sequence '{sequence_name}' finishing ablation ...")
         sequence_path = os.path.join(self.dataset_path, sequence_name)
-
-        # Remove rgb_saved.txt
-        rgb_txt_saved = os.path.join(sequence_path, 'rgb_saved.txt')
-        os.remove(rgb_txt_saved)
-
-        # Restore rgb folder
-        rgb_path = os.path.join(sequence_path, 'rgb')
-        rgb_path_saved = os.path.join(sequence_path, 'rgb_saved')
-        shutil.rmtree(rgb_path)
-        os.rename(rgb_path_saved, rgb_path)
+        #ablations.add_noise_to_images_finish(sequence_path)
+        ablations.glomap_parameter_ablation_finish()
 
     ####################################################################################################################
     # Evaluation methods
