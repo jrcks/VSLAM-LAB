@@ -9,8 +9,8 @@ platforms = ["linux-64"]
 git-clone-all     = {cmd = "pixi run -e orbslam2 git-clone && pixi run -e dso git-clone && pixi run -e anyfeature git-clone && pixi run -e dust3r git-clone "}
 git-clone-all-ssh = {cmd = "pixi run -e orbslam2 git-clone-ssh && pixi run -e dso git-clone-ssh && pixi run -e anyfeature git-clone-ssh && pixi run -e dust3r git-clone-ssh"}
 
-setup-all     = {cmd = "pixi run -e orbslam2 build && pixi run -e dso build && pixi run -e anyfeature build && pixi run -e colmap setup", depends-on = ["git-clone-all"]}
-setup-all-ssh = {cmd = "pixi run -e orbslam2 build && pixi run -e dso build && pixi run -e anyfeature build && pixi run -e colmap setup", depends-on = ["git-clone-all-ssh"]}
+build-all     = {cmd = "pixi run -e orbslam2 build && pixi run -e dso build && pixi run -e anyfeature build && pixi run -e colmap setup", depends-on = ["git-clone-all"]}
+build-all-ssh = {cmd = "pixi run -e orbslam2 build && pixi run -e dso build && pixi run -e anyfeature build && pixi run -e colmap setup", depends-on = ["git-clone-all-ssh"]}
 
 vslamlab = {cmd = "python vslamlab.py"}
 set-benchmark-path  = {cmd = "python utilities.py set_VSLAMLAB_BENCHMARK_path"}
@@ -193,8 +193,8 @@ platforms = ["linux-64"]
 [feature.dust3r.tasks]
 git-clone = "git-clone.sh naver dust3r VSLAM-Baselines"
 git-clone-ssh = "pixi run -e dust3r git-clone --ssh"
-setup = {cmd = "cp snippets/dust3r_execute.py  VSLAM-Baselines/dust3r && cp snippets/downsample_rgb_frames.py  VSLAM-Baselines/dust3r", depends-on = ["git-clone"]}
-setup-ssh = {cmd = "cp snippets/dust3r_execute.py  VSLAM-Baselines/dust3r && cp snippets/downsample_rgb_frames.py  VSLAM-Baselines/dust3r", depends-on = ["git-clone-ssh"]}
+build = {cmd = "cp snippets/dust3r_execute.py  VSLAM-Baselines/dust3r && cp snippets/downsample_rgb_frames.py  VSLAM-Baselines/dust3r", depends-on = ["git-clone"]}
+build-ssh = {cmd = "cp snippets/dust3r_execute.py  VSLAM-Baselines/dust3r && cp snippets/downsample_rgb_frames.py  VSLAM-Baselines/dust3r", depends-on = ["git-clone-ssh"]}
 
 execute = "python VSLAM-Baselines/dust3r/dust3r_execute.py"
 

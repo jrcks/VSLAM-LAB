@@ -33,17 +33,22 @@ Clone the repository and navigate to the project directory:
 ```
 git clone https://github.com/alejandrofontan/VSLAM-LAB.git && cd VSLAM-LAB
 ```
-Next, **download** and **build** the following V-SLAM systems: [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM), [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2), [**DSO**](https://github.com/alejandrofontan/dso), [**COLMAP**](https://colmap.github.io/) and [**DUST3R**](https://github.com/naver/dust3r). You can build all components at once using the command:
+You can now **download** and **build** individual modules such as [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM), [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2), [**DSO**](https://github.com/alejandrofontan/dso), [**COLMAP**](https://colmap.github.io/), [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)  and [**DUST3R**](https://github.com/naver/dust3r). To build each module individually, use the following command:
 ```
-pixi run setup-all
+pixi run -e <module_label> build
 ```
-*Alternatively, you can build each system separately with the following commands:*
+
+You can find the appropriate `<module_label>` in the [VSLAM-LAB Leaderboard](#vslam-lab-leaderboard). For example:
 ```
 pixi run -e anyfeature build
 pixi run -e orbslam2 build
 pixi run -e dso build
 pixi run -e colmap build
-pixi run -e dust3r setup
+pixi run -e dust3r build
+```
+*Alternatively, you can build all modules at once with the following command:*
+```
+pixi run build-all
 ```
 *To change the paths where VSLAM-LAB-Benchmark or/and VSLAM-LAB-Evaluation data are stored (for example, to /media/${USER}/data), use the following commands:*
 ```
@@ -62,8 +67,8 @@ pixi run vslamlab --exp_yaml configs/exp_demo.yaml
 Experiments in **VSLAM-LAB** are defined as a sequence of entries in a YAML file (see example **~/VSLAM-LAB/configs/exp_demo_short.yaml**):
 ```
 exp_01:
-  VSLAM: dso                      # VSLAM system (anyfeature/orbslam2/dso)
-  Parameters: {}                  # Vector with parameters that will be input to the VSLAM executable 
+  Module: dso                     # anyfeature/orbslam2/dso/colmap/glomap/dust3r/...
+  Parameters: {}                  # Vector with parameters that will be input to the module executable 
   Config: config_demo_short.yaml  # YAML file containing the sequences to be run 
   NumRuns: 1                      # Maximum number of executions per sequence
 ```
@@ -123,7 +128,7 @@ Datasets in **VSLAM-LAB** are stored in a folder named **VSLAM-LAB-Benchmark**, 
     
 ```
 
-# Add a new VSLAM baseline
+# Add a new VSLAM module
 
 # License
 **VSLAM-LAB** is released under a **LICENSE.txt**. For a list of code dependencies which are not property of the authors of **VSLAM-LAB**, please check **docs/Dependencies.md**.
@@ -136,14 +141,15 @@ If you're using **VSLAM-LAB** in your research, please cite. If you're specifica
 
 To [awesome-slam-datasets](https://github.com/youngguncho/awesome-slam-datasets)
 # VSLAM-LAB Leaderboard
-We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6x_TXkgLsw9zWszHU9M-0mGgDT92TEs/edit?usp=drive_link) with more detailed information for each system and dataset.
+We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6x_TXkgLsw9zWszHU9M-0mGgDT92TEs/edit?usp=drive_link) with more detailed information for each module and dataset.
 
-| Tools                                                                       | System |     Sensors      |                                   License                                   |    Label     |
+| Modules                                                                     | System |     Sensors      |                                   License                                   |    Label     |
 |:----------------------------------------------------------------------------|:------:|:----------------:|:---------------------------------------------------------------------------:|:------------:|
 | [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM) | VSLAM  |       mono       | [GPLv3](https://github.com/alejandrofontan/VSLAM-LAB/blob/main/LICENSE.txt) | `anyfeature` |
 | [**DSO**](https://github.com/alejandrofontan/dso)                           |   VO   |       mono       |       [GPLv3](https://github.com/JakobEngel/dso/blob/master/LICENSE)        |    `dso`     |
 | [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2)               | VSLAM  | mono/RGBD/Stereo |    [GPLv3](https://github.com/raulmur/ORB_SLAM2/blob/master/LICENSE.txt)    |  `orbslam2`  | 
 | [**COLMAP**](https://colmap.github.io/)                                     |  SfM   |       mono       |                [BSD](https://colmap.github.io/license.html)                 |   `colmap`   | 
+| [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)                       |  SfM   |       mono       |               [BSD-3](https://github.com/colmap/glomap/blob/main/LICENSE)                |   `glomap`   |
 | [**DUST3R**](https://dust3r.europe.naverlabs.com)                           |  SfM   |       mono       |    [CC BY-NC-SA 4.0](https://github.com/naver/dust3r/blob/main/LICENSE)     |   `dust3r`   | 
 
 
