@@ -41,6 +41,7 @@ ros-env = ["ros-env"]
 colmap = ["colmap"]
 glomap = ["glomap"]
 evo = ["evo"]
+r2d2 = ["r2d2"]
 
 # EVO
 [feature.evo.dependencies]
@@ -358,3 +359,24 @@ opencv="*"
 eigen ="*"
 libzip = "*"
 
+# r2d2
+[feature.r2d2]
+channels = ["https://fast.prefix.dev/conda-forge", "pytorch"]
+platforms = ["linux-64"]
+
+[feature.r2d2.tasks]
+git-clone = "git-clone.sh naver r2d2 VSLAM-Baselines"
+git-clone-ssh = "pixi run -e r2d2 git-clone --ssh"
+
+execute = "python VSLAM-Baselines/r2d2/extract.py --model VSLAM-Baselines/r2d2/models/r2d2_WASF_N16.pt --sequence_path /media/fontan/data/VSLAM-LAB-Benchmark/ETH/table_3 --top-k 2"
+check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
+
+[feature.r2d2.dependencies]
+python = "*"
+tqdm = "*"
+pillow = "*"
+numpy = "*"
+matplotlib = "*"
+scipy = "*"
+pytorch-gpu = "*"
+torchvision="*"
