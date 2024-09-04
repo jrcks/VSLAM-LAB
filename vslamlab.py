@@ -32,7 +32,7 @@ from utilities import check_yaml_file_integrity
 from utilities import list_datasets
 from utilities import ws
 
-SCRIPT_LABEL = f"[{os.path.basename(__file__)}] "
+SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 
 def main():
@@ -67,8 +67,8 @@ def main():
         shutil.copytree(os.path.join(VSLAM_LAB_DIR, "docs", "exp_demo_orbslam2"),
                         os.path.join(VSLAMLAB_EVALUATION, "exp_demo_orbslam2"))
 
-    print(f"\n[vslamlab] Created folder to store data: {VSLAMLAB_BENCHMARK}")
-    print(f"[vslamlab] Created folder to store evaluation: {VSLAMLAB_EVALUATION}")
+    print(f"\n{SCRIPT_LABEL}Created folder to store data: {VSLAMLAB_BENCHMARK}")
+    print(f"{SCRIPT_LABEL}Created folder to store evaluation: {VSLAMLAB_EVALUATION}")
 
     # Info commands
     if args.list_datasets:
@@ -153,7 +153,7 @@ def load_experiments(exp_yaml):
                 experiments[exp_name].parameters.append(
                     check_parameter_for_relative_path(settings['Parameters'][parameter_name]))
 
-    print(f"\n[vslamlab] Experiment summary: {os.path.basename(exp_yaml)}")
+    print(f"\n{SCRIPT_LABEL}Experiment summary: {os.path.basename(exp_yaml)}")
     print(f"{ws(4)} Number of experiments: {len(experiments)}")
     #print(f"{ws(4)} Estimated data size: - ")
     #run_time = estimate_experiments_time(experiments)
@@ -167,8 +167,8 @@ def load_experiments(exp_yaml):
 
 def compare(experiments, exp_yaml):
     comparison_path = os.path.join(VSLAMLAB_EVALUATION, f"comp_{str(os.path.basename(exp_yaml)).replace('.yaml', '')}")
-    print(f"\n[vslamlab] Create folder to save comparison: {comparison_path}")
-    print(f"\n[vslamlab] Comparing (in {comparison_path}) ...")
+    print(f"\n{SCRIPT_LABEL}Create folder to save comparison: {comparison_path}")
+    print(f"\n{SCRIPT_LABEL}Comparing (in {comparison_path}) ...")
     if os.path.exists(comparison_path):
         shutil.rmtree(comparison_path)
     os.makedirs(comparison_path)
@@ -177,7 +177,7 @@ def compare(experiments, exp_yaml):
 
 
 def evaluate(experiments):
-    print(f"\n[vslamlab] Evaluating (in {VSLAMLAB_EVALUATION}) ...")
+    print(f"\n{SCRIPT_LABEL}Evaluating (in {VSLAMLAB_EVALUATION}) ...")
     for [_, exp] in experiments.items():
         with open(exp.config_yaml, 'r') as file:
             config_file_data = yaml.safe_load(file)
@@ -188,7 +188,7 @@ def evaluate(experiments):
 
 
 def run(experiments, ablation=False):
-    print(f"\n[vslamlab] Running ...")
+    print(f"\n{SCRIPT_LABEL}Running ...")
     start_time = time.time()
     for [exp_name, exp] in experiments.items():
         with open(exp.config_yaml, 'r') as file:
@@ -204,7 +204,7 @@ def run(experiments, ablation=False):
                             num_system_output_files = len(glob.glob(search_pattern))
                         if num_system_output_files < exp.num_runs:
                             print(
-                                f"{ws(4)}Running (it: {num_system_output_files + 1}/{exp.num_runs}) '{exp.vslam}' "
+                                f"{ws(4)}Running (it: {num_system_output_files + 1}/{exp.num_runs}) '{exp.module}' "
                                 f"in: '{sequence_name}'...")
                             dataset.run_sequence(exp, sequence_name, ablation)
 
@@ -214,16 +214,16 @@ def run(experiments, ablation=False):
 
     run_time = (end_time - start_time) / 60.0
     if run_time > 60.0:
-        print(f"\n[vslamlab] Experiment runtime: {run_time / 60.0} (h)")
+        print(f"\n{SCRIPT_LABEL}Experiment runtime: {run_time / 60.0} (h)")
     else:
-        print(f"\n[vslamlab] Experiment runtime: {run_time} (min)")
+        print(f"\n{SCRIPT_LABEL}Experiment runtime: {run_time} (min)")
 
 
 def download(config_files):
     download_issues = find_download_issues(config_files)
     solve_download_issues(download_issues)
 
-    print(f"\n[vslamlab] Downloading (to {VSLAMLAB_BENCHMARK}) ...")
+    print(f"\n{SCRIPT_LABEL}Downloading (to {VSLAMLAB_BENCHMARK}) ...")
 
     for config_file in config_files:
         with open(config_file, 'r') as file:

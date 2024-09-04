@@ -58,6 +58,7 @@ evo = "evo"
 evo_traj = "evo_traj"
 evo_ape = "evo_ape"
 evo_res = "evo_res"
+evo_config =  "evo_config set save_traj_in_zip true"
 
 # AnyFeature-VSLAM
 [feature.anyfeature]
