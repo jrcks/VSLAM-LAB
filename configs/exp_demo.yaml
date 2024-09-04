@@ -2,25 +2,25 @@ exp_demo_dso:
   Config: config_demo.yaml
   NumRuns: 81
   Parameters: {Preset: preset:0, Mode: mode:1}
-  VSLAM: dso
+  Module: dso
 
 exp_demo_orbslam2:
   Config: config_demo.yaml
   NumRuns: 81
   Parameters: {Visualization: Vis:1, Vocabulary_folder: Voc:VSLAM-LAB/VSLAM-Baselines/ORB_SLAM2/Vocabulary}
-  VSLAM: orbslam2
+  Module: orbslam2
 
 #exp_demo_anyfeature:
 #  Config: config_demo.yaml
 #  NumRuns: 0
 #  Parameters: {Visualization: Vis:1, Feature: Feat:brisk48, AnyFeature Path: anyfeat:VSLAM-LAB/VSLAM-Baselines/AnyFeature-VSLAM}
-#  VSLAM: anyfeature     
+#  Module: anyfeature
 
 #exp_demo_colmap:
 #  Config: config_demo.yaml
 #  NumRuns: 1
 #  Parameters: {Verbose: verbose:1, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50}
-#  VSLAM: colmap
+#  Module: colmap
 #
 
 #exp_demo_glomap:
@@ -28,10 +28,10 @@ exp_demo_orbslam2:
 #  NumRuns: 1
 #  Parameters: {Verbose: verbose:1, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
 #               settings_yaml: settings_yaml:VSLAM-Baselines/glomap/glomap_settings.yaml }
-#  VSLAM: glomap
+#  Module: glomap
 
 #exp_demo_dust3r:
 #  Config: config_demo.yaml
 #  NumRuns: 1
 #  Parameters: {} # {Verbose: -v}
-#  VSLAM: dust3r
+#  Module: dust3r

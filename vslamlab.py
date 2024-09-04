@@ -146,7 +146,7 @@ def load_experiments(exp_yaml):
         config_files[experiments[exp_name].config_yaml] = False
         experiments[exp_name].folder = os.path.join(VSLAMLAB_EVALUATION, exp_name)
         experiments[exp_name].num_runs = settings.get('NumRuns', 1)
-        experiments[exp_name].vslam = settings.get('VSLAM', "default")
+        experiments[exp_name].module = settings.get('Module', "default")
 
         if settings['Parameters']:
             for parameter_name in settings['Parameters']:

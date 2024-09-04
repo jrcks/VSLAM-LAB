@@ -26,7 +26,7 @@ class Experiment:
         self.folder = ""
         self.num_runs = 1
         self.parameters = []
-        self.vslam = ""
+        self.module = ""
 
 
 def list_datasets():

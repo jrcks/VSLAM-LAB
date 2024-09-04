@@ -187,7 +187,7 @@ class DatasetVSLAMLab:
 
         command_str = ' '.join(exec_command)
 
-        full_command = f"pixi run -e {exp.vslam} execute " + command_str
+        full_command = f"pixi run -e {exp.module} execute " + command_str
 
         if ablation:
             self.prepare_ablation(sequence_name, exp, it)
