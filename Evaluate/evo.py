@@ -28,6 +28,7 @@ def evo_ape_zip(groundtruth_file, trajectory_file, evaluation_folder, max_time_d
 
     df = pd.read_csv(destination_file_path, delimiter=' ', header=None)
     df.columns = ['ts', 'tx', 'ty', 'tz', 'qx', 'qy', 'qz', 'qw']
+    df = df.sort_values(by='ts')
     df.to_csv(destination_file_path, index=False)
 
     gt_file = os.path.join(evaluation_folder, 'gt.tum')
@@ -45,6 +46,7 @@ def evo_ape_zip(groundtruth_file, trajectory_file, evaluation_folder, max_time_d
 
     df = pd.read_csv(gt_file, delimiter=' ', header=None)
     df.columns = ['ts', 'tx gt', 'ty gt', 'tz gt', 'qx gt', 'qy gt', 'qz gt', 'qw gt']
+    df = df.sort_values(by='ts')
     df.to_csv(gt_file, index=False)
 
 def evo_get_accuracy(evaluation_folder):
@@ -70,10 +72,16 @@ def evo_get_accuracy(evaluation_folder):
             df.loc[df['traj_name'] == traj_name, 'Number of Evaluation Points'] = num_evaluation_points
 
     # Use EllipticEnvelope to fit the data
-    outlier_detector = EllipticEnvelope(contamination=0.10)  # 5% contamination is typical
-    outliers = outlier_detector.fit_predict(data_reshaped)
-    outlier_indices = np.where(outliers == -1)[0]
-    cleaned_df = df.drop(index=outlier_indices)
+    num_traj_files = len(keyframe_traj_files)
+    if num_traj_files > 1:
+        outlier_detector = EllipticEnvelope(contamination=0.10)  # 5% contamination is typical
+        outliers = outlier_detector.fit_predict(data_reshaped)
+        outlier_indices = np.where(outliers == -1)[0]
+        cleaned_df = df.drop(index=outlier_indices)
+    else:
+        outlier_indices = []
+        cleaned_df = df
+
     accuracy = os.path.join(evaluation_folder, 'accuracy.csv')
     if os.path.exists(accuracy):
         os.remove(accuracy)
