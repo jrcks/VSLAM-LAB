@@ -42,6 +42,7 @@ colmap = ["colmap"]
 glomap = ["glomap"]
 evo = ["evo"]
 r2d2 = ["r2d2"]
+#monogs = ["monogs"]
 
 # EVO
 [feature.evo.dependencies]
@@ -380,3 +381,47 @@ matplotlib = "*"
 scipy = "*"
 pytorch-gpu = "*"
 torchvision="*"
+
+# MonoGS
+#[feature.monogs]
+#channels = ["https://fast.prefix.dev/conda-forge", "nvidia", "pytorch", 'pypi']
+#platforms = ["linux-64"]
+#
+#[feature.monogs.system-requirements]
+#cuda = "12.4"
+
+#[feature.monogs.tasks]
+#git-clone = "git-clone.sh muskie82 MonoGS VSLAM-Baselines"
+#git-clone-ssh = "pixi run -e MonoGS git-clone --ssh"
+#
+#build = 'pip install VSLAM-Baselines/MonoGS/submodules/simple-knn VSLAM-Baselines/MonoGS/submodules/diff-gaussian-rasterization'
+#
+#execute = "python VSLAM-Baselines/MonoGS/slam.py --config VSLAM-Baselines/MonoGS/configs/mono/tum/fr3_office.yaml"
+#check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
+#
+#[feature.monogs.dependencies]
+#
+#python = {version="3.8.19", build="hd12c33a_0_cpython", channel="https://fast.prefix.dev/conda-forge"}
+#pytorch = {version="2.4.0", build="py3.8_cuda12.4_cudnn9.1.0_0", channel="pytorch"}
+#pytorch-cuda = {version="12.4", build="hc786d27_6", channel="pytorch"}
+#torchvision = {version="0.19.0", build="py38_cu124", channel="pytorch"}
+#torchaudio = {version="2.4.0", build="py38_cu124", channel="pytorch"}
+#plyfile = {version="0.8.1", build="pyhd8ed1ab_0", channel="https://fast.prefix.dev/conda-forge"}
+#pip = "*"
+#cuda = "12.4"
+#
+#[feature.monogs.pypi-dependencies]
+#opencv-python="==4.8.1.78"
+#munch="*"
+#trimesh="*"
+#evo="==1.11.0"
+#wandb="*"
+#open3d="==0.17.0"
+#torchmetrics="*"
+#imgviz="*"
+#PyOpenGL="*"
+#glfw="*"
+#PyGLM="*"
+#lpips="*"
+#rich="*"
+#ruff="*"
