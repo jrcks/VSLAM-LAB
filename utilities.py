@@ -19,6 +19,7 @@ CONFIG_DEFAULT = 'config_demo.yaml'
 VSLAM_LAB_EVALUATION_FOLDER = 'vslamlab_evaluation'
 VSLAM_LAB_BASELINES_DIR = os.path.join(VSLAM_LAB_DIR, 'VSLAM-Baselines')
 
+RGB_BASE_FOLDER = 'rgb'
 
 class Experiment:
     def __init__(self):
