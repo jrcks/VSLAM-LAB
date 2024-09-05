@@ -5,7 +5,10 @@ import numpy as np
 import yaml
 
 from utilities import VSLAM_LAB_BASELINES_DIR
+from utilities import RGB_BASE_FOLDER
+from snippets.downsample_rgb_frames import downsample_rgb_frames
 
+SCRIPT_LABEL = f"\033[35m[{os.path.basename(__file__)}]\033[0m "
 
 def modify_yaml_parameter(yaml_file, section_name, parameter_name, new_value):
 
@@ -45,40 +48,37 @@ def glomap_parameter_ablation_finish():
     shutil.copy(glomap_settings_saved_yaml, glomap_settings_yaml)
     os.remove(glomap_settings_saved_yaml)
 
-def add_noise_to_images_start(sequence_path, it):
+def add_noise_to_images_start(sequence_path, it, exp, fps):
+    max_rgb = 50
+    min_fps = fps
+    for parameter in exp.parameters:
+        if 'max_rgb' in parameter:
+            max_rgb = float(parameter.replace('max_rgb:', ''))
+        if 'min_fps' in parameter:
+            min_fps = float(parameter.replace('min_fps:', ''))
 
-    # Save rgb folder
-    rgb_path = os.path.join(sequence_path, 'rgb')
-    rgb_path_saved = os.path.join(sequence_path, 'rgb_saved')
+    # Rename the rgb folder to rgb_saved and create a new rgb folder
+    rgb_path = os.path.join(sequence_path, RGB_BASE_FOLDER)
+    rgb_path_saved = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}_saved")
     if not os.path.exists(rgb_path_saved):
         os.rename(rgb_path, rgb_path_saved)
-    os.makedirs(os.path.join(sequence_path, 'rgb'), exist_ok=True)
+    os.makedirs(os.path.join(sequence_path, RGB_BASE_FOLDER), exist_ok=True)
 
     # update rgb.txt
-    rgb_txt = os.path.join(sequence_path, 'rgb.txt')
-    rgb_txt_saved = os.path.join(sequence_path, 'rgb_saved.txt')
-    with open(rgb_txt, 'r') as file:
-        content = file.read()
-    modified_content = content.replace('rgb', 'rgb_saved')
-    with open(rgb_txt_saved, 'w') as file:
-        file.write(modified_content)
+    rgb_txt = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}.txt")
+    rgb_txt_ds = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}_ds.txt")
 
-    # update rgb folder
-    rgb_files_saved = []
-    with open(rgb_txt_saved, 'r') as file:
-        for line in file:
-            timestamp, path = line.strip().split(' ')
-            rgb_files_saved.append(path)
+    downsampled_paths, downsampled_timestamps = downsample_rgb_frames(rgb_txt, max_rgb, min_fps, True)
 
-    rgb_files = []
-    with open(rgb_txt, 'r') as file:
-        for line in file:
-            timestamp, path = line.strip().split(' ')
-            rgb_files.append(path)
+    with open(rgb_txt_ds, 'w') as file:
+        for timestamp, path in zip(downsampled_timestamps, downsampled_paths):
+            file.write(f"{timestamp} {path}\n")
 
+    # Noise policy
     std_noise = it * 1.0
-    print(it)
-    print(std_noise)
+    print(f"{SCRIPT_LABEL} Noise policy: std_noise = 50 + it * 1.0")
+    print(f"    it = {it}")
+    print(f"    std_noise = {std_noise}")
 
     def add_gaussian_noise(image_, mean=0, std_dev=25):
         noise = np.random.normal(mean, std_dev, image_.shape).astype(np.float32)
@@ -86,17 +86,18 @@ def add_noise_to_images_start(sequence_path, it):
         noisy_image_ = np.clip(noisy_image_, 0, 255).astype(np.uint8)
         return noisy_image_
 
-    for i, rgb_file_saved in enumerate(rgb_files_saved):
-        rgb_file = rgb_files[i]
-        image = cv2.imread(os.path.join(sequence_path, rgb_file_saved))
-        noisy_image = add_gaussian_noise(image, mean=0, std_dev= std_noise)
+    for i, downsampled_path in enumerate(downsampled_paths):
+        rgb_file = os.path.join(sequence_path, downsampled_path)
+        rgb_file_saved = rgb_file.replace(f"/{RGB_BASE_FOLDER}/", f"/{RGB_BASE_FOLDER}_saved/")
+        image = cv2.imread(rgb_file_saved)
+        noisy_image = add_gaussian_noise(image, mean=0, std_dev=std_noise)
         cv2.imwrite(os.path.join(sequence_path, rgb_file), noisy_image)
 
 def add_noise_to_images_finish(sequence_path):
 
-    # Remove rgb_saved.txt
-    rgb_txt_saved = os.path.join(sequence_path, 'rgb_saved.txt')
-    os.remove(rgb_txt_saved)
+    # Remove rgb_ds.txt
+    rgb_txt_ds = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}_ds.txt")
+    os.remove(rgb_txt_ds)
 
     # Restore rgb folder
     rgb_path = os.path.join(sequence_path, 'rgb')

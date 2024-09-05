@@ -17,8 +17,8 @@ def downsample_rgb(timestamps, rgb_paths, step, max_count):
 
     # Ensure the number of selected images does not exceed the maximum allowed
     if len(selected_rgb_paths) > max_count:
-        selected_rgb_paths = selected_rgb_paths[:max_count]
-        selected_timestamps = selected_timestamps[:max_count]
+        selected_rgb_paths = selected_rgb_paths[:int(max_count)]
+        selected_timestamps = selected_timestamps[:int(max_count)]
 
     return selected_rgb_paths, selected_timestamps
 
@@ -51,6 +51,9 @@ def downsample_rgb_frames(rgb_txt, max_rgb_count, min_fps, verbose=False):
             print(f"  Adjusted FPS to: {1.0 / max_interval:.2f} Hz")
 
     step_size = max_interval * actual_fps
+    if step_size < 1:
+        step_size = 1
+
     if verbose:
         print(f"  Step size: {step_size:.2f}")
 

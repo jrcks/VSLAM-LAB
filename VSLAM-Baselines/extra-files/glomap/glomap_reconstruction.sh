@@ -42,8 +42,14 @@ rm -rf "$exp_folder_colmap"
 mkdir "$exp_folder_colmap"
 
 # Downsample RGB frames
+rgb_ds_txt_0="${sequence_path}/rgb_ds.txt"
 rgb_ds_txt="${exp_folder_colmap}/rgb_ds.txt"
-python snippets/downsample_rgb_frames.py $sequence_path --rgb_ds_txt "${rgb_ds_txt}" --min_fps ${min_fps} -v --max_rgb ${max_rgb}
+
+if [ ! -f "${rgb_ds_txt_0}" ]; then
+  python snippets/downsample_rgb_frames.py "${sequence_path}" --rgb_ds_txt "${rgb_ds_txt}" --min_fps "${min_fps}" -v --max_rgb "${max_rgb}"
+else
+  cp "${rgb_ds_txt_0}" "${rgb_ds_txt}"
+fi
 
 # Run COLMAP scripts for matching and mapping
 pixi run -e colmap ./VSLAM-Baselines/glomap/glomap_matcher.sh $sequence_path $exp_folder $exp_id $matcher_type $use_gpu ${settings_yaml}
