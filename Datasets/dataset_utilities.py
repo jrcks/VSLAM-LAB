@@ -10,6 +10,7 @@ from Datasets.dataset_rgbdtum import RGBDTUM_dataset
 from Datasets.dataset_tartanair import TARTANAIR_dataset
 from Datasets.dataset_drunkards import DRUNKARDS_dataset
 from Datasets.dataset_replica import REPLICA_dataset
+from Datasets.dataset_hamlyn import HAMLYN_dataset
 
 SCRIPT_LABEL = "[dataset_utilities.py] "
 
@@ -18,6 +19,7 @@ def get_dataset(dataset_name, benchmark_path):
     dataset_name = dataset_name.lower()
     switcher = {
         # ADD your datasets here
+        "hamlyn": lambda: HAMLYN_dataset(benchmark_path),
         "replica": lambda: REPLICA_dataset(benchmark_path),
         "drunkards": lambda: DRUNKARDS_dataset(benchmark_path),
         "ariel": lambda: ARIEL_dataset(benchmark_path),
