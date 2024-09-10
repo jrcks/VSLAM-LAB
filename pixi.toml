@@ -403,7 +403,6 @@ git-clone-ssh = "pixi run -e MonoGS git-clone --ssh"
 build = {cmd = "pip install VSLAM-Baselines/MonoGS/submodules/simple-knn VSLAM-Baselines/MonoGS/submodules/diff-gaussian-rasterization", depends-on = ["git-clone"]}
 build-ssh = {cmd = "pip install VSLAM-Baselines/MonoGS/submodules/simple-knn VSLAM-Baselines/MonoGS/submodules/diff-gaussian-rasterization", depends-on = ["git-clone-ssh"]}
 
-#execute = "python VSLAM-Baselines/MonoGS/slam.py --config VSLAM-Baselines/MonoGS/configs/mono/tum/fr3_office.yaml"
 execute = 'python VSLAM-Baselines/MonoGS/slam.py'
 check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
 
