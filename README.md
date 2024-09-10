@@ -150,8 +150,9 @@ We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6
 | [**DSO**](https://github.com/alejandrofontan/dso)                           |   VO   |       mono       |       [GPLv3](https://github.com/JakobEngel/dso/blob/master/LICENSE)        |    `dso`     |
 | [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2)               | VSLAM  | mono/RGBD/Stereo |    [GPLv3](https://github.com/raulmur/ORB_SLAM2/blob/master/LICENSE.txt)    |  `orbslam2`  | 
 | [**COLMAP**](https://colmap.github.io/)                                     |  SfM   |       mono       |                [BSD](https://colmap.github.io/license.html)                 |   `colmap`   | 
-| [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)                       |  SfM   |       mono       |               [BSD-3](https://github.com/colmap/glomap/blob/main/LICENSE)                |   `glomap`   |
+| [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)                       |  SfM   |       mono       |         [BSD-3](https://github.com/colmap/glomap/blob/main/LICENSE)         |   `glomap`   |
 | [**DUST3R**](https://dust3r.europe.naverlabs.com)                           |  SfM   |       mono       |    [CC BY-NC-SA 4.0](https://github.com/naver/dust3r/blob/main/LICENSE)     |   `dust3r`   | 
+| [**MonoGS**](https://github.com/muskie82/MonoGS)                           | VSLAM  |       mono/RGBD/Stereo       |        [License](https://github.com/muskie82/MonoGS?tab=License-1-ov-file)         |   `monogs`   | 
 
 
 | Datasets                                                                                                                        |   Data    |    Mode    |    Label    |
