@@ -229,7 +229,7 @@ class DatasetVSLAMLab:
         trajectory_files = find_files_with_string(trajectories_path, "_KeyFrameTrajectory.txt")
         print(f"{ws(4)}Evaluation of '{os.path.basename(experiment_folder)}"
               f"' in '{sequence_name}': {len(trajectory_files)} trajectories")
-
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         for trajectory_file in tqdm(trajectory_files):
             self.evaluate_trajectory_accuracy(groundtruth_file, trajectory_file, evaluation_folder)
 

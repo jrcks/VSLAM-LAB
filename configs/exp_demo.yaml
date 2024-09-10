@@ -35,3 +35,9 @@ exp_demo_orbslam2:
 #  NumRuns: 1
 #  Parameters: {} # {Verbose: -v}
 #  Module: dust3r
+
+#exp_demo_monogs:
+#  Config: config_demo.yaml
+#  NumRuns: 1
+#  Parameters: {config: config:VSLAM-Baselines/MonoGS/configs/mono/vslamlab/vslamlab.yaml, verbose: verbose:1} # {Verbose: -v}
+#  Module: monogs
