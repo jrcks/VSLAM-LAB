@@ -1,0 +1,7 @@
+dataset_name: lizardisland
+
+rgb_hz: 10.0
+url_download_root: ""
+
+sequence_names:
+  - 100GOPRO
