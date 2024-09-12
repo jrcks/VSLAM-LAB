@@ -37,8 +37,9 @@ def glomap_parameter_ablation_start(it):
     else:
         shutil.copy(glomap_settings_yaml, glomap_settings_saved_yaml)
 
-    value = 0.1 + it * 5
-    modify_yaml_parameter(glomap_settings_yaml, 'BundleAdjustment', 'thres_loss_function', value)
+    value = 10 ** ((it/20) - 5)
+    print(f"ablation value = {value}")
+    modify_yaml_parameter(glomap_settings_yaml, 'Thresholds', 'max_reprojection_error', value)
 
 def glomap_parameter_ablation_finish():
     glomap_dir = os.path.join(VSLAM_LAB_BASELINES_DIR, 'glomap')

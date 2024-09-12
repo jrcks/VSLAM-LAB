@@ -300,6 +300,7 @@ libcurand-dev="*"
 cuda-nvcc="*"
 yq="*"
 numpy="*"
+scipy="*"
 
 # GLOMAP
 [feature.glomap]

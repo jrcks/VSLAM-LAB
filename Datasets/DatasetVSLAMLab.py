@@ -206,14 +206,14 @@ class DatasetVSLAMLab:
     def prepare_ablation(self, sequence_name, exp, it):
         print(f"{ws(8)}Sequence '{sequence_name}' preparing ablation ...")
         sequence_path = os.path.join(self.dataset_path, sequence_name)
-        ablations.add_noise_to_images_start(sequence_path, it, exp, self.rgb_hz)
-        #ablations.glomap_parameter_ablation_start(it)
+        #ablations.add_noise_to_images_start(sequence_path, it, exp, self.rgb_hz)
+        ablations.glomap_parameter_ablation_start(it)
 
     def finish_ablation(self, sequence_name):
         print(f"{ws(8)}Sequence '{sequence_name}' finishing ablation ...")
         sequence_path = os.path.join(self.dataset_path, sequence_name)
-        ablations.add_noise_to_images_finish(sequence_path)
-        #ablations.glomap_parameter_ablation_finish()
+        #ablations.add_noise_to_images_finish(sequence_path)
+        ablations.glomap_parameter_ablation_finish()
 
     ####################################################################################################################
     # Evaluation methods

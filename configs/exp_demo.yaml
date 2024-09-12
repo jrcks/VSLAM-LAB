@@ -6,7 +6,7 @@ exp_demo_dso:
 
 exp_demo_orbslam2:
   Config: config_demo.yaml
-  NumRuns: 81
+  NumRuns: 1
   Parameters: {Visualization: Vis:1, Vocabulary_folder: Voc:VSLAM-LAB/VSLAM-Baselines/ORB_SLAM2/Vocabulary}
   Module: orbslam2
 
@@ -25,8 +25,8 @@ exp_demo_orbslam2:
 
 #exp_demo_glomap:
 #  Config: config_demo.yaml
-#  NumRuns: 1
-#  Parameters: {Verbose: verbose:1, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
 #               settings_yaml: settings_yaml:VSLAM-Baselines/glomap/glomap_settings.yaml }
 #  Module: glomap
 
@@ -39,5 +39,5 @@ exp_demo_orbslam2:
 #exp_demo_monogs:
 #  Config: config_demo.yaml
 #  NumRuns: 1
-#  Parameters: {config: config:VSLAM-Baselines/MonoGS/configs/mono/vslamlab/vslamlab.yaml, verbose: verbose:1} # {Verbose: -v}
+#  Parameters: {config: config:VSLAM-Baselines/MonoGS/configs/mono/vslamlab/vslamlab.yaml, verbose: verbose:1}
 #  Module: monogs
