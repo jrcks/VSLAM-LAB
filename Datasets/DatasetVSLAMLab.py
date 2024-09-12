@@ -190,10 +190,10 @@ class DatasetVSLAMLab:
         full_command = f"pixi run -e {exp.module} execute " + command_str
 
         if ablation:
-            self.prepare_ablation(sequence_name, exp, it)
+            settings_yaml = self.prepare_ablation(sequence_name, exp, it)
         self.run_executable(full_command, log_file_path)
         if ablation:
-            self.finish_ablation(sequence_name)
+            self.finish_ablation(sequence_name, settings_yaml)
 
     def run_executable(self, command, log_file_path):
         with open(log_file_path, 'w') as log_file:
@@ -205,15 +205,23 @@ class DatasetVSLAMLab:
     # Ablation methods
     def prepare_ablation(self, sequence_name, exp, it):
         print(f"{ws(8)}Sequence '{sequence_name}' preparing ablation ...")
-        sequence_path = os.path.join(self.dataset_path, sequence_name)
-        #ablations.add_noise_to_images_start(sequence_path, it, exp, self.rgb_hz)
-        ablations.glomap_parameter_ablation_start(it)
+        for parameter in exp.parameters:
+            if 'settings_yaml' in parameter:
+                settings_yaml = parameter.replace('settings_yaml:', '')
+            if 'ablation_param' in parameter:
+                ablation_param = parameter.replace('ablation_param:', '')
 
-    def finish_ablation(self, sequence_name):
+        #sequence_path = os.path.join(self.dataset_path, sequence_name)
+        #ablations.add_noise_to_images_start(sequence_path, it, exp, self.rgb_hz)
+        ablations.parameter_ablation_start(it, ablation_param, settings_yaml)
+
+        return settings_yaml
+
+    def finish_ablation(self, sequence_name, settings_yaml):
         print(f"{ws(8)}Sequence '{sequence_name}' finishing ablation ...")
-        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        #sequence_path = os.path.join(self.dataset_path, sequence_name)
         #ablations.add_noise_to_images_finish(sequence_path)
-        ablations.glomap_parameter_ablation_finish()
+        ablations.parameter_ablation_finish(settings_yaml)
 
     ####################################################################################################################
     # Evaluation methods
