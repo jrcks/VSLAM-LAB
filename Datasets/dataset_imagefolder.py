@@ -81,7 +81,7 @@ class IMAGEFOLDER_dataset(DatasetVSLAMLab):
         fx, fy, cx, cy = 0.0, 0.0, 0.0, 0.0
         k1, k2, p1, p2, k3 = 0.0, 0.0, 0.0, 0.0, 0.0
 
-        self.write_calibration_yaml(fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name, camera_model)
+        self.write_calibration_yaml(camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name)
 
         # Run glomap to compute calibration parameters
         sequence_path = os.path.join(self.dataset_path, sequence_name)
@@ -119,7 +119,7 @@ class IMAGEFOLDER_dataset(DatasetVSLAMLab):
         
         k1, k2, p1, p2, k3 = 0.0, 0.0, 0.0, 0.0, 0.0
 
-        self.write_calibration_yaml(fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name, camera_model)
+        self.write_calibration_yaml(camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name)
 
     def create_groundtruth_txt(self, sequence_name):
         return
