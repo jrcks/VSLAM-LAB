@@ -302,9 +302,6 @@ python="*"
 yq="*"
 numpy="*"
 scipy="*"
-python="*"
-pyyaml="*"
-matplotlib="*"
 pyyaml="*"
 matplotlib="*"
 
@@ -324,12 +321,12 @@ git-clone = "git-clone.sh alejandrofontan glomap VSLAM-Baselines"
 git-clone-ssh = "pixi run -e glomap git-clone --ssh"
 
 setup = "python VSLAM-Baselines/glomap/glomap_setup.py"
-build = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap", "build-colmap"]}
+build = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"]}
 
 build-ssh = {cmd = "pixi run -e colmap  ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone-ssh", "setup", "build-colmap"]}
 build-colmap =  "pixi run -e colmap build -v"
 
-execute = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/glomap_reconstruction.sh", depends-on = ["build"]} 
+execute = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/glomap_reconstruction.sh", depends-on = ["build"]}
 
 # ROS
 [feature.ros-env]
