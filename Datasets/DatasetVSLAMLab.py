@@ -117,7 +117,7 @@ class DatasetVSLAMLab:
     def solve_download_issue(self, download_issue):
         return
 
-    def write_calibration_yaml(self, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name):
+    def write_calibration_yaml(self, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name, camera_model="OPENCV"):
 
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         calibration_yaml = os.path.join(sequence_path, 'calibration.yaml')
@@ -131,6 +131,7 @@ class DatasetVSLAMLab:
             "%YAML:1.0",
             "",
             "# Camera calibration and distortion parameters (OpenCV)",
+            "Camera.model: " + camera_model,
             "Camera.fx: " + str(fx),
             "Camera.fy: " + str(fy),
             "Camera.cx: " + str(cx),
