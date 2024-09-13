@@ -88,21 +88,14 @@ class IMAGEFOLDER_dataset(DatasetVSLAMLab):
         output_path = sequence_path
         log_file_path = os.path.join(sequence_path, 'calibration_log_file.txt')
         it = 0
-
-        glomap_path = os.path.join(VSLAM_LAB_BASELINES_DIR, 'glomap')
-        glomap_build_log_file = os.path.join(sequence_path, 'glomap_build_log_file.txt')
-        
-        if not os.path.exists(glomap_path):
-            print('     Building glomap to use for estimating calibration...')
-            print(f'         log file: {glomap_build_log_file}')
-            glomap_build_command = "pixi run -e glomap build"
-
-            with open(glomap_build_log_file, 'w') as log_file:
-                    subprocess.run(glomap_build_command, stdout=log_file, stderr=log_file, shell=True)
         
         exec_command = [f"sequence_path:{sequence_path}", f"exp_folder:{output_path}", f"exp_id:{it}", "verbose:0"]
         command_str = ' '.join(exec_command)
 
+        ## NB: for this command to work correctly, it relies on building colmap as well
+        ##     the lines in pixi.toml should exist:
+        # 324: build = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"]}
+        # 329: execute = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/glomap_reconstruction.sh", depends-on = ["build"]}
         full_command = f"pixi run -e glomap execute " + command_str
 
         print('     Estimating calibration using glomap...')
