@@ -242,7 +242,7 @@ setup = "python VSLAM-Baselines/extra-files/colmap/colmap_setup.py"
 build = {cmd = "./VSLAM-Baselines/colmap/build.sh", depends-on = ["git-clone", "setup"]}
 build-ssh = {cmd = "./VSLAM-Baselines/colmap/build.sh", depends-on = ["git-clone-ssh", "setup"]}
 
-execute = "./VSLAM-Baselines/colmap/colmap_reconstruction.sh"
+execute = {cmd = "./VSLAM-Baselines/colmap/colmap_reconstruction.sh", depends-on = ["build"]} 
 colmap = "./VSLAM-Baselines/colmap/bin/colmap"
 glomap = "./VSLAM-Baselines/glomap/bin/glomap"
 
@@ -301,6 +301,9 @@ cuda-nvcc="*"
 yq="*"
 numpy="*"
 scipy="*"
+python="*"
+pyyaml="*"
+matplotlib="*"
 
 # GLOMAP
 [feature.glomap]
@@ -318,12 +321,12 @@ git-clone = "git-clone.sh alejandrofontan glomap VSLAM-Baselines"
 git-clone-ssh = "pixi run -e glomap git-clone --ssh"
 
 setup = "python VSLAM-Baselines/glomap/glomap_setup.py"
-build = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone", "setup"]}
+build = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"]}
 
 build-ssh = {cmd = "pixi run -e colmap  ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone-ssh", "setup", "build-colmap"]}
 build-colmap =  "pixi run -e colmap build -v"
 
-execute = "pixi run -e colmap ./VSLAM-Baselines/glomap/glomap_reconstruction.sh"
+execute = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/glomap_reconstruction.sh", depends-on = ["build"]} 
 
 # ROS
 [feature.ros-env]
