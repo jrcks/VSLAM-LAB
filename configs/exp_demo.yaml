@@ -6,7 +6,7 @@ exp_demo_dso:
 
 exp_demo_orbslam2:
   Config: config_demo.yaml
-  NumRuns: 1
+  NumRuns: 81
   Parameters: {Visualization: Vis:1, Vocabulary_folder: Voc:VSLAM-LAB/VSLAM-Baselines/ORB_SLAM2/Vocabulary}
   Module: orbslam2
 
@@ -25,7 +25,7 @@ exp_demo_orbslam2:
 
 #exp_demo_glomap:
 #  Config: config_demo.yaml
-#  NumRuns: 10
+#  NumRuns: 1
 #  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
 #               settings_yaml: settings_yaml:VSLAM-Baselines/glomap/glomap_settings.yaml,
 #               ablation_param: ablation_param:Thresholds.max_reprojection_error}
