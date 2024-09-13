@@ -4,7 +4,7 @@ import shutil
 import numpy as np
 import yaml
 
-from utilities import VSLAM_LAB_BASELINES_DIR
+from utilities import VSLAMLAB_BASELINES
 from utilities import RGB_BASE_FOLDER
 from snippets.downsample_rgb_frames import downsample_rgb_frames
 
