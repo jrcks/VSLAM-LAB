@@ -298,9 +298,12 @@ lz4-c="*"
 metis="*"
 libcurand-dev="*"
 cuda-nvcc="*"
+python="*"
 yq="*"
 numpy="*"
 scipy="*"
+pyyaml="*"
+matplotlib="*"
 
 # GLOMAP
 [feature.glomap]
@@ -318,7 +321,7 @@ git-clone = "git-clone.sh alejandrofontan glomap VSLAM-Baselines"
 git-clone-ssh = "pixi run -e glomap git-clone --ssh"
 
 setup = "python VSLAM-Baselines/glomap/glomap_setup.py"
-build = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone", "setup"]}
+build = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"]}
 
 build-ssh = {cmd = "pixi run -e colmap  ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone-ssh", "setup", "build-colmap"]}
 build-colmap =  "pixi run -e colmap build -v"
