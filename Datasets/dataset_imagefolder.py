@@ -92,9 +92,8 @@ class IMAGEFOLDER_dataset(DatasetVSLAMLab):
         exec_command = [f"sequence_path:{sequence_path}", f"exp_folder:{output_path}", f"exp_id:{it}", "verbose:0"]
         command_str = ' '.join(exec_command)
 
-        ## NB: for this command to work correctly, it relies on building colmap as well
-        ##     the lines in pixi.toml should exist:
-        # 324: build = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"]}
+        ## NB: for this command to work correctly, it relies on building colmap and glomap
+        ##     the line in pixi.toml should exist:
         # 329: execute = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/glomap_reconstruction.sh", depends-on = ["build"]}
         full_command = f"pixi run -e glomap execute " + command_str
 
