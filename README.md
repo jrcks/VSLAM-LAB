@@ -1,7 +1,7 @@
 <p align="center">
 
   <h1 align="center"> VSLAM-LAB 
-  <h3 align="center"> A Comprehensive Framework for Visual SLAM Systems and Datasets</h3> 
+  <h3 align="center"> A Comprehensive Framework for Visual SLAM Baselines and Datasets</h3> 
   </h1>
   <p align="center">
     <a href="https://scholar.google.com/citations?user=SDtnGogAAAAJ&hl=en"><strong>Alejandro Fontan</strong></a>
@@ -52,8 +52,15 @@ pixi run demo glomap eth table_3
 pixi run set-benchmark-path /media/${USER}/data
 pixi run set-evaluation-path /media/${USER}/data
 ```
-## Configure your experiments
-Experiments in **VSLAM-LAB** are defined as a sequence of entries in a YAML file (see example **~/VSLAM-LAB/configs/exp_demo_short.yaml**):
+## Configure your own experiments
+With **VSLAM-LAB**, you can easily design and configure experiments using a YAML file and run them with a single command.
+To **run** the experiment demo, execute the following command:
+```
+pixi run vslamlab --exp_yaml configs/exp_demo.yaml
+```
+**Note:** *This demo will execute one run per sequence using each VSLAM system. There are 80 pre-executed runs saved in VSLAM-LAB-Evaluation to assist with visualization purposes. The demo uses modified versions of [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2) and [**DSO**](https://github.com/alejandrofontan/dso). Please note that the comparison is between SLAM and Odometry and is intended only as an example of how to use **VSLAM-LAB**.*
+
+Experiments in **VSLAM-LAB** as sequences of entries in a YAML file (see example **~/VSLAM-LAB/configs/exp_demo_short.yaml**):
 ```
 exp_01:
   Module: dso                     # anyfeature/orbslam2/dso/colmap/glomap/dust3r/...
@@ -61,7 +68,6 @@ exp_01:
   Config: config_demo_short.yaml  # YAML file containing the sequences to be run 
   NumRuns: 1                      # Maximum number of executions per sequence
 ```
-
 **Config** files are YAML files containing the list of sequences to be executed in the experiment (see example **~/VSLAM-LAB/configs/config_demo_short.yaml**):
 ```
 rgbdtum: 
@@ -77,34 +83,9 @@ euroc:
 monotum:
   - 'sequence_01'
 ```
+For a full list of available VSLAM systems and datasets, refer to the section [VSLAM-LAB Supported Baselines and Datasets](#vslam-lab-supported-baselines-and-datasets).
 
-For a list of both available VSLAM systems and the available collections of datasets, please check the section [VSLAM-LAB Supported Baselines and Datasets](#vslam-lab-supported-baselines-and-datasets).
-
-To **run** the demo, use the following command:
-
-```
-pixi run vslamlab --exp_yaml configs/exp_demo.yaml
-```
-
-**Note:** The demo will execute one run per sequence using each VSLAM system. There are 80 pre-executed runs saved in VSLAM-LAB-Evaluation to assist with visualization purposes. The demo uses modified versions of [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2) and [**DSO**](https://github.com/alejandrofontan/dso). Please note that the comparison is between SLAM and Odometry and is intended only as an example of how to use **VSLAM-LAB**.
-
-# Useful commands
-You can now **download** and **build** individual baselines such as [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM), [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2), [**DSO**](https://github.com/alejandrofontan/dso), [**COLMAP**](https://colmap.github.io/), [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)  and [**DUST3R**](https://github.com/naver/dust3r). To build each baseline individually, use the following command:
-```
-pixi run -e <baseline> build
-```
-
-You can find the appropriate `<baseline>` label in the [VSLAM-LAB Supported Baselines and Datasets](#vslam-lab-supported-baselines-and-datasets). For example:
-```
-pixi run -e anyfeature build
-pixi run -e orbslam2 build
-pixi run -e dso build
-pixi run -e colmap build
-pixi run -e glomap build
-pixi run -e dust3r build
-```
-
-# Add a new dataset
+## Add a new dataset
 
 Datasets in **VSLAM-LAB** are stored in a folder named **VSLAM-LAB-Benchmark**, which is created by default in the same parent directory as **VSLAM-LAB**. If you want to modify the location of your datasets, change the variable **VSLAMLAB_BENCHMARK** in **~/VSLAM-LAB/utilities.py**.
 
@@ -153,7 +134,7 @@ If you're using **VSLAM-LAB** in your research, please cite. If you're specifica
 
 To [awesome-slam-datasets](https://github.com/youngguncho/awesome-slam-datasets)
 
-## VSLAM-LAB Supported Baselines and Datasets
+# VSLAM-LAB Supported Baselines and Datasets
 We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6x_TXkgLsw9zWszHU9M-0mGgDT92TEs/edit?usp=drive_link) with more detailed information for each baseline and dataset.
 
 | Baselines                                                                   | System |     Sensors      |                                   License                                   |    Label     |
