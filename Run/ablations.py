@@ -45,7 +45,7 @@ def parameter_ablation_start(it, ablation_param, settings_yaml):
     print(f"{SCRIPT_LABEL} Parameter policy: {ablation_param} = {parameter_policy}")
     value = parameter_ablation(it)
     print(f"    it = {it}")
-    print(f"    ablation value = {parameter_ablation}")
+    print(f"    ablation value = {value}")
 
     section_name, parameter_name = ablation_param.split('.', 1)
     modify_yaml_parameter(settings_yaml, section_name, parameter_name, value)

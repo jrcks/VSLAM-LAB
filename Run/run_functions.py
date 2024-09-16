@@ -25,7 +25,7 @@ def run_sequence(exp, baseline, exp_it, dataset, sequence_name, ablation=False):
 
     log_file_path = os.path.join(exp_folder, "system_output_" + str(exp_it).zfill(5) + ".txt")
 
-    exec_command = [f"sequence_path:{sequence_path}", f"exp_folder:{exp_folder}", f"exp_it:{exp_it}"]
+    exec_command = [f"sequence_path:{sequence_path}", f"exp_folder:{exp_folder}", f"exp_id:{exp_it}"]
     i_par = 0
     for parameter in exp.parameters:
         exec_command += [str(parameter)]
