@@ -36,8 +36,6 @@ def parameter_ablation_start(it, ablation_param, settings_yaml):
     else:
         shutil.copy(settings_yaml, settings_saved_yaml)
 
-    #value = 10 ** ((it/20) - 5)
-
     def parameter_ablation(it):
         return 10 ** (int(it/5)/20 - 5)
 
@@ -45,9 +43,9 @@ def parameter_ablation_start(it, ablation_param, settings_yaml):
     parameter_policy = source_code[source_code.find('return') + len('return'):].strip()
 
     print(f"{SCRIPT_LABEL} Parameter policy: {ablation_param} = {parameter_policy}")
-    value = 10 ** (((int(it/5))/20) - 5)
+    value = parameter_ablation(it)
     print(f"    it = {it}")
-    print(f"    ablation value = {value}")
+    print(f"    ablation value = {parameter_ablation}")
 
     section_name, parameter_name = ablation_param.split('.', 1)
     modify_yaml_parameter(settings_yaml, section_name, parameter_name, value)
