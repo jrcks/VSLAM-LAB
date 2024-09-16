@@ -4,12 +4,6 @@ import shutil
 import subprocess
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
-from utilities import downloadFile
-from utilities import decompressFile
-from utilities import VSLAM_LAB_BASELINES_DIR
-
-from Evaluate.align_trajectories import align_trajectory_with_groundtruth
-from Evaluate import metrics
 from PIL import Image
 
 

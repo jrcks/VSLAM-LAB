@@ -10,7 +10,7 @@ from PIL import Image
 VSLAM_LAB_DIR = os.path.dirname(os.path.abspath(__file__))
 VSLAM_LAB_PATH = os.path.dirname(VSLAM_LAB_DIR)
 
-VSLAMLAB_BENCHMARK = "/media/fontan/data/VSLAM-LAB-Benchmark"
+VSLAMLAB_BENCHMARK = os.path.join(VSLAM_LAB_PATH, 'VSLAM-LAB-Benchmark')
 VSLAMLAB_EVALUATION = os.path.join(VSLAM_LAB_PATH, 'VSLAM-LAB-Evaluation')
 VSLAMLAB_BASELINES = os.path.join(VSLAM_LAB_DIR, 'Baselines')
 
