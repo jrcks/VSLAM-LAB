@@ -39,6 +39,7 @@ from utilities import check_sequence_integrity
 from Evaluate.evo import evo_ape_zip
 from Evaluate.evo import evo_get_accuracy
 from Datasets.utilities import log_run_sequence_time
+from Datasets.utilities import append_ablation_parameters_to_csv
 
 from Evaluate import ablations
 
@@ -193,7 +194,7 @@ class DatasetVSLAMLab:
         full_command = f"pixi run -e {exp.module} execute " + command_str
 
         if ablation:
-            settings_yaml = self.prepare_ablation(sequence_name, exp, exp_id)
+            settings_yaml = self.prepare_ablation(sequence_name, exp, exp_id, exp_folder)
         self.run_executable(full_command, log_file_path)
         if ablation:
             self.finish_ablation(sequence_name, settings_yaml)
@@ -210,7 +211,7 @@ class DatasetVSLAMLab:
     ####################################################################################################################
 
     # Ablation methods
-    def prepare_ablation(self, sequence_name, exp, it):
+    def prepare_ablation(self, sequence_name, exp, it, exp_folder):
         print(f"{ws(8)}Sequence '{sequence_name}' preparing ablation ...")
         for parameter in exp.parameters:
             if 'settings_yaml' in parameter:
@@ -218,16 +219,27 @@ class DatasetVSLAMLab:
             if 'ablation_param' in parameter:
                 ablation_param = parameter.replace('ablation_param:', '')
 
-        #sequence_path = os.path.join(self.dataset_path, sequence_name)
-        #ablations.add_noise_to_images_start(sequence_path, it, exp, self.rgb_hz)
-        ablations.parameter_ablation_start(it, ablation_param, settings_yaml)
+        ablation_parameters = {}
+        ablation_parameters['expId'] = str(it).zfill(5)
+        ablation_parameters_csv = os.path.join(exp_folder, 'log_ablation_parameters.csv')
+
+        # Define your ablations
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+
+        ablation_parameters_i = ablations.add_noise_to_images_start(sequence_path, it, exp, self.rgb_hz)
+        ablation_parameters.update(ablation_parameters_i)
+
+        ablation_parameters_i = ablations.parameter_ablation_start(it, ablation_param, settings_yaml)
+        ablation_parameters.update(ablation_parameters_i)
+
+        append_ablation_parameters_to_csv(ablation_parameters_csv, ablation_parameters)
 
         return settings_yaml
 
     def finish_ablation(self, sequence_name, settings_yaml):
         print(f"{ws(8)}Sequence '{sequence_name}' finishing ablation ...")
-        #sequence_path = os.path.join(self.dataset_path, sequence_name)
-        #ablations.add_noise_to_images_finish(sequence_path)
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        ablations.add_noise_to_images_finish(sequence_path)
         ablations.parameter_ablation_finish(settings_yaml)
 
     ####################################################################################################################
