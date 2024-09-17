@@ -420,7 +420,10 @@ platforms = ["linux-64"]
 
 [feature.kalibr.tasks]
 git-clone = "git-clone.sh alejandrofontan kalibr Baselines/kalibr_catkin/src && cd Baselines/kalibr_catkin/src && catkin init"
-build = " cd Baselines/kalibr_catkin && catkin build -DCMAKE_BUILD_TYPE=Release -j8"
+build = {cmd = "cd Baselines/kalibr_catkin && catkin build -DCMAKE_BUILD_TYPE=Release -j8", depends-on = ["git-clone"]}
+#source_catkin = "bash -c 'source Baselines/kalibr_catkin/devel/setup.bash'"
+#kalibr_bagcreater = {cmd = "bash -c 'source Baselines/kalibr_catkin/devel/setup.bash && rosrun kalibr kalibr_bagcreater'", depends-on = ["source_catkin"]}
+kalibr_bagcreater = {cmd = "./Baselines/kalibr_catkin/src/kalibr/calibrate.sh"}
 
 #execute = {cmd = 'python Baselines/MonoGS/slam.py', depends-on = ["build"]}
 
