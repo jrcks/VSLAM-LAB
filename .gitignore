@@ -20,6 +20,7 @@ Baselines/colmap
 Baselines/glomap
 Baselines/r2d2
 Baselines/MonoGS
+Baselines/kalibr_catkin
 
 configs/exp_demo.yaml
 configs/config_demo.yaml
