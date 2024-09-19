@@ -9,6 +9,7 @@ from Baselines.baseline_utilities import log_run_sequence_time
 from Baselines.baseline_utilities import append_ablation_parameters_to_csv
 
 from Run import ablations
+from utilities import ABLATION_PARAMETERS_CSV
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -65,7 +66,7 @@ def prepare_ablation(sequence_name, exp, it, exp_folder, dataset):
 
     ablation_parameters = {}
     ablation_parameters['expId'] = str(it).zfill(5)
-    ablation_parameters_csv = os.path.join(exp_folder, 'log_ablation_parameters.csv')
+    ablation_parameters_csv = os.path.join(exp_folder, ABLATION_PARAMETERS_CSV)
 
     # Define your ablations
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)

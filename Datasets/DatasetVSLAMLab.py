@@ -24,8 +24,11 @@ from utilities import VSLAM_LAB_DIR
 from utilities import find_files_with_string
 from utilities import ws
 from utilities import check_sequence_integrity
+from utilities import VSLAM_LAB_EVALUATION_FOLDER
 from Evaluate.evo import evo_ape_zip
 from Evaluate.evo import evo_get_accuracy
+
+from Run.ablations import find_groundtruth_txt
 
 SCRIPT_LABEL = f"[{os.path.basename(__file__)}] "
 
@@ -157,19 +160,21 @@ class DatasetVSLAMLab:
     ####################################################################################################################
     # Evaluation methods
 
-    def evaluate_sequence(self, sequence_name, experiment_folder):
+    def evaluate_sequence(self, sequence_name, exp_folder):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         groundtruth_file = os.path.join(sequence_path, 'groundtruth.txt')
 
-        trajectories_path = os.path.join(experiment_folder, self.dataset_folder, sequence_name)
-        evaluation_folder = os.path.join(trajectories_path, 'vslamlab_evaluation')
+
+        trajectories_path = os.path.join(exp_folder, self.dataset_folder, sequence_name)
+        evaluation_folder = os.path.join(trajectories_path, VSLAM_LAB_EVALUATION_FOLDER)
 
         os.makedirs(evaluation_folder, exist_ok=True)
         trajectory_files = find_files_with_string(trajectories_path, "_KeyFrameTrajectory.txt")
-        print(f"{ws(4)}Evaluation of '{os.path.basename(experiment_folder)}"
+        print(f"{ws(4)}Evaluation of '{os.path.basename(exp_folder)}"
               f"' in '{sequence_name}': {len(trajectory_files)} trajectories")
 
         for trajectory_file in tqdm(trajectory_files):
+            #groundtruth_file = find_groundtruth_txt(trajectories_path, trajectory_file)
             self.evaluate_trajectory_accuracy(groundtruth_file, trajectory_file, evaluation_folder)
 
         self.get_accuracy(evaluation_folder)

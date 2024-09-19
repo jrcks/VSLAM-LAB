@@ -4,15 +4,17 @@ import shutil
 import numpy as np
 import yaml
 import inspect
+import pandas as pd
 
 from utilities import VSLAMLAB_BASELINES
 from utilities import RGB_BASE_FOLDER
 from snippets.downsample_rgb_frames import downsample_rgb_frames
+from utilities import ABLATION_PARAMETERS_CSV
 
 SCRIPT_LABEL = f"\033[35m[{os.path.basename(__file__)}]\033[0m "
 
-def modify_yaml_parameter(yaml_file, section_name, parameter_name, new_value):
 
+def modify_yaml_parameter(yaml_file, section_name, parameter_name, new_value):
     with open(yaml_file, 'r') as file:
         data = yaml.safe_load(file)
 
@@ -27,6 +29,7 @@ def modify_yaml_parameter(yaml_file, section_name, parameter_name, new_value):
         yaml.safe_dump(data, file)
 
     print(f"    YAML file '{yaml_file}' has been updated.")
+
 
 def parameter_ablation_start(it, ablation_param, settings_yaml):
     settings_saved_yaml = settings_yaml.replace('_settings', '_settings_original')
@@ -54,10 +57,12 @@ def parameter_ablation_start(it, ablation_param, settings_yaml):
 
     return ablation_parameters
 
+
 def parameter_ablation_finish(settings_yaml):
     settings_saved_yaml = settings_yaml.replace('_settings', '_settings_original')
     shutil.copy(settings_saved_yaml, settings_yaml)
     os.remove(settings_saved_yaml)
+
 
 def add_noise_to_images_start(sequence_path, it, exp, fps):
     max_rgb = 50
@@ -112,8 +117,8 @@ def add_noise_to_images_start(sequence_path, it, exp, fps):
     ablation_parameters = {"std_noise": std_noise}
     return ablation_parameters
 
-def add_noise_to_images_finish(sequence_path):
 
+def add_noise_to_images_finish(sequence_path):
     # Remove rgb_ds.txt
     rgb_txt_ds = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}_ds.txt")
     os.remove(rgb_txt_ds)
@@ -123,3 +128,17 @@ def add_noise_to_images_finish(sequence_path):
     rgb_path_saved = os.path.join(sequence_path, 'rgb_saved')
     shutil.rmtree(rgb_path)
     os.rename(rgb_path_saved, rgb_path)
+
+
+def find_groundtruth_txt(trajectories_path, trajectory_file):
+    ablation_parameters_csv = os.path.join(trajectories_path, ABLATION_PARAMETERS_CSV)
+    traj_name = os.path.basename(trajectory_file)
+    df = pd.read_csv(ablation_parameters_csv)
+    index_str = traj_name.split('_')[0]
+    expId = int(index_str)
+    exp_row = df[df['expId'] == expId]
+    thresholds_max_reprojection_error = exp_row['Thresholds.max_reprojection_error'].values[0]
+    gt_id = df[(df['std_noise'] == 0) & (df['Thresholds.max_reprojection_error'] == thresholds_max_reprojection_error)]['expId'].values[0]
+    groundtruth_txt = os.path.join(trajectories_path, f"{str(gt_id).zfill(5)}_KeyFrameTrajectory.txt")
+    return groundtruth_txt
+

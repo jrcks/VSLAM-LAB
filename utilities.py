@@ -21,6 +21,9 @@ CONFIG_DEFAULT = 'config_demo.yaml'
 VSLAM_LAB_EVALUATION_FOLDER = 'vslamlab_evaluation'
 RGB_BASE_FOLDER = 'rgb'
 
+ABLATION_PARAMETERS_CSV = 'log_ablation_parameters.csv'
+
+
 class Experiment:
     def __init__(self):
         self.config_yaml = ""
