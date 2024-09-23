@@ -19,19 +19,19 @@ get-benchmark-path = {cmd = "VSLAMLAB_BENCHMARK=$(python3 -c 'from path_constant
 add_dataset_from_image_folders = {cmd = "pixi run -e vslamlab python Datasets/extra-files/add_dataset_from_image_folders.py"}
 
 [environments]
-vslamlab = ["vslamlab"]
-orbslam2 = ["orbslam2"]
-dso = ["dso"]
-anyfeature = ["anyfeature"]
-dust3r = ["dust3r"]
-monodataset = ["monodataset"]
-ros-env = ["ros-env"]
-colmap = ["colmap"]
-glomap = ["glomap"]
-evo = ["evo"]
-r2d2 = ["r2d2"]
-monogs = ["monogs"]
-#kalibr = ["kalibr"]
+vslamlab = {features = ["vslamlab"], no-default-feature = true}
+orbslam2 = {features = ["orbslam2"], no-default-feature = true}
+dso = {features = ["dso"], no-default-feature = true}
+anyfeature = {features = ["anyfeature"], no-default-feature = true}
+dust3r = {features = ["dust3r"], no-default-feature = true}
+monodataset = {features = ["monodataset"], no-default-feature = true}
+ros-env = {features = ["ros-env"], no-default-feature = true}
+colmap = {features = ["colmap"], no-default-feature = true}
+glomap = {features = ["glomap"], no-default-feature = true}
+evo = {features = ["evo"], no-default-feature = true}
+r2d2 = {features = ["r2d2"], no-default-feature = true}
+monogs = {features = ["monogs"], no-default-feature = true}
+#kalibr = {features = ["kalibr"], no-default-feature = true}
 
 # VSLAM-LAB
 [feature.vslamlab]

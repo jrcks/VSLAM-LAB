@@ -51,13 +51,27 @@ def evo_ape_zip(groundtruth_file, trajectory_file, evaluation_folder, max_time_d
     df.to_csv(gt_file, index=False)
 
 def evo_get_accuracy(evaluation_folder):
+    # Append new data to accuracy_raw
     accuracy_raw = os.path.join(evaluation_folder, 'accuracy_raw.csv')
     if os.path.exists(accuracy_raw):
+        existing_data = pd.read_csv(accuracy_raw)
         os.remove(accuracy_raw)
+    else:
+        existing_data = None
 
     command = (f"pixi run -e evo evo_res {os.path.join(evaluation_folder, "*.zip")} --save_table {accuracy_raw}")
     subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
+    if os.path.exists(accuracy_raw):
+        new_data = pd.read_csv(accuracy_raw)
+        if existing_data is not None:
+            combined_data = pd.concat([existing_data, new_data], ignore_index=True)
+            combined_data.to_csv(accuracy_raw, index=False)
+    else:
+        if existing_data is not None:
+            existing_data.to_csv(accuracy_raw, index=False)
+
+    #
     df = pd.read_csv(accuracy_raw)
     df = df.rename(columns={df.columns[0]: 'traj_name'})
     data = df['rmse'].dropna()
@@ -69,12 +83,12 @@ def evo_get_accuracy(evaluation_folder):
     for keyframe_traj_file in keyframe_traj_files:
         with open(os.path.join(evaluation_folder, keyframe_traj_file), 'r') as file:
             traj_name = keyframe_traj_file.replace('.tum', '.txt')
-            num_evaluation_points = sum(1 for line in file)
+            num_evaluation_points = sum(1 for line in file) - 1
             df.loc[df['traj_name'] == traj_name, 'Number of Evaluation Points'] = num_evaluation_points
 
     # Use EllipticEnvelope to fit the data
     num_traj_files = len(keyframe_traj_files)
-    if num_traj_files > 5000:
+    if num_traj_files > 5000000:
         outlier_detector = EllipticEnvelope(contamination=0.10)  # 5% contamination is typical
         outliers = outlier_detector.fit_predict(data_reshaped)
         outlier_indices = np.where(outliers == -1)[0]
