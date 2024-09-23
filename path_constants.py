@@ -1,9 +1,10 @@
 import os
+import sys
 
 VSLAM_LAB_DIR = os.path.dirname(os.path.abspath(__file__))
 VSLAM_LAB_PATH = os.path.dirname(VSLAM_LAB_DIR)
 
-VSLAMLAB_BENCHMARK = os.path.join(VSLAM_LAB_PATH, 'VSLAM-LAB-Benchmark')
+VSLAMLAB_BENCHMARK = "/media/fontan/data/VSLAM-LAB-Benchmark"
 VSLAMLAB_EVALUATION = os.path.join(VSLAM_LAB_PATH, 'VSLAM-LAB-Evaluation')
 VSLAMLAB_BASELINES = os.path.join(VSLAM_LAB_DIR, 'Baselines')
 
@@ -15,3 +16,28 @@ VSLAM_LAB_EVALUATION_FOLDER = 'vslamlab_evaluation'
 RGB_BASE_FOLDER = 'rgb'
 
 ABLATION_PARAMETERS_CSV = 'log_ablation_parameters.csv'
+
+SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
+
+def set_VSLAMLAB_path(new_path, file_path, target_line_start):
+    new_line = f"{target_line_start} \"{new_path}\""
+    print(f"{SCRIPT_LABEL}Set {new_line}")
+
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    with open(file_path, 'w') as file:
+        for line in lines:
+            if line.strip().startswith(target_line_start):
+                file.write(new_line + '\n')
+            else:
+                file.write(line)
+
+if __name__ == "__main__":
+
+    if len(sys.argv) > 2:
+        function_name = sys.argv[1]
+        if function_name == 'set_VSLAMLAB_BENCHMARK_path':
+            set_VSLAMLAB_path(os.path.join(sys.argv[2], 'VSLAM-LAB-Benchmark'), __file__, "VSLAMLAB_BENCHMARK =")
+        if function_name == 'set_VSLAMLAB_EVALUATION_path':
+            set_VSLAMLAB_path(os.path.join(sys.argv[2], 'VSLAM-LAB-Evaluation'), __file__, "VSLAMLAB_EVALUATION =")
