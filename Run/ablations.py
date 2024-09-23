@@ -31,16 +31,15 @@ def modify_yaml_parameter(yaml_file, section_name, parameter_name, new_value):
     print(f"    YAML file '{yaml_file}' has been updated.")
 
 
-def parameter_ablation_start(it, ablation_param, settings_yaml):
-    settings_saved_yaml = settings_yaml.replace('_settings', '_settings_original')
+def parameter_ablation_start(it, ablation_param, settings_ablation_yaml):
 
-    if os.path.exists(settings_saved_yaml):
-        shutil.copy(settings_saved_yaml, settings_yaml)
-    else:
-        shutil.copy(settings_yaml, settings_saved_yaml)
-
-    def parameter_ablation(it):
-        return 10 ** (int(it/5)/20 - 5)
+    min_exp = -5
+    max_exp = 2
+    num_it = 10
+    b = min_exp
+    m = (max_exp-min_exp)/(num_it - 1)
+    def parameter_ablation(it_):
+        return 10 ** (m * it_ + b)
 
     source_code = inspect.getsource(parameter_ablation)
     parameter_policy = source_code[source_code.find('return') + len('return'):].strip()
@@ -51,17 +50,16 @@ def parameter_ablation_start(it, ablation_param, settings_yaml):
     print(f"    ablation value = {value}")
 
     section_name, parameter_name = ablation_param.split('.', 1)
-    modify_yaml_parameter(settings_yaml, section_name, parameter_name, value)
+    modify_yaml_parameter(settings_ablation_yaml, section_name, parameter_name, value)
 
     ablation_parameters = {ablation_param: value}
 
     return ablation_parameters
 
 
-def parameter_ablation_finish(settings_yaml):
-    settings_saved_yaml = settings_yaml.replace('_settings', '_settings_original')
-    shutil.copy(settings_saved_yaml, settings_yaml)
-    os.remove(settings_saved_yaml)
+def parameter_ablation_finish(settings_ablation_yaml):
+    if os.path.exists(settings_ablation_yaml):
+        os.remove(settings_ablation_yaml)
 
 
 def add_noise_to_images_start(sequence_path, it, exp, fps):
@@ -90,8 +88,8 @@ def add_noise_to_images_start(sequence_path, it, exp, fps):
         for timestamp, path in zip(downsampled_timestamps, downsampled_paths):
             file.write(f"{timestamp} {path}\n")
 
-    def std_noise_ablation(it):
-        return (it % 5) * 5
+    def std_noise_ablation(it_):
+        return (it_ % 5) * 5
 
     source_code = inspect.getsource(std_noise_ablation)
     noise_policy = source_code[source_code.find('return') + len('return'):].strip()

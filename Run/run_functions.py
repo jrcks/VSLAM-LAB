@@ -3,6 +3,8 @@
 import time
 import os
 import subprocess
+import re
+import shutil
 
 from utilities import ws
 from Baselines.baseline_utilities import log_run_sequence_time
@@ -37,10 +39,10 @@ def run_sequence(exp, baseline, exp_it, dataset, sequence_name, ablation=False):
     full_command = f"pixi run -e {baseline.baseline_name} execute " + command_str
 
     if ablation:
-        settings_yaml = prepare_ablation(sequence_name, exp, exp_it, exp_folder, dataset)
+        settings_ablation_yaml, full_command = prepare_ablation(sequence_name, exp, exp_it, exp_folder, dataset, full_command)
     run_executable(full_command, log_file_path)
     if ablation:
-        finish_ablation(sequence_name, settings_yaml, dataset)
+        finish_ablation(sequence_name, settings_ablation_yaml, dataset)
 
     duration_time = time.time() - run_time_start
     log_run_sequence_time(exp_folder, exp_it, duration_time)
@@ -56,7 +58,7 @@ def run_executable(command, log_file_path):
 ####################################################################################################################
 
 # Ablation methods
-def prepare_ablation(sequence_name, exp, it, exp_folder, dataset):
+def prepare_ablation(sequence_name, exp, it, exp_folder, dataset, full_command):
     print(f"{ws(8)}Sequence '{sequence_name}' preparing ablation ...")
     for parameter in exp.parameters:
         if 'settings_yaml' in parameter:
@@ -71,19 +73,27 @@ def prepare_ablation(sequence_name, exp, it, exp_folder, dataset):
     # Define your ablations
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)
 
-    ablation_parameters_i = ablations.add_noise_to_images_start(sequence_path, it, exp, dataset.rgb_hz)
-    ablation_parameters.update(ablation_parameters_i)
+    # ablation_parameters_i = ablations.add_noise_to_images_start(sequence_path, it, exp, dataset.rgb_hz)
+    # ablation_parameters.update(ablation_parameters_i)
 
-    ablation_parameters_i = ablations.parameter_ablation_start(it, ablation_param, settings_yaml)
+    settings_ablation_yaml = settings_yaml.replace('_settings', '_settings_ablation')
+    if os.path.exists(settings_ablation_yaml):
+        os.remove(settings_ablation_yaml)
+    shutil.copy(settings_yaml, settings_ablation_yaml)
+
+    ablation_parameters_i = ablations.parameter_ablation_start(it, ablation_param, settings_ablation_yaml)
     ablation_parameters.update(ablation_parameters_i)
 
     append_ablation_parameters_to_csv(ablation_parameters_csv, ablation_parameters)
 
-    return settings_yaml
+    settings_yaml = re.search(r'settings_yaml:([^\s]+)', full_command).group(1)
+    modified_command = full_command.replace(settings_yaml, settings_ablation_yaml)
+
+    return settings_ablation_yaml, modified_command
 
 
-def finish_ablation(sequence_name, settings_yaml, dataset):
+def finish_ablation(sequence_name, settings_ablation_yaml, dataset):
     print(f"{ws(8)}Sequence '{sequence_name}' finishing ablation ...")
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)
-    ablations.add_noise_to_images_finish(sequence_path)
-    ablations.parameter_ablation_finish(settings_yaml)
+    # ablations.add_noise_to_images_finish(sequence_path)
+    ablations.parameter_ablation_finish(settings_ablation_yaml)
