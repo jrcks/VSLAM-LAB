@@ -6,10 +6,10 @@ import yaml
 import inspect
 import pandas as pd
 
-from utilities import VSLAMLAB_BASELINES
-from utilities import RGB_BASE_FOLDER
-from snippets.downsample_rgb_frames import downsample_rgb_frames
-from utilities import ABLATION_PARAMETERS_CSV
+from path_constants import VSLAMLAB_BASELINES
+from path_constants import RGB_BASE_FOLDER
+from Baselines.downsample_rgb_frames import downsample_rgb_frames
+from path_constants import ABLATION_PARAMETERS_CSV
 
 SCRIPT_LABEL = f"\033[35m[{os.path.basename(__file__)}]\033[0m "
 

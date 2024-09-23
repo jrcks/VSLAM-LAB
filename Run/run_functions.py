@@ -9,7 +9,7 @@ from Baselines.baseline_utilities import log_run_sequence_time
 from Baselines.baseline_utilities import append_ablation_parameters_to_csv
 
 from Run import ablations
-from utilities import ABLATION_PARAMETERS_CSV
+from path_constants import ABLATION_PARAMETERS_CSV
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 

@@ -20,11 +20,11 @@ from tqdm import tqdm
 import cv2
 import yaml
 
-from utilities import VSLAM_LAB_DIR
+from path_constants import VSLAM_LAB_DIR
 from utilities import find_files_with_string
 from utilities import ws
 from utilities import check_sequence_integrity
-from utilities import VSLAM_LAB_EVALUATION_FOLDER
+from path_constants import VSLAM_LAB_EVALUATION_FOLDER
 from Evaluate.evo import evo_ape_zip
 from Evaluate.evo import evo_get_accuracy
 

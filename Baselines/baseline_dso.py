@@ -2,7 +2,7 @@ import os.path
 
 from Baselines.BaselineVSLAMLab import BaselineVSLAMLab
 
-from utilities import VSLAMLAB_BASELINES
+from path_constants import VSLAMLAB_BASELINES
 class DSO_baseline(BaselineVSLAMLab):
     def __init__(self, baselines_path):
         baseline_name = 'dso'

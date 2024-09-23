@@ -2,7 +2,7 @@ import os.path
 
 from Baselines.BaselineVSLAMLab import BaselineVSLAMLab
 
-from utilities import VSLAMLAB_BASELINES
+from path_constants import VSLAMLAB_BASELINES
 
 
 class ORBSLAM2_baseline(BaselineVSLAMLab):

@@ -32,7 +32,7 @@ from PIL import Image
 from matplotlib.patches import Patch
 from sklearn.decomposition import PCA
 
-from utilities import VSLAM_LAB_EVALUATION_FOLDER
+from path_constants import VSLAM_LAB_EVALUATION_FOLDER
 from utilities import list_image_files_in_folder
 
 random.seed(6)

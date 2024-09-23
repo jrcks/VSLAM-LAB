@@ -15,10 +15,10 @@ import sys
 from Datasets.dataset_utilities import get_dataset
 from Baselines.baseline_utilities import get_baseline
 
-from utilities import VSLAMLAB_BENCHMARK
+from path_constants import VSLAMLAB_BENCHMARK
 from utilities import Experiment
-from utilities import VSLAMLAB_EVALUATION
-from utilities import VSLAMLAB_BASELINES
+from path_constants import VSLAMLAB_EVALUATION
+from path_constants import VSLAMLAB_BASELINES
 from Run.run_functions import run_sequence
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "

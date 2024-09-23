@@ -7,7 +7,7 @@ import yaml
 from Evaluate import plot_functions
 from Evaluate.plot_functions import create_and_show_canvas
 from Datasets.dataset_utilities import get_dataset
-from utilities import VSLAM_LAB_EVALUATION_FOLDER
+from path_constants import VSLAM_LAB_EVALUATION_FOLDER
 from utilities import check_yaml_file_integrity
 from utilities import find_common_sequences
 

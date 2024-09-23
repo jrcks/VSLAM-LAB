@@ -23,9 +23,9 @@ from Evaluate import compare_functions
 from Datasets.dataset_utilities import get_dataset
 from Baselines.baseline_utilities import get_baseline
 
-from utilities import COMPARISONS_YAML_DEFAULT, CONFIG_DEFAULT, EXP_YAML_DEFAULT
+from path_constants import COMPARISONS_YAML_DEFAULT, CONFIG_DEFAULT, EXP_YAML_DEFAULT
 from utilities import Experiment
-from utilities import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, VSLAM_LAB_DIR, VSLAMLAB_BASELINES
+from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, VSLAM_LAB_DIR, VSLAMLAB_BASELINES
 from utilities import check_yaml_file_integrity
 from utilities import list_datasets
 from utilities import ws

@@ -8,7 +8,7 @@ from inputimeout import inputimeout, TimeoutOccurred
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
 from utilities import downloadFile
 from utilities import decompressFile
-from utilities import VSLAMLAB_BENCHMARK
+from path_constants import VSLAMLAB_BENCHMARK
 from utilities import ws
 
 from Evaluate.align_trajectories import align_trajectory_with_groundtruth
