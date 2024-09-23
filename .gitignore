@@ -9,6 +9,7 @@ Compare/__pycache__/
 
 # pixi environments
 .pixi
+pixi.lock
 
 # Baselines
 Baselines/AnyFeature-VSLAM
