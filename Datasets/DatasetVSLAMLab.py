@@ -178,12 +178,19 @@ class DatasetVSLAMLab:
             self.evaluate_trajectory_accuracy(groundtruth_file, trajectory_file, evaluation_folder)
 
         self.get_accuracy(evaluation_folder)
+        self.clean_evaluaton(evaluation_folder)
 
     def evaluate_trajectory_accuracy(self, groundtruth_file, trajectory_file, evaluation_folder):
         evo_ape_zip(groundtruth_file, trajectory_file, evaluation_folder, 1.0 / self.rgb_hz)
 
     def get_accuracy(self, evaluation_folder):
         evo_get_accuracy(evaluation_folder)
+
+    def clean_evaluaton(self, evaluation_folder):
+        for filename in os.listdir(evaluation_folder):
+            if filename.endswith('.zip'):
+                file_path = os.path.join(evaluation_folder, filename)
+                os.remove(file_path)
 
     ####################################################################################################################
     # Utils
