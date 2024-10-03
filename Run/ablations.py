@@ -35,7 +35,7 @@ def parameter_ablation_start(it, ablation_param, settings_ablation_yaml):
 
     min_exp = -5
     max_exp = 2
-    num_it = 10
+    num_it = 100
     b = min_exp
     m = (max_exp-min_exp)/(num_it - 1)
     def parameter_ablation(it_):
