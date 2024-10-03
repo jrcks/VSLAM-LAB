@@ -17,6 +17,10 @@ def evo_ape_zip(groundtruth_file, trajectory_file, evaluation_folder, max_time_d
     command = (f"pixi run -e evo evo_ape tum {groundtruth_file} {trajectory_file} -va -as "
                f"--t_max_diff {max_time_difference} --save_results {traj_zip}")
     subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+    if not os.path.exists(traj_zip):
+        return
+
     with zipfile.ZipFile(traj_zip, 'r') as zip_ref:
         for file_name in zip_ref.namelist():
             if file_name.endswith(trajectory_file + '.tum'):
