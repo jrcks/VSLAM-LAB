@@ -224,7 +224,7 @@ platforms = ["linux-64"]
 
 git-clone = "git-clone.sh alejandrofontan colmap Baselines"
 setup = "python Baselines/colmap/colmap_setup.py"
-build = {cmd = "./Baselines/colmap/build.sh", depends-on = ["git-clone", "setup"]}
+build = {cmd = "./Baselines/colmap/build.sh", depends-on = ["git-clone", "setup"], outputs = ["Baselines/colmap/bin/colmap"] }
 execute = {cmd = './Baselines/colmap/colmap_reconstruction.sh', depends-on = ["build"]}
 
 colmap = "./Baselines/colmap/bin/colmap"
@@ -303,7 +303,7 @@ matplotlib="*"
 git-clone = "git-clone.sh alejandrofontan glomap Baselines"
 setup = "python Baselines/glomap/glomap_setup.py"
 build-colmap =  "pixi run -e colmap build -v"
-build = {cmd = "pixi run -e colmap ./Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"]}
+build = {cmd = "pixi run -e colmap ./Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"],  outputs = ["Baselines/glomap/bin/glomap"] }
 execute = {cmd = 'pixi run -e colmap ./Baselines/glomap/glomap_reconstruction.sh', depends-on = ["build"]}
 
 # ROS
