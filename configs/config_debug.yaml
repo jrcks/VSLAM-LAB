@@ -1,7 +1,9 @@
+replica:
+  - 'office0'
 #rgbdtum:
 #  - 'rgbd_dataset_freiburg1_xyz'
-eth: 
-  - 'table_3'
+#eth:
+#  - 'table_3'
 #kitti:
 #  - '04'
 #euroc:
