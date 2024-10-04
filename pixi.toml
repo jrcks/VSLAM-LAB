@@ -6,8 +6,6 @@ channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
 [tasks]
-git-clone-all     = {cmd = "pixi run -e orbslam2 git-clone && pixi run -e dso git-clone && pixi run -e anyfeature git-clone && pixi run -e dust3r git-clone "}
-build-all     = {cmd = "pixi run -e orbslam2 build && pixi run -e dso build && pixi run -e anyfeature build && pixi run -e colmap setup", depends-on = ["git-clone-all"]}
 
 vslamlab = {cmd = "pixi run -e vslamlab python vslamlab.py"}
 set-benchmark-path  = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_BENCHMARK_path"}
@@ -18,6 +16,10 @@ get-benchmark-path = {cmd = "VSLAMLAB_BENCHMARK=$(python3 -c 'from path_constant
 
 add_dataset_from_image_folders = {cmd = "pixi run -e vslamlab python Datasets/extra-files/add_dataset_from_image_folders.py"}
 
+deactivate_env = {cmd = "pixi run -e vslamlab python utilities.py deactivate_env"}
+activate_env = {cmd = "pixi run -e vslamlab python utilities.py activate_env"}
+
+# environments begin
 [environments]
 vslamlab = {features = ["vslamlab"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
@@ -31,7 +33,8 @@ glomap = {features = ["glomap"], no-default-feature = true}
 evo = {features = ["evo"], no-default-feature = true}
 r2d2 = {features = ["r2d2"], no-default-feature = true}
 monogs = {features = ["monogs"], no-default-feature = true}
-#kalibr = {features = ["kalibr"], no-default-feature = true}
+# kalibr = {features = ["kalibr"], no-default-feature = true}
+# environments end
 
 # VSLAM-LAB
 [feature.vslamlab]
@@ -54,7 +57,7 @@ google-auth-oauthlib="*"
 huggingface_hub="*"
 py7zr="*"
 
-# EVO
+# evo begin
 [feature.evo.dependencies]
 python="3.12"
 
@@ -71,8 +74,9 @@ evo_config =  "evo_config set save_traj_in_zip true"
 evo_traj = {cmd = "evo_traj", depends-on = ["evo_config"]}
 evo_ape = {cmd = "evo_ape", depends-on = ["evo_config"]}
 evo_res = {cmd = "evo_res", depends-on = ["evo_config"]}
+# evo end
 
-# AnyFeature-VSLAM
+# anyfeature begin
 [feature.anyfeature]
 channels = ["fontan", "https://fast.prefix.dev/conda-forge", "huggingface"]
 platforms = ["linux-64"]
@@ -113,8 +117,9 @@ brisk="*"
 akaze="*"
 siftgpu="*"
 datasets="*"
+# anyfeature end
 
-# ORB-SLAM2
+# orbslam2 begin
 [feature.orbslam2]
 channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
 platforms = ["linux-64"]
@@ -149,8 +154,9 @@ opencv="*"
 eigen="*"
 yaml-cpp="*"
 pangolin="*"
+# orbslam2 end
 
-# DSO
+# dso begin
 [feature.dso]
 channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
 platforms = ["linux-64"]
@@ -185,8 +191,9 @@ opencv="*"
 eigen ="*"
 boost="*"
 pangolin="*"
+# dso end
 
-# DUST3R
+# dust3r begin
 [feature.dust3r]
 channels = ["https://fast.prefix.dev/conda-forge", "nvidia", "pytorch"]
 platforms = ["linux-64"]
@@ -215,8 +222,9 @@ safetensors="*"
 [feature.dust3r.pypi-dependencies]
 torchvision="*"
 roma="*"
+# dust3r end
 
-# COLMAP
+# colmap begin
 [feature.colmap]
 channels = ["https://fast.prefix.dev/conda-forge", "nvidia"]
 platforms = ["linux-64"]
@@ -289,8 +297,9 @@ numpy="*"
 scipy="*"
 pyyaml="*"
 matplotlib="*"
+# colmap end
 
-# GLOMAP
+# glomap begin
 [feature.glomap]
 channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
@@ -306,8 +315,9 @@ setup = "python Baselines/glomap/glomap_setup.py"
 build-colmap =  "pixi run -e colmap build -v"
 build = {cmd = "pixi run -e colmap ./Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"],  outputs = ["Baselines/glomap/bin/glomap"] }
 execute = {cmd = 'pixi run -e colmap ./Baselines/glomap/glomap_reconstruction.sh', depends-on = ["build"]}
+# glomap end
 
-# ROS
+# ros begin
 [feature.ros-env]
 channels = ["https://fast.prefix.dev/conda-forge", "robostack-staging"]
 platforms = ["linux-64"]
@@ -317,8 +327,9 @@ ros-noetic-desktop="*"
 
 [feature.ros-env.tasks]
 extract-rosbag-frames = "python Datasets/extra-files/extract_rosbag_frames.py"
+# ros end
 
-# MONODATASET
+# monodataset begin
 [feature.monodataset]
 channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
@@ -352,8 +363,9 @@ xorg-libxfixes="*"
 opencv="*"
 eigen ="*"
 libzip = "*"
+# monodataset end
 
-# r2d2
+# r2d2 begin
 [feature.r2d2]
 channels = ["https://fast.prefix.dev/conda-forge", "pytorch"]
 platforms = ["linux-64"]
@@ -373,8 +385,9 @@ matplotlib = "*"
 scipy = "*"
 pytorch-gpu = "*"
 torchvision="*"
+# r2d2 end
 
-# MonoGS
+# monogs begin
 [feature.monogs]
 channels = ["https://fast.prefix.dev/conda-forge", "nvidia", "pytorch"]
 platforms = ["linux-64"]
@@ -404,7 +417,7 @@ cuda = "12.4"
 opencv-python="==4.8.1.78"
 munch="*"
 trimesh="*"
-evo="==1.11.0"
+# evo="==1.11.0"
 wandb="*"
 open3d="==0.17.0"
 torchmetrics="*"
@@ -415,41 +428,43 @@ PyGLM="*"
 lpips="*"
 rich="*"
 ruff="*"
+# monogs end
 
-# Kalibr
-#[feature.kalibr]
-#channels = ["https://fast.prefix.dev/conda-forge", "esrf-bcu", "robostack-staging"]
-#platforms = ["linux-64"]
-#
-#[feature.kalibr.tasks]
-#git-clone = "git-clone.sh alejandrofontan kalibr Baselines/kalibr_catkin/src && cd Baselines/kalibr_catkin/src && catkin init"
-#build = {cmd = "cd Baselines/kalibr_catkin && catkin build -DCMAKE_BUILD_TYPE=Release -j8", depends-on = ["git-clone"]}
-#kalibr_bagcreater = {cmd = "./Baselines/kalibr_catkin/src/kalibr/calibrate.sh"}
-#
-#[feature.kalibr.dependencies]
-#python = {version="3.9.18", build="h0755675_0_cpython", channel="https://fast.prefix.dev/conda-forge"}
-#ros-noetic-desktop="*"
-#compilers="*"
-#cmake="*"
-#pkg-config="*"
-#make="*"
-#ninja="*"
-#colcon-common-extensions="*"
-#catkin_tools="*"
-#rosdep="*"
-#boost="*"
-#suitesparse = {version="5.4.0", build="h717dc36_0", channel="https://fast.prefix.dev/conda-forge"}
-#tbb="*"
-#opencv="*"
-#libv4l="*"
-#pip="*"
-#scipy="*"
-#matplotlib="*"
-#ipython="*"
-#wxpython ="*"
-#tk ="*"
-#pyx="*"
-#libtiff="*"
-#
-#[feature.kalibr.pypi-dependencies]
-#igraph="*"
+# kalibr begin
+# [feature.kalibr]
+# channels = ["https://fast.prefix.dev/conda-forge", "esrf-bcu", "robostack-staging"]
+# platforms = ["linux-64"]
+# 
+# [feature.kalibr.tasks]
+# git-clone = "git-clone.sh alejandrofontan kalibr Baselines/kalibr_catkin/src && cd Baselines/kalibr_catkin/src && catkin init"
+# build = {cmd = "cd Baselines/kalibr_catkin && catkin build -DCMAKE_BUILD_TYPE=Release -j8", depends-on = ["git-clone"]}
+# kalibr_bagcreater = {cmd = "./Baselines/kalibr_catkin/src/kalibr/calibrate.sh"}
+# 
+# [feature.kalibr.dependencies]
+# python = {version="3.9.18", build="h0755675_0_cpython", channel="https://fast.prefix.dev/conda-forge"}
+# ros-noetic-desktop="*"
+# compilers="*"
+# cmake="*"
+# pkg-config="*"
+# make="*"
+# ninja="*"
+# colcon-common-extensions="*"
+# catkin_tools="*"
+# rosdep="*"
+# boost="*"
+# suitesparse = {version="5.4.0", build="h717dc36_0", channel="https://fast.prefix.dev/conda-forge"}
+# tbb="*"
+# opencv="*"
+# libv4l="*"
+# pip="*"
+# scipy="*"
+# matplotlib="*"
+# ipython="*"
+# wxpython ="*"
+# tk ="*"
+# pyx="*"
+# libtiff="*"
+# 
+# [feature.kalibr.pypi-dependencies]
+# igraph="*"
+# kalibr end

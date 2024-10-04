@@ -4,11 +4,13 @@ import urllib.request
 import zipfile
 import py7zr
 import tarfile
+import subprocess
 
 import yaml
 from PIL import Image
 
 from path_constants import VSLAM_LAB_DIR
+
 
 class Experiment:
     def __init__(self):
@@ -180,6 +182,7 @@ def list_image_files_in_folder(folder_path):
             image_files.append(filename)
     return image_files
 
+
 def check_sequence_integrity(dataset_path, sequence_name, verbose):
     sequence_path = os.path.join(dataset_path, sequence_name)
     rgb_path = os.path.join(sequence_path, 'rgb')
@@ -209,7 +212,103 @@ def check_sequence_integrity(dataset_path, sequence_name, verbose):
 
     return complete_sequence
 
-# if __name__ == "__main__":
-#
-#     if len(sys.argv) > 2:
-#         function_name = sys.argv[1]
+
+def deactivate_env(vslamlab_env):
+    file_path = os.path.join(VSLAM_LAB_DIR, 'pixi.toml')
+    with open(file_path, 'r') as file:
+        file_content = file.read()
+
+    # Split content by lines
+    lines = file_content.splitlines()
+
+    # Flags to track if we are within the baseline section
+    inside_baseline = False
+    inside_environments = False
+
+    # Iterate through lines and comment the baseline section
+    for i in range(len(lines)):
+        line = lines[i].strip()
+
+        if f"# {vslamlab_env} begin" == line:
+            inside_baseline = True
+            continue
+        elif f"# {vslamlab_env} end" == line:
+            inside_baseline = False
+            continue
+
+        if f"# environments begin" == line:
+            inside_environments = True
+            continue
+        elif f"# environments end" == line:
+            inside_environments = False
+            continue
+
+        # If inside the baseline block, comment the line
+        if inside_baseline:
+            if not ("#" in lines[i]):
+                lines[i] = "# " + lines[i]
+        if inside_environments:
+            if f'features = ["{vslamlab_env}"]' in lines[i]:
+                if not ("#" in lines[i]):
+                    lines[i] = "# " + lines[i]
+
+    new_file_content = "\n".join(lines)
+    with open(file_path, 'w') as file:
+        file.write(new_file_content)
+
+    subprocess.run("pixi clean && pixi update", shell=True)
+
+
+def activate_env(vslamlab_env):
+    file_path = os.path.join(VSLAM_LAB_DIR, 'pixi.toml')
+    with open(file_path, 'r') as file:
+        file_content = file.read()
+
+    # Split content by lines
+    lines = file_content.splitlines()
+
+    # Flags to track if we are within the baseline section
+    inside_baseline = False
+    inside_environments = False
+
+    # Iterate through lines and comment the baseline section
+    for i in range(len(lines)):
+        line = lines[i].strip()
+
+        if f"# {vslamlab_env} begin" == line:
+            inside_baseline = True
+            continue
+        elif f"# {vslamlab_env} end" == line:
+            inside_baseline = False
+            continue
+
+        if f"# environments begin" == line:
+            inside_environments = True
+            continue
+        elif f"# environments end" == line:
+            inside_environments = False
+            continue
+
+        # If inside the baseline block, comment the line
+        if inside_baseline:
+            lines[i] = lines[i].replace("# ", '')
+        if inside_environments:
+            if f'features = ["{vslamlab_env}"]' in lines[i]:
+                lines[i] = lines[i].replace("# ", '')
+
+    new_file_content = "\n".join(lines)
+    with open(file_path, 'w') as file:
+        file.write(new_file_content)
+
+    subprocess.run("pixi clean && pixi update", shell=True)
+
+
+if __name__ == "__main__":
+
+    if len(sys.argv) > 2:
+        function_name = sys.argv[1]
+
+        if function_name == "deactivate_env":
+            deactivate_env(sys.argv[2])
+        if function_name == "activate_env":
+            activate_env(sys.argv[2])
