@@ -25,3 +25,5 @@ Baselines/kalibr_catkin
 
 configs/exp_demo.yaml
 configs/config_demo.yaml
+
+path_constants.py
