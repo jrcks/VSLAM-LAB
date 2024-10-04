@@ -13,6 +13,7 @@ from Datasets.dataset_replica import REPLICA_dataset
 from Datasets.dataset_hamlyn import HAMLYN_dataset
 from Datasets.dataset_caves import CAVES_dataset
 from Datasets.dataset_lamar import LAMAR_dataset
+from Datasets.dataset_eth3d_mvs_dslr import ETH3D_MVS_DSLR_dataset
 
 SCRIPT_LABEL = "[dataset_utilities.py] "
 
@@ -35,6 +36,7 @@ def get_dataset(dataset_name, benchmark_path):
         "tartanair": lambda: TARTANAIR_dataset(benchmark_path),
         "caves": lambda: CAVES_dataset(benchmark_path),
         "lamar": lambda: LAMAR_dataset(benchmark_path),
+        "eth3d_mvs_dslr": lambda: ETH3D_MVS_DSLR_dataset(benchmark_path),
     }
 
     return switcher.get(dataset_name, lambda: "Invalid case")()

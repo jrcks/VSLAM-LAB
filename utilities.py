@@ -1,8 +1,9 @@
 import os
 import sys
-import tarfile
 import urllib.request
 import zipfile
+import py7zr
+import tarfile
 
 import yaml
 from PIL import Image
@@ -125,7 +126,7 @@ def downloadFile(url, dest_dir_path):
 
 def decompressFile(filepath, extract_to=None):
     """
-    Decompress a .zip, .tar.gz, or .tar file and return the extraction directory.
+    Decompress a .zip, .tar.gz, .tar, or .7z file and return the extraction directory.
     """
     if not extract_to:
         extract_to = os.path.dirname(filepath)
@@ -141,9 +142,14 @@ def decompressFile(filepath, extract_to=None):
         mode = 'r:gz' if filepath.endswith('.gz') else 'r'
         with tarfile.open(filepath, mode) as tar_ref:
             tar_ref.extractall(extract_to)
+    elif filepath.endswith('.7z'):
+        with py7zr.SevenZipFile(filepath, mode='r') as z:
+            z.extractall(path=extract_to)
     else:
-        print("Unsupported file format. Please provide a .zip, .tar.gz, or .tar file.")
+        print("Unsupported file format. Please provide a .zip, .tar.gz, .tar, or .7z file.")
         return None
+
+    return extract_to
 
 
 def replace_string_in_files(directory, old_string, new_string):
