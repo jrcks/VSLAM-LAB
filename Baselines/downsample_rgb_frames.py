@@ -58,7 +58,12 @@ def downsample_rgb_frames(rgb_txt, max_rgb_count, min_fps, verbose=False):
         print(f"  Step size: {step_size:.2f}")
 
     # Downsample RGB images
-    downsampled_paths, downsampled_timestamps = downsample_rgb(rgb_timestamps, rgb_paths, step_size, max_rgb_count)
+    if max_rgb_count >= len(rgb_paths):
+        downsampled_paths = rgb_paths
+        downsampled_timestamps = rgb_timestamps
+    else:
+        downsampled_paths, downsampled_timestamps = downsample_rgb(rgb_timestamps, rgb_paths, step_size, max_rgb_count)
+
     downsampled_duration = downsampled_timestamps[-1] - downsampled_timestamps[0]
     downsampled_fps = len(downsampled_paths) / downsampled_duration
 
