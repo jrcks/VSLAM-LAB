@@ -1,5 +1,5 @@
 glomap_500frames:
-  Config: config_debug.yaml
+  Config: config_eth.yaml
   NumRuns: 1
   Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:500,
                settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml}
