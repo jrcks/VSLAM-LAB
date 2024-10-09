@@ -1,3 +1,9 @@
+glomap_500frames:
+  Config: config_debug.yaml
+  NumRuns: 1
+  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:500,
+               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml}
+  Module: glomap
 
 ################################################ Percentage
 #ablation_glomap_50frames_SiftMatching_max_ratio:
@@ -25,157 +31,157 @@
 #  Module: glomap
 
 ################################################ Reprojection Error
-ablation_glomap_50frames_BundleAdjustment_thres_loss_function:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:BundleAdjustment.thres_loss_function}
-  Module: glomap
-
-ablation_glomap_50frames_RelPoseEstimation_max_epipolar_error:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:RelPoseEstimation.max_epipolar_error}
-  Module: glomap
-
-ablation_glomap_50frames_GlobalPositioning_thres_loss_function:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:GlobalPositioning.thres_loss_function}
-  Module: glomap
-
-ablation_glomap_50frames_Triangulation_complete_max_reproj_error:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Triangulation.complete_max_reproj_error}
-  Module: glomap
-
-ablation_glomap_50frames_Triangulation_merge_max_reproj_error:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Triangulation.merge_max_reproj_error}
-  Module: glomap
-
-ablation_glomap_50frames_Triangulation_min_angle:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Triangulation.min_angle}
-  Module: glomap
-
-ablation_glomap_50frames_Thresholds_max_angle_error:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Thresholds.max_angle_error}
-  Module: glomap
-
-ablation_glomap_50frames_Thresholds_max_reprojection_error:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Thresholds.max_reprojection_error}
-  Module: glomap
-
-ablation_glomap_50frames_Thresholds_min_triangulation_angle:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Thresholds.min_triangulation_angle}
-  Module: glomap
-
-ablation_glomap_50frames_Thresholds_max_rotation_error:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Thresholds.max_rotation_error}
-  Module: glomap
-
-ablation_glomap_50frames_Thresholds_max_epipolar_error_E:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Thresholds.max_epipolar_error_E}
-  Module: glomap
-
-ablation_glomap_50frames_Thresholds_max_epipolar_error_F:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Thresholds.max_epipolar_error_F}
-  Module: glomap
-
-ablation_glomap_50frames_Thresholds_max_epipolar_error_H:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Thresholds.max_epipolar_error_H}
-  Module: glomap
-
-ablation_glomap_50frames_SiftExtraction_peak_threshold:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:feature_extractor.SiftExtraction_peak_threshold}
-  Module: glomap
-
-ablation_glomap_50frames_SiftExtraction_edge_threshold:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:feature_extractor.SiftExtraction_edge_threshold}
-  Module: glomap
-
-ablation_glomap_50frames_SiftExtraction_dsp_min_scale:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:feature_extractor.SiftExtraction_dsp_min_scale}
-  Module: glomap
-
-ablation_glomap_50frames_SiftExtraction_dsp_max_scale:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:feature_extractor.SiftExtraction_dsp_max_scale}
-  Module: glomap
-
-ablation_glomap_50frames_SiftMatching_max_distance:
-  Config: config_debug.yaml
-  NumRuns: 100
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:matcher.SiftMatching_max_distance}
-  Module: glomap
-
-ablation_glomap_50frames_TwoViewGeometry_max_error:
-  Config: config_debug.yaml
-  NumRuns: 5
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:matcher.TwoViewGeometry_max_error}
-  Module: glomap
+#ablation_glomap_50frames_BundleAdjustment_thres_loss_function:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:BundleAdjustment.thres_loss_function}
+#  Module: glomap
+#
+#ablation_glomap_50frames_RelPoseEstimation_max_epipolar_error:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:RelPoseEstimation.max_epipolar_error}
+#  Module: glomap
+#
+#ablation_glomap_50frames_GlobalPositioning_thres_loss_function:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:GlobalPositioning.thres_loss_function}
+#  Module: glomap
+#
+#ablation_glomap_50frames_Triangulation_complete_max_reproj_error:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:Triangulation.complete_max_reproj_error}
+#  Module: glomap
+#
+#ablation_glomap_50frames_Triangulation_merge_max_reproj_error:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:Triangulation.merge_max_reproj_error}
+#  Module: glomap
+#
+#ablation_glomap_50frames_Triangulation_min_angle:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:Triangulation.min_angle}
+#  Module: glomap
+#
+#ablation_glomap_50frames_Thresholds_max_angle_error:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:Thresholds.max_angle_error}
+#  Module: glomap
+#
+#ablation_glomap_50frames_Thresholds_max_reprojection_error:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:Thresholds.max_reprojection_error}
+#  Module: glomap
+#
+#ablation_glomap_50frames_Thresholds_min_triangulation_angle:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:Thresholds.min_triangulation_angle}
+#  Module: glomap
+#
+#ablation_glomap_50frames_Thresholds_max_rotation_error:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:Thresholds.max_rotation_error}
+#  Module: glomap
+#
+#ablation_glomap_50frames_Thresholds_max_epipolar_error_E:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:Thresholds.max_epipolar_error_E}
+#  Module: glomap
+#
+#ablation_glomap_50frames_Thresholds_max_epipolar_error_F:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:Thresholds.max_epipolar_error_F}
+#  Module: glomap
+#
+#ablation_glomap_50frames_Thresholds_max_epipolar_error_H:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:Thresholds.max_epipolar_error_H}
+#  Module: glomap
+#
+#ablation_glomap_50frames_SiftExtraction_peak_threshold:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:feature_extractor.SiftExtraction_peak_threshold}
+#  Module: glomap
+#
+#ablation_glomap_50frames_SiftExtraction_edge_threshold:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:feature_extractor.SiftExtraction_edge_threshold}
+#  Module: glomap
+#
+#ablation_glomap_50frames_SiftExtraction_dsp_min_scale:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:feature_extractor.SiftExtraction_dsp_min_scale}
+#  Module: glomap
+#
+#ablation_glomap_50frames_SiftExtraction_dsp_max_scale:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:feature_extractor.SiftExtraction_dsp_max_scale}
+#  Module: glomap
+#
+#ablation_glomap_50frames_SiftMatching_max_distance:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:matcher.SiftMatching_max_distance}
+#  Module: glomap
+#
+#ablation_glomap_50frames_TwoViewGeometry_max_error:
+#  Config: config_debug.yaml
+#  NumRuns: 5
+#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
+#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
+#               ablation_param: ablation_param:matcher.TwoViewGeometry_max_error}
+#  Module: glomap
 
 ################################################ Num inliers
 #ablation_glomap_50frames_TwoViewGeometry_min_num_inliers:

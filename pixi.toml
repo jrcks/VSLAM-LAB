@@ -231,9 +231,9 @@ platforms = ["linux-64"]
 
 [feature.colmap.tasks]
 
-git-clone = "git-clone.sh alejandrofontan colmap Baselines"
-setup = "python Baselines/colmap/colmap_setup.py"
-build = {cmd = "./Baselines/colmap/build.sh", depends-on = ["git-clone", "setup"], outputs = ["Baselines/colmap/bin/colmap"] }
+git-clone = {cmd = "git-clone.sh alejandrofontan colmap Baselines", inputs = ["Baselines/colmap/*.sh"] }
+setup = {cmd = "pixi run -e vslamlab python Baselines/colmap/colmap_setup.py", inputs = ["Baselines/colmap/*.sh"] }
+build = {cmd = "./Baselines/colmap/build.sh", depends-on = ["git-clone", "setup"], inputs = ["Baselines/colmap/*.sh"] }
 execute = {cmd = './Baselines/colmap/colmap_reconstruction.sh', depends-on = ["build"]}
 
 colmap = "./Baselines/colmap/bin/colmap"
@@ -310,10 +310,10 @@ pyyaml="*"
 matplotlib="*"
 
 [feature.glomap.tasks]
-git-clone = "git-clone.sh alejandrofontan glomap Baselines"
-setup = "python Baselines/glomap/glomap_setup.py"
-build-colmap =  "pixi run -e colmap build -v"
-build = {cmd = "pixi run -e colmap ./Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"],  outputs = ["Baselines/glomap/bin/glomap"] }
+git-clone = {cmd = "git-clone.sh alejandrofontan glomap Baselines", inputs = ["Baselines/glomap/*.sh"] }
+setup = {cmd = "pixi run -e vslamlab python Baselines/glomap/glomap_setup.py", inputs = ["Baselines/glomap/*.sh"] }
+build-colmap = {cmd = "pixi run -e colmap build -v", inputs = ["Baselines/glomap/*.sh"] }
+build = {cmd = "pixi run -e colmap ./Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"],  inputs = ["Baselines/glomap/*.sh"] }
 execute = {cmd = 'pixi run -e colmap ./Baselines/glomap/glomap_reconstruction.sh', depends-on = ["build"]}
 # glomap end
 
