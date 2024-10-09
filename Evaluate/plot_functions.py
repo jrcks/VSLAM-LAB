@@ -62,9 +62,13 @@ def copy_axes_properties(source_ax, target_ax):
 
 
 def plot_trajectories(dataset_sequences, exp_names, dataset_nicknames, experiments, accuracies, comparison_path):
+    num_trajectories = 0
+    for i_dataset, (dataset_name, sequence_names) in enumerate(dataset_sequences.items()):
+        for i_sequence, sequence_name in enumerate(sequence_names):
+            num_trajectories = num_trajectories + 1
+
     # Figure dimensions
-    num_datasets = len(dataset_sequences)
-    num_rows = math.ceil(num_datasets / 5)
+    num_rows = math.ceil(num_trajectories / 5)
     xSize = 12
     ySize = num_rows * 2
 
@@ -77,6 +81,7 @@ def plot_trajectories(dataset_sequences, exp_names, dataset_nicknames, experimen
     for i_exp, exp_name in enumerate(exp_names):
         legend_handles.append(Patch(color=colors[i_exp], label=exp_names[i_exp]), )
 
+    i_traj = 0
     for i_dataset, (dataset_name, sequence_names) in enumerate(dataset_sequences.items()):
         for i_sequence, sequence_name in enumerate(sequence_names):
 
@@ -91,8 +96,9 @@ def plot_trajectories(dataset_sequences, exp_names, dataset_nicknames, experimen
                     pca = PCA(n_components=2)
                     pca.fit(pca_df)
                     gt_transformed = pca.transform(pca_df)
-                    axs[i_dataset].plot(gt_transformed[:, 0], gt_transformed[:, 1], label='gt', linestyle='-',
+                    axs[i_traj].plot(gt_transformed[:, 0], gt_transformed[:, 1], label='gt', linestyle='-',
                                         color='black')
+
 
                 search_pattern = os.path.join(vslam_lab_evaluation_folder_seq, '*_KeyFrameTrajectory.tum*')
                 files = glob.glob(search_pattern)
@@ -102,11 +108,13 @@ def plot_trajectories(dataset_sequences, exp_names, dataset_nicknames, experimen
                 pca_df.rename(columns={'tx': 'tx gt', 'ty': 'ty gt', 'tz': 'tz gt'}, inplace=True)
                 traj_transformed = pca.transform(pca_df)
 
-                axs[i_dataset].plot(traj_transformed[:, 0], traj_transformed[:, 1],
+                axs[i_traj].plot(traj_transformed[:, 0], traj_transformed[:, 1],
                                     label=exp_name, marker='.', linestyle='-', color=colors[i_exp])
 
-            axs[i_dataset].grid(True)
-            axs[i_dataset].set_title(dataset_nicknames[dataset_name][i_sequence])
+
+            axs[i_traj].grid(True)
+            axs[i_traj].set_title(dataset_nicknames[dataset_name][i_sequence])
+            i_traj = i_traj + 1
 
     fig.legend(handles=legend_handles, loc='lower center', ncol=len(legend_handles))
     plt.tight_layout()
@@ -164,10 +172,8 @@ def boxplot_exp_seq(values, dataset_sequences, exp_names, dataset_nicknames, met
             capprops = dict(color=colors[i_exp])
             flierprops = dict(marker='o', color=colors[i_exp], alpha=1.0)
 
-            for sequence_name in sequence_names:
-                positions = [(i + 1) * (width_per_series * 1.2) + i_exp * (width_per_series * 1.2) * len(sequence_names)
-                             for i in range(len(sequence_names))]
-
+            for i_seq, sequence_name in enumerate(sequence_names):
+                positions = [(i_seq + 1) * (width_per_series * 1.2) + i_exp * (width_per_series * 1.2) * len(sequence_names)]
                 boxplot_accuracy = axs[num_cols * i_dataset].boxplot(
                     values[dataset_name][sequence_name][exp_name]['rmse'],
                     positions=positions, widths=width_per_series,
