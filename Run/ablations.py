@@ -89,8 +89,8 @@ def add_noise_to_images_start(sequence_path, it, exp, fps):
             path = path.replace(RGB_BASE_FOLDER, f"{RGB_BASE_FOLDER}_ablation")
             file.write(f"{timestamp} {path}\n")
 
-    noise_m = 1
-    noise_freq = 2
+    noise_m = 0
+    noise_freq = 1
 
     def std_noise_ablation(it_):
         return (it_ % noise_freq) * noise_m
