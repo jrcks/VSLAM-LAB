@@ -73,8 +73,8 @@ def prepare_ablation(sequence_name, exp, it, exp_folder, dataset, full_command):
     # Define your ablations
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)
 
-    # ablation_parameters_i = ablations.add_noise_to_images_start(sequence_path, it, exp, dataset.rgb_hz)
-    # ablation_parameters.update(ablation_parameters_i)
+    ablation_parameters_i = ablations.add_noise_to_images_start(sequence_path, it, exp, dataset.rgb_hz)
+    ablation_parameters.update(ablation_parameters_i)
 
     settings_ablation_yaml = settings_yaml.replace('_settings', '_settings_ablation')
     if os.path.exists(settings_ablation_yaml):
@@ -95,5 +95,5 @@ def prepare_ablation(sequence_name, exp, it, exp_folder, dataset, full_command):
 def finish_ablation(sequence_name, settings_ablation_yaml, dataset):
     print(f"{ws(8)}Sequence '{sequence_name}' finishing ablation ...")
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)
-    # ablations.add_noise_to_images_finish(sequence_path)
+    ablations.add_noise_to_images_finish(sequence_path)
     ablations.parameter_ablation_finish(settings_ablation_yaml)

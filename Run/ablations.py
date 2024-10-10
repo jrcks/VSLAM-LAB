@@ -32,12 +32,12 @@ def modify_yaml_parameter(yaml_file, section_name, parameter_name, new_value):
 
 
 def parameter_ablation_start(it, ablation_param, settings_ablation_yaml):
-
     min_exp = -5
     max_exp = 2
     num_it = 100
     b = min_exp
-    m = (max_exp-min_exp)/(num_it - 1)
+    m = (max_exp - min_exp) / (num_it - 1)
+
     def parameter_ablation(it_):
         return 10 ** (m * it_ + b)
 
@@ -64,7 +64,7 @@ def parameter_ablation_finish(settings_ablation_yaml):
 
 def add_noise_to_images_start(sequence_path, it, exp, fps):
     max_rgb = 50
-    min_fps = fps
+    min_fps = fps / 10
     for parameter in exp.parameters:
         if 'max_rgb' in parameter:
             max_rgb = float(parameter.replace('max_rgb:', ''))
@@ -73,10 +73,10 @@ def add_noise_to_images_start(sequence_path, it, exp, fps):
 
     # Rename the rgb folder to rgb_saved and create a new rgb folder
     rgb_path = os.path.join(sequence_path, RGB_BASE_FOLDER)
-    rgb_path_saved = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}_saved")
-    if not os.path.exists(rgb_path_saved):
-        os.rename(rgb_path, rgb_path_saved)
-    os.makedirs(os.path.join(sequence_path, RGB_BASE_FOLDER), exist_ok=True)
+    rgb_path_ablation = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}_ablation")
+    if os.path.exists(rgb_path_ablation):
+        shutil.rmtree(rgb_path_ablation)
+    os.makedirs(rgb_path_ablation, exist_ok=True)
 
     # update rgb.txt
     rgb_txt = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}.txt")
@@ -86,10 +86,14 @@ def add_noise_to_images_start(sequence_path, it, exp, fps):
 
     with open(rgb_txt_ds, 'w') as file:
         for timestamp, path in zip(downsampled_timestamps, downsampled_paths):
+            path = path.replace(RGB_BASE_FOLDER, f"{RGB_BASE_FOLDER}_ablation")
             file.write(f"{timestamp} {path}\n")
 
+    noise_m = 1
+    noise_freq = 2
+
     def std_noise_ablation(it_):
-        return (it_ % 5) * 5
+        return (it_ % noise_freq) * noise_m
 
     source_code = inspect.getsource(std_noise_ablation)
     noise_policy = source_code[source_code.find('return') + len('return'):].strip()
@@ -107,12 +111,13 @@ def add_noise_to_images_start(sequence_path, it, exp, fps):
 
     for i, downsampled_path in enumerate(downsampled_paths):
         rgb_file = os.path.join(sequence_path, downsampled_path)
-        rgb_file_saved = rgb_file.replace(f"/{RGB_BASE_FOLDER}/", f"/{RGB_BASE_FOLDER}_saved/")
-        image = cv2.imread(rgb_file_saved)
+        rgb_file_ablation = rgb_file.replace(f"/{RGB_BASE_FOLDER}/", f"/{RGB_BASE_FOLDER}_ablation/")
+        image = cv2.imread(rgb_file)
         noisy_image = add_gaussian_noise(image, mean=0, std_dev=std_noise)
-        cv2.imwrite(os.path.join(sequence_path, rgb_file), noisy_image)
+        cv2.imwrite(os.path.join(sequence_path, rgb_file_ablation), noisy_image)
 
     ablation_parameters = {"std_noise": std_noise}
+
     return ablation_parameters
 
 
@@ -122,10 +127,8 @@ def add_noise_to_images_finish(sequence_path):
     os.remove(rgb_txt_ds)
 
     # Restore rgb folder
-    rgb_path = os.path.join(sequence_path, 'rgb')
-    rgb_path_saved = os.path.join(sequence_path, 'rgb_saved')
-    shutil.rmtree(rgb_path)
-    os.rename(rgb_path_saved, rgb_path)
+    rgb_path_ablation = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}_ablation")
+    shutil.rmtree(rgb_path_ablation)
 
 
 def find_groundtruth_txt(trajectories_path, trajectory_file):
@@ -136,7 +139,7 @@ def find_groundtruth_txt(trajectories_path, trajectory_file):
     expId = int(index_str)
     exp_row = df[df['expId'] == expId]
     thresholds_max_reprojection_error = exp_row['Thresholds.max_reprojection_error'].values[0]
-    gt_id = df[(df['std_noise'] == 0) & (df['Thresholds.max_reprojection_error'] == thresholds_max_reprojection_error)]['expId'].values[0]
+    gt_id = df[(df['std_noise'] == 0) & (df['Thresholds.max_reprojection_error'] == thresholds_max_reprojection_error)][
+        'expId'].values[0]
     groundtruth_txt = os.path.join(trajectories_path, f"{str(gt_id).zfill(5)}_KeyFrameTrajectory.txt")
     return groundtruth_txt
-
