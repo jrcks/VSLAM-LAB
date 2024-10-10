@@ -5,6 +5,7 @@ import pandas as pd
 from sklearn.covariance import EllipticEnvelope
 import numpy as np
 
+from Evaluate.metrics import recall_ate
 
 def evo_ape_zip(groundtruth_file, trajectory_file, evaluation_folder, max_time_difference=0.1):
     traj_file_name = os.path.basename(trajectory_file).replace(".txt", "")
@@ -50,7 +51,7 @@ def evo_ape_zip(groundtruth_file, trajectory_file, evaluation_folder, max_time_d
                 break
 
     df = pd.read_csv(gt_file, delimiter=' ', header=None)
-    df.columns = ['ts', 'tx gt', 'ty gt', 'tz gt', 'qx gt', 'qy gt', 'qz gt', 'qw gt']
+    df.columns = ['ts', 'tx', 'ty', 'tz', 'qx', 'qy', 'qz', 'qw']
     df = df.sort_values(by='ts')
     df.to_csv(gt_file, index=False)
 
@@ -81,7 +82,7 @@ def evo_get_accuracy(evaluation_folder):
     data = df['rmse'].dropna()
     data_reshaped = data.values.reshape(-1, 1)
 
-    # Count the number of lines
+    # Number of Evaluation Points and number of Estimated Frames
     keyframe_traj_files = [f for f in os.listdir(evaluation_folder) if '_KeyFrameTrajectory.tum' in f]
     keyframe_traj_files.sort()
     for keyframe_traj_file in keyframe_traj_files:
@@ -89,6 +90,16 @@ def evo_get_accuracy(evaluation_folder):
             traj_name = keyframe_traj_file.replace('.tum', '.txt')
             num_evaluation_points = sum(1 for line in file) - 1
             df.loc[df['traj_name'] == traj_name, 'Number of Evaluation Points'] = num_evaluation_points
+            keyframe_traj_file_not_aligned = os.path.join(evaluation_folder, '..', traj_name)
+        with open(keyframe_traj_file_not_aligned, 'r') as file:
+            num_estimated_frames = sum(1 for line in file)
+            df.loc[df['traj_name'] == traj_name, 'Number of Estimated Frames'] = num_estimated_frames
+
+        traj = pd.read_csv(os.path.join(evaluation_folder, keyframe_traj_file))
+        gt = pd.read_csv(os.path.join(evaluation_folder, 'gt.tum'))
+
+        traj_xyz = traj[['tx', 'ty', 'tz']]
+        gt_xyz = gt[['tx', 'ty', 'tz']]
 
     # Use EllipticEnvelope to fit the data
     num_traj_files = len(keyframe_traj_files)
@@ -111,3 +122,5 @@ def evo_get_accuracy(evaluation_folder):
         traj_file = os.path.join(evaluation_folder, f"{outlier_file_name.replace(".txt", "")}.tum")
         if(os.path.exists(traj_file)):
             os.remove(traj_file)
+
+

@@ -92,7 +92,7 @@ def plot_trajectories(dataset_sequences, exp_names, dataset_nicknames, experimen
                 if i_exp == 0:
                     gt_file = os.path.join(vslam_lab_evaluation_folder_seq, 'gt.tum')
                     gt_traj = pd.read_csv(gt_file)
-                    pca_df = pd.DataFrame(gt_traj, columns=['tx gt', 'ty gt', 'tz gt'])
+                    pca_df = pd.DataFrame(gt_traj, columns=['tx', 'ty', 'tz'])
                     pca = PCA(n_components=2)
                     pca.fit(pca_df)
                     gt_transformed = pca.transform(pca_df)
@@ -105,7 +105,6 @@ def plot_trajectories(dataset_sequences, exp_names, dataset_nicknames, experimen
                 idx = accuracies[dataset_name][sequence_name][exp_name]['rmse'].idxmin()
                 aligned_traj = pd.read_csv(files[idx])
                 pca_df = pd.DataFrame(aligned_traj, columns=['tx', 'ty', 'tz'])
-                pca_df.rename(columns={'tx': 'tx gt', 'ty': 'ty gt', 'tz': 'tz gt'}, inplace=True)
                 traj_transformed = pca.transform(pca_df)
 
                 axs[i_traj].plot(traj_transformed[:, 0], traj_transformed[:, 1],
@@ -149,7 +148,7 @@ def boxplot_exp_seq(values, dataset_sequences, exp_names, dataset_nicknames, met
     # Figure dimensions
     width_per_series = 0.05
     num_rows = num_datasets
-    num_cols = 4
+    num_cols = 5
     xSize = 12
     ySize = num_rows * 2
 
@@ -204,9 +203,17 @@ def boxplot_exp_seq(values, dataset_sequences, exp_names, dataset_nicknames, met
                     whiskerprops=whiskerprops,
                     capprops=capprops, flierprops=flierprops)
 
+                boxplot_num_eval_pts = axs[num_cols * i_dataset + 3].boxplot(
+                    values[dataset_name][sequence_name][exp_name]['Number of Estimated Frames'],
+                    positions=positions, widths=width_per_series,
+                    patch_artist=False,
+                    boxprops=boxprops, medianprops=medianprops,
+                    whiskerprops=whiskerprops,
+                    capprops=capprops, flierprops=flierprops)
+
                 bar_diagram_out_of_dist = axs[num_cols * i_dataset + 1].bar(positions, flier_counts, width_per_series,
                                                                             color=colors[i_exp])
-                bar_diagram_num_runs = axs[num_cols * i_dataset + 3].bar(positions,
+                bar_diagram_num_runs = axs[num_cols * i_dataset + 4].bar(positions,
                                                                          len(values[dataset_name][sequence_name][
                                                                                  exp_name]['rmse']),
                                                                          width_per_series, color=colors[i_exp])
@@ -237,7 +244,8 @@ def boxplot_exp_seq(values, dataset_sequences, exp_names, dataset_nicknames, met
             axs[0].set_title('Accuracy')
             axs[1].set_title('Out-of-distribution')
             axs[2].set_title('# Evaluation Points')
-            axs[3].set_title('# Runs')
+            axs[3].set_title('# Estimated Frames')
+            axs[4].set_title('# Runs')
 
     i = 0
     for dataset_name, sequence_names in dataset_sequences.items():
