@@ -1,7 +1,7 @@
-glomap_500frames_Thresholds_max_reprojection_error:
+glomap_50frames_Thresholds_max_reprojection_error:
   Config: config_debug.yaml
-  NumRuns: 1
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:500,
+  NumRuns: 1000
+  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
                settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
                ablation_param: ablation_param:Thresholds.max_reprojection_error}
   Module: glomap

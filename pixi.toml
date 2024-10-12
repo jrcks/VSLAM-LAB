@@ -33,7 +33,7 @@ glomap = {features = ["glomap"], no-default-feature = true}
 evo = {features = ["evo"], no-default-feature = true}
 r2d2 = {features = ["r2d2"], no-default-feature = true}
 monogs = {features = ["monogs"], no-default-feature = true}
-droidslam = {features = ["droidslam"], no-default-feature = true}
+#droidslam = {features = ["droidslam"], no-default-feature = true}
 # kalibr = {features = ["kalibr"], no-default-feature = true}
 # environments end
 

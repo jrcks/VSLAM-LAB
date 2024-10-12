@@ -39,7 +39,8 @@ def parameter_ablation_start(it, ablation_param, settings_ablation_yaml):
     m = (max_exp - min_exp) / (num_it - 1)
 
     def parameter_ablation(it_):
-        return 10 ** (m * it_ + b)
+        it__ = (it_ % 100)
+        return 10 ** (m * it__ + b)
 
     source_code = inspect.getsource(parameter_ablation)
     parameter_policy = source_code[source_code.find('return') + len('return'):].strip()
@@ -93,7 +94,10 @@ def add_noise_to_images_start(sequence_path, it, exp, fps):
     noise_freq = 1
 
     def std_noise_ablation(it_):
-        return (it_ % noise_freq) * noise_m
+        if it_ < 500:
+            return 0.0
+        else:
+            return 1.0
 
     source_code = inspect.getsource(std_noise_ablation)
     noise_policy = source_code[source_code.find('return') + len('return'):].strip()

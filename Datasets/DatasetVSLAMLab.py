@@ -166,15 +166,31 @@ class DatasetVSLAMLab:
 
 
         trajectories_path = os.path.join(exp_folder, self.dataset_folder, sequence_name)
+        trajectory_files = find_files_with_string(trajectories_path, "_KeyFrameTrajectory.txt")
+
+        # Groundtruth evaluation
         evaluation_folder = os.path.join(trajectories_path, VSLAM_LAB_EVALUATION_FOLDER)
 
         os.makedirs(evaluation_folder, exist_ok=True)
-        trajectory_files = find_files_with_string(trajectories_path, "_KeyFrameTrajectory.txt")
         print(f"{ws(4)}Evaluation of '{os.path.basename(exp_folder)}"
               f"' in '{sequence_name}': {len(trajectory_files)} trajectories")
 
         for trajectory_file in tqdm(trajectory_files):
             #groundtruth_file = find_groundtruth_txt(trajectories_path, trajectory_file)
+            self.evaluate_trajectory_accuracy(groundtruth_file, trajectory_file, evaluation_folder)
+
+        self.get_accuracy(evaluation_folder)
+        self.clean_evaluaton(evaluation_folder)
+
+        # Pseudo evaluation
+        evaluation_folder = os.path.join(trajectories_path, f"{VSLAM_LAB_EVALUATION_FOLDER}_pseudo")
+
+        os.makedirs(evaluation_folder, exist_ok=True)
+        print(f"{ws(4)}Evaluation of '{os.path.basename(exp_folder)}"
+              f"' in '{sequence_name}': {len(trajectory_files)} trajectories")
+
+        for trajectory_file in tqdm(trajectory_files):
+            groundtruth_file = find_groundtruth_txt(trajectories_path, trajectory_file)
             self.evaluate_trajectory_accuracy(groundtruth_file, trajectory_file, evaluation_folder)
 
         self.get_accuracy(evaluation_folder)
