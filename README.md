@@ -147,7 +147,7 @@ We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6
 | [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)                       |  SfM   |       mono       |         [BSD-3](https://github.com/colmap/glomap/blob/main/LICENSE)         |   `glomap`   |
 | [**DUST3R**](https://dust3r.europe.naverlabs.com)                           |  SfM   |       mono       |    [CC BY-NC-SA 4.0](https://github.com/naver/dust3r/blob/main/LICENSE)     |   `dust3r`   | 
 | [**MonoGS**](https://github.com/muskie82/MonoGS)                            | VSLAM  |       mono/RGBD/Stereo       |        [License](https://github.com/muskie82/MonoGS?tab=License-1-ov-file)         |   `monogs`   | 
-| [**DROID-SLAM**](https://github.com/princeton-vl/DROID-SLAM) | VSLAM  |       mono/RGBD/Stereo       |        [License](https://github.com/princeton-vl/DROID-SLAM/blob/main/LICENSE)         | `droidslam`  | 
+| [**DROID-SLAM**](https://github.com/princeton-vl/DROID-SLAM) | VSLAM  |       mono/RGBD/Stereo       |        [BSD 3](https://github.com/princeton-vl/DROID-SLAM/blob/main/LICENSE)         | `droidslam`  | 
 
 
 | Datasets                                                                                                                        |   Data    |    Mode    |    Label    |
