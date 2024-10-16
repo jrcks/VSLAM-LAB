@@ -136,14 +136,23 @@ def add_noise_to_images_finish(sequence_path):
 
 
 def find_groundtruth_txt(trajectories_path, trajectory_file):
+    parameter = 'feature_extractor.SiftExtraction_peak_threshold'
     ablation_parameters_csv = os.path.join(trajectories_path, ABLATION_PARAMETERS_CSV)
     traj_name = os.path.basename(trajectory_file)
     df = pd.read_csv(ablation_parameters_csv)
     index_str = traj_name.split('_')[0]
     expId = int(index_str)
     exp_row = df[df['expId'] == expId]
-    thresholds_max_reprojection_error = exp_row['Thresholds.max_reprojection_error'].values[0]
-    gt_id = df[(df['std_noise'] == 0) & (df['Thresholds.max_reprojection_error'] == thresholds_max_reprojection_error)][
-        'expId'].values[0]
+    ablation_values = exp_row[parameter].values[0]
+
+    df_noise_filter = df[df['std_noise'] == 0]
+    gt_id = df_noise_filter[(df_noise_filter[parameter].sub(ablation_values).abs() == df_noise_filter[parameter].sub(
+            ablation_values).abs().min())]
+    if gt_id.loc[gt_id['expId'] == expId].empty:
+        gt_id = np.random.choice(gt_id['expId'].values)
+    else:
+        gt_id = expId
+
+    #print(f"expId: {expId} , gtId: {gt_id}")
     groundtruth_txt = os.path.join(trajectories_path, f"{str(gt_id).zfill(5)}_KeyFrameTrajectory.txt")
     return groundtruth_txt
