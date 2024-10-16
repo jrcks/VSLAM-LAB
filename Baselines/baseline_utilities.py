@@ -11,6 +11,7 @@ from Baselines.baseline_dust3r import DUST3R_baseline
 from Baselines.baseline_monogs import MONOGS_baseline
 from Baselines.baseline_colmap import COLMAP_baseline
 from Baselines.baseline_glomap import GLOMAP_baseline
+from Baselines.baseline_droidslam import DROIDSLAM_baseline
 
 
 def get_baseline(baseline_name, baselines_path):
@@ -24,6 +25,7 @@ def get_baseline(baseline_name, baselines_path):
         "monogs": lambda: MONOGS_baseline(baselines_path),
         "colmap": lambda: COLMAP_baseline(baselines_path),
         "glomap": lambda: GLOMAP_baseline(baselines_path),
+        "droidslam": lambda: DROIDSLAM_baseline(baselines_path),
     }
 
     return switcher.get(baseline_name, lambda: "Invalid case")()

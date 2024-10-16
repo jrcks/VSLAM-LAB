@@ -33,7 +33,7 @@ glomap = {features = ["glomap"], no-default-feature = true}
 evo = {features = ["evo"], no-default-feature = true}
 r2d2 = {features = ["r2d2"], no-default-feature = true}
 monogs = {features = ["monogs"], no-default-feature = true}
-#droidslam = {features = ["droidslam"], no-default-feature = true}
+droidslam = {features = ["droidslam"], no-default-feature = true}
 # kalibr = {features = ["kalibr"], no-default-feature = true}
 # environments end
 
@@ -432,39 +432,40 @@ ruff="*"
 # monogs end
 
 # droidslam begin
-#[feature.droidslam]
-#channels = ["nvidia/label/cuda-12.0.0","conda-forge"]
-#platforms = ["linux-64"]
-#
-#[feature.droidslam.system-requirements]
-#cuda = "12.0"
-#
-#[feature.droidslam.tasks]
-#git-clone = "git-clone.sh princeton-vl DROID-SLAM Baselines"
-#build = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["git-clone"]}
-#execute = {cmd = 'python demo.py --imagedir=/media/fontan/data/VSLAM-LAB-Benchmark/RGBDTUM/rgbd_dataset_freiburg3_long_office_household/rgb --calib=calib/tum3.txt --reconstruction_path /home/fontan', cwd = "Baselines/DROID-SLAM", depends-on = ["build"]}
-#
-#[feature.droidslam.pypi-options]
-#no-build-isolation = ["torch-scatter"]
-#
-#[feature.droidslam.dependencies]
-#pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
-#cuda = "12.0.0"
-#pip = ">=24.2,<25"
-#python="3.11.*"
-#compilers = ">=1.7.0,<1.8.0"
-#make="4.2.1"
-#cmake = ">=3.30.3,<4"
-#tqdm = ">=4.66.5,<5"
-#open3d = ">=0.18.0,<0.19"
-#scipy = ">=1.14.1,<2"
-#opencv = ">=4.10.0,<5"
-#suitesparse = ">=7.8.2,<8"
-#matplotlib = ">=3.9.2,<4"
-#pyyaml = ">=6.0.2,<7"
-#
-#[feature.droidslam.pypi-dependencies]
-#torch-scatter = {version = ">=2.1.2,<3"}
+[feature.droidslam]
+channels = ["nvidia/label/cuda-12.0.0","conda-forge"]
+platforms = ["linux-64"]
+
+[feature.droidslam.system-requirements]
+cuda = "12.0"
+
+[feature.droidslam.tasks]
+git-clone = {cmd = "git-clone.sh alejandrofontan DROID-SLAM Baselines", inputs = ["Baselines/DROID-SLAM"]}
+setup = {cmd = "pixi run -e vslamlab python droidslam_setup.py", cwd = "Baselines/DROID-SLAM", depends-on = ["git-clone"]}
+build = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["git-clone"], inputs = ["build"]}
+execute = {cmd = 'python droidslam_vslamlab.py', cwd = "Baselines/DROID-SLAM", depends-on = ["build"]}
+
+[feature.droidslam.pypi-options]
+no-build-isolation = ["torch-scatter"]
+
+[feature.droidslam.dependencies]
+pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
+cuda = "12.0.0"
+pip = ">=24.2,<25"
+python="3.11.*"
+compilers = ">=1.7.0,<1.8.0"
+make="4.2.1"
+cmake = ">=3.30.3,<4"
+tqdm = ">=4.66.5,<5"
+open3d = ">=0.18.0,<0.19"
+scipy = ">=1.14.1,<2"
+opencv = ">=4.10.0,<5"
+suitesparse = ">=7.8.2,<8"
+matplotlib = ">=3.9.2,<4"
+pyyaml = ">=6.0.2,<7"
+
+[feature.droidslam.pypi-dependencies]
+torch-scatter = {version = ">=2.1.2,<3"}
 # droidslam end
 
 # kalibr begin

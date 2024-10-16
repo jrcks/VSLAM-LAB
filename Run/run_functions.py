@@ -28,32 +28,19 @@ def run_sequence(exp, baseline, exp_it, dataset, sequence_name, ablation=False):
 
     log_file_path = os.path.join(exp_folder, "system_output_" + str(exp_it).zfill(5) + ".txt")
 
-    exec_command = [f"sequence_path:{sequence_path}", f"exp_folder:{exp_folder}", f"exp_id:{exp_it}"]
-    i_par = 0
-    for parameter in exp.parameters:
-        exec_command += [str(parameter)]
-        i_par += 1
-
-    command_str = ' '.join(exec_command)
-
-    full_command = f"pixi run -e {baseline.baseline_name} execute " + command_str
+    full_command = baseline.build_execute_command(sequence_path, exp_folder, exp_it, exp.parameters)
 
     if ablation:
         settings_ablation_yaml, full_command = prepare_ablation(sequence_name, exp, exp_it, exp_folder, dataset, full_command)
-    run_executable(full_command, log_file_path)
+
+    baseline.execute(full_command, log_file_path)
+
     if ablation:
         finish_ablation(sequence_name, settings_ablation_yaml, dataset)
 
     duration_time = time.time() - run_time_start
     log_run_sequence_time(exp_folder, exp_it, duration_time)
     return duration_time
-
-
-def run_executable(command, log_file_path):
-    with open(log_file_path, 'w') as log_file:
-        print(f"{ws(6)} log file: {log_file_path}")
-        subprocess.run(command, stdout=log_file, stderr=log_file, shell=True)
-
 
 ####################################################################################################################
 

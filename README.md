@@ -42,6 +42,7 @@ pixi run demo <baseline> <dataset> <sequence>
 For a full list of available systems and datasets, see the [VSLAM-LAB Supported Baselines and Datasets](#vslam-lab-supported-baselines-and-datasets).
 Example commands:
 ```
+pixi run demo droidslam replica office0
 pixi run demo monogs hamlyn rectified01
 pixi run demo orbslam2 rgbdtum rgbd_dataset_freiburg1_xyz
 pixi run demo dso monotum sequence_25
@@ -145,7 +146,8 @@ We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6
 | [**COLMAP**](https://colmap.github.io/)                                     |  SfM   |       mono       |                [BSD](https://colmap.github.io/license.html)                 |   `colmap`   | 
 | [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)                       |  SfM   |       mono       |         [BSD-3](https://github.com/colmap/glomap/blob/main/LICENSE)         |   `glomap`   |
 | [**DUST3R**](https://dust3r.europe.naverlabs.com)                           |  SfM   |       mono       |    [CC BY-NC-SA 4.0](https://github.com/naver/dust3r/blob/main/LICENSE)     |   `dust3r`   | 
-| [**MonoGS**](https://github.com/muskie82/MonoGS)                            | VSLAM  |       mono/RGBD/Stereo       |        [License](https://github.com/muskie82/MonoGS?tab=License-1-ov-file)         |   `monogs`   | 
+| [**MonoGS**](https://github.com/muskie82/MonoGS)                            | VSLAM  |       mono/RGBD/Stereo       |     [License](https://github.com/muskie82/MonoGS?tab=License-1-ov-file)     |   `monogs`   | 
+| [**DROID-SLAM**](https://github.com/princeton-vl/DROID-SLAM) | VSLAM  |       mono/RGBD/Stereo       |    [BSD-3](https://github.com/princeton-vl/DROID-SLAM/blob/main/LICENSE)    | `droidslam`  | 
 
 
 | Datasets                                                                                                                        |   Data    |    Mode    |    Label    |

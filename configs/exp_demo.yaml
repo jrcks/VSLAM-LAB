@@ -42,3 +42,9 @@ exp_demo_orbslam2:
 #  NumRuns: 1
 #  Parameters: {config: config:Baselines/MonoGS/configs/mono/vslamlab/vslamlab.yaml, verbose: verbose:1}
 #  Module: monogs
+
+#exp_demo_droidslam:
+#  Config: config_demo.yaml
+#  NumRuns: 1
+#  Parameters: {Verbose: verbose:0, Upsample: upsample:0}
+#  Module: droidslam
