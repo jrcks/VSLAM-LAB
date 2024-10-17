@@ -31,7 +31,7 @@ def run_sequence(exp, baseline, exp_it, dataset, sequence_name, ablation=False):
     full_command = baseline.build_execute_command(sequence_path, exp_folder, exp_it, exp.parameters)
 
     if ablation:
-        settings_ablation_yaml, full_command = prepare_ablation(sequence_name, exp, exp_it, exp_folder, dataset, full_command)
+        settings_ablation_yaml, full_command = prepare_ablation(sequence_name, exp, exp_it, exp_folder, dataset, full_command, baseline)
 
     baseline.execute(full_command, log_file_path)
 
@@ -45,8 +45,9 @@ def run_sequence(exp, baseline, exp_it, dataset, sequence_name, ablation=False):
 ####################################################################################################################
 
 # Ablation methods
-def prepare_ablation(sequence_name, exp, it, exp_folder, dataset, full_command):
+def prepare_ablation(sequence_name, exp, it, exp_folder, dataset, full_command, baseline):
     print(f"{ws(8)}Sequence '{sequence_name}' preparing ablation ...")
+    settings_yaml = baseline.settings_yaml
     for parameter in exp.parameters:
         if 'settings_yaml' in parameter:
             settings_yaml = parameter.replace('settings_yaml:', '')
@@ -72,8 +73,6 @@ def prepare_ablation(sequence_name, exp, it, exp_folder, dataset, full_command):
     ablation_parameters.update(ablation_parameters_i)
 
     append_ablation_parameters_to_csv(ablation_parameters_csv, ablation_parameters)
-
-    settings_yaml = re.search(r'settings_yaml:([^\s]+)', full_command).group(1)
     modified_command = full_command.replace(settings_yaml, settings_ablation_yaml)
 
     return settings_ablation_yaml, modified_command

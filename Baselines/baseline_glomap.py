@@ -3,6 +3,8 @@ import os.path
 from Baselines.BaselineVSLAMLab import BaselineVSLAMLab
 
 from path_constants import VSLAMLAB_BASELINES
+
+
 class GLOMAP_baseline(BaselineVSLAMLab):
     def __init__(self, baselines_path):
         baseline_name = 'glomap'
@@ -16,3 +18,4 @@ class GLOMAP_baseline(BaselineVSLAMLab):
         self.label = f"\033[96m{baseline_name}\033[0m"
         self.baseline_path = baseline_path
         self.default_parameters = default_parameters
+        self.settings_yaml = os.path.join(VSLAMLAB_BASELINES, 'glomap', 'glomap_settings.yaml')

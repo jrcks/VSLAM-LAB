@@ -1,10 +1,16 @@
-glomap_50frames_Thresholds_max_reprojection_error:
+ablation_droidslam_beta:
   Config: config_debug.yaml
-  NumRuns: 1000
-  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-               ablation_param: ablation_param:Thresholds.max_reprojection_error}
-  Module: glomap
+  NumRuns: 5
+  Parameters: {Verbose: verbose:1, Upsample: upsample:0,
+               max_rgb: max_rgb:50,
+               ablation_param: ablation_param:settings.beta}
+  Module: droidslam
+
+#exp_orbslam2:
+#  Config: config_debug.yaml
+#  NumRuns: 5
+#  Parameters: {Visualization: Vis:0, Vocabulary_folder: Voc:VSLAM-LAB/Baselines/ORB_SLAM2/Vocabulary}
+#  Module: orbslam2
 
 ################################################ Percentage
 #ablation_glomap_50frames_SiftMatching_max_ratio:
