@@ -147,11 +147,13 @@ def load_experiments(exp_yaml):
         experiments[exp_name].folder = os.path.join(VSLAMLAB_EVALUATION, exp_name)
         experiments[exp_name].num_runs = settings.get('NumRuns', 1)
         experiments[exp_name].module = settings.get('Module', "default")
+        experiments[exp_name].parameters = settings['Parameters']
 
-        if settings['Parameters']:
-            for parameter_name in settings['Parameters']:
-                experiments[exp_name].parameters.append(
-                    check_parameter_for_relative_path(settings['Parameters'][parameter_name]))
+        #if settings['Parameters']:
+        #    for parameter_name in settings['Parameters']:
+        #        experiments[exp_name].parameters.append(
+        #            check_parameter_for_relative_path(settings['Parameters'][parameter_name]))
+
 
     print(f"\n{SCRIPT_LABEL}Experiment summary: {os.path.basename(exp_yaml)}")
     print(f"{ws(4)} Number of experiments: {len(experiments)}")

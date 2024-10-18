@@ -24,7 +24,7 @@ def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
         os.makedirs(exp_folder, exist_ok=True)
 
     # Build execution command
-    exec_command = baseline.build_execute_command(exp_it, exp, baseline, dataset, sequence_name)
+    exec_command = baseline.build_execute_command(exp_it, exp, dataset, sequence_name)
 
     # Prepare Ablation
     if ablation:
