@@ -2,8 +2,6 @@
 
 import time
 import os
-import subprocess
-import re
 import shutil
 
 from utilities import ws
@@ -20,26 +18,29 @@ def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
     print(f"{SCRIPT_LABEL}Running (it {exp_it + 1}/{exp.num_runs}) {baseline.label} in {dataset.dataset_color}{sequence_name}\033[0m of {dataset.dataset_label} ...")
     run_time_start = time.time()
 
-    sequence_path = os.path.join(dataset.dataset_path, sequence_name)
-
+    # Create experiment folder
     exp_folder = os.path.join(exp.folder, dataset.dataset_folder, sequence_name)
     if not os.path.exists(exp_folder):
         os.makedirs(exp_folder, exist_ok=True)
 
-    log_file_path = os.path.join(exp_folder, "system_output_" + str(exp_it).zfill(5) + ".txt")
+    # Build execution command
+    exec_command = baseline.build_execute_command(exp_it, exp, baseline, dataset, sequence_name)
 
-    full_command = baseline.build_execute_command(sequence_path, exp_folder, exp_it, exp.parameters)
-
+    # Prepare Ablation
     if ablation:
-        settings_ablation_yaml, full_command = prepare_ablation(sequence_name, exp, exp_it, exp_folder, dataset, full_command, baseline)
+        settings_ablation_yaml, full_command = prepare_ablation(sequence_name, exp, exp_it, exp_folder, dataset, exec_command, baseline)
 
-    baseline.execute(full_command, log_file_path)
+    # Execute experiment
+    baseline.execute(exec_command, exp_it, exp_folder)
 
+    # Finish Ablation
     if ablation:
         finish_ablation(sequence_name, settings_ablation_yaml, dataset)
 
+    # Log iteration duration
     duration_time = time.time() - run_time_start
     log_run_sequence_time(exp_folder, exp_it, duration_time)
+
     return duration_time
 
 ####################################################################################################################
