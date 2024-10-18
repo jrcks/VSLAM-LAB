@@ -16,7 +16,7 @@ from path_constants import ABLATION_PARAMETERS_CSV
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 
-def run_sequence(exp, baseline, exp_it, dataset, sequence_name, ablation=False):
+def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
     print(f"{SCRIPT_LABEL}Running (it {exp_it + 1}/{exp.num_runs}) {baseline.label} in {dataset.dataset_color}{sequence_name}\033[0m of {dataset.dataset_label} ...")
     run_time_start = time.time()
 

@@ -212,7 +212,7 @@ def run(experiments, exp_yaml, ablation=False, ):
                         remaining_iterations += remaining_iterations_seq
                         if num_system_output_files < exp.num_runs:
                             exp_it = num_system_output_files
-                            duration_time = run_sequence(exp, baseline, exp_it, dataset, sequence_name, ablation)
+                            duration_time = run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation)
                             remaining_time += (remaining_iterations_seq - 1) * duration_time
 
             if remaining_iterations > 0:
