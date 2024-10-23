@@ -6,6 +6,8 @@ import yaml
 import inspect
 
 from path_constants import RGB_BASE_FOLDER
+from path_constants import ABLATION_PARAMETERS_CSV
+
 from utilities import ws
 from Baselines.baseline_utilities import append_ablation_parameters_to_csv
 

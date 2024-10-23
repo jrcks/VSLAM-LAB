@@ -1,4 +1,4 @@
-test:
+glomap_50frames_Thresholds_max_reprojection_error:
   Config: config_debug.yaml
   NumRuns: 1000
   Parameters: {verbose: 0,
