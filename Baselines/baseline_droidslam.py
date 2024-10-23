@@ -8,7 +8,7 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
     def __init__(self, baselines_path):
         baseline_name = 'droidslam'
         baseline_folder = 'DROID-SLAM'
-        default_parameters = {'Verbose': 1, 'Upsample': 0}
+        default_parameters = {'verbose': 1, 'upsample': 0}
 
         # Initialize the baseline
         super().__init__(baseline_name, baselines_path)
@@ -18,21 +18,22 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
         self.settings_yaml = os.path.join(VSLAMLAB_BASELINES, baseline_folder, f'{baseline_name}_settings.yaml')
 
     def build_execute_command(self, exp_it, exp, dataset, sequence_name):
-        exec_command = super().build_execute_command_python(exp_it, exp, dataset, sequence_name)
+        vslamlab_command = super().build_execute_command_python(exp_it, exp, dataset, sequence_name)
 
-        verbose = self.default_parameters['Verbose']
-        if 'Verbose' in exp.parameters:
-            verbose = exp.parameters['Verbose']
+        exec_command = []
+        verbose = self.default_parameters['verbose']
+        if 'verbose' in exp.parameters:
+            verbose = exp.parameters['verbose']
         if not verbose:
             exec_command += [f'--disable_vis']
 
-        upsample = self.default_parameters['Upsample']
-        if 'Upsample' in exp.parameters:
-            upsample = exp.parameters['Upsample']
+        upsample = self.default_parameters['upsample']
+        if 'upsample' in exp.parameters:
+            upsample = exp.parameters['upsample']
         if upsample:
             exec_command += [f'--upsample']
 
         command_str = ' '.join(exec_command)
-        exec_command = f"pixi run -e {self.baseline_name} execute " + command_str
+        vslamlab_command = vslamlab_command + " " + command_str
 
-        return exec_command
+        return vslamlab_command

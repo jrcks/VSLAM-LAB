@@ -186,7 +186,7 @@ def evaluate(experiments):
             for dataset_name, sequence_names in config_file_data.items():
                 dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
                 for sequence_name in sequence_names:
-                    dataset.evaluate_sequence(sequence_name, exp.folder)
+                    dataset.evaluate_sequence(sequence_name, exp)
 
 
 def run(experiments, exp_yaml, ablation=False, ):

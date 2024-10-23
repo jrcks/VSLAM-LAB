@@ -1,10 +1,78 @@
-ablation_droidslam_beta:
+ablation_glomap_50frames_Thresholds_max_reprojection_error_test:
   Config: config_debug.yaml
-  NumRuns: 5
-  Parameters: {Verbose: verbose:1, Upsample: upsample:0,
-               max_rgb: max_rgb:50,
-               ablation_param: ablation_param:settings.beta}
-  Module: droidslam
+  NumRuns: 1000
+  Parameters: {verbose: 0,
+               image_noise: 1,
+               max_rgb: 50,
+               ablation_param: [Thresholds.max_reprojection_error]}
+  Module: glomap
+
+#
+#droidslam_100frames_filter_thresh:
+#  Config: config_debug.yaml
+#  NumRuns: 2000
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.filter_thresh],
+#               image_noise: 1,
+#               max_rgb: 100}
+#  Module: droidslam
+#
+#droidslam_100frames_keyframe_thresh:
+#  Config: config_debug.yaml
+#  NumRuns: 2000
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.keyframe_thresh],
+#               image_noise: 1,
+#               max_rgb: 100}
+#  Module: droidslam
+
+#droidslam_100frames_frontend_thresh:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.frontend_thresh],
+#               image_noise: 1,
+#               max_rgb: 100}
+#  Module: droidslam
+
+#droidslam_100frames_frontend_radius:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.frontend_radius],
+#               image_noise: 1,
+#               max_rgb: 100}
+#  Module: droidslam
+
+#droidslam_100frames_backend_thresh:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.backend_thresh],
+#               image_noise: 1,
+#               max_rgb: 100}
+#  Module: droidslam
+
+
+#droidslam_100frames_backend_radius:
+#  Config: config_debug.yaml
+#  NumRuns: 100
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.backend_radius],
+#               image_noise: 1,
+#               max_rgb: 100}
+#  Module: droidslam
+
+
+
+
+#ablation_droidslam_beta:
+#  Config: config_debug.yaml
+#  NumRuns: 5
+#  Parameters: {Verbose: verbose:1, Upsample: upsample:0,
+#               max_rgb: max_rgb:50,
+#               ablation_param: ablation_param:settings.beta}
+#  Module: droidslam
 
 #exp_orbslam2:
 #  Config: config_debug.yaml
