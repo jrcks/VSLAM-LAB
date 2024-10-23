@@ -61,6 +61,8 @@ py7zr="*"
 # evo begin
 [feature.evo.dependencies]
 python="3.12"
+py7zr="*"
+tqdm="*"
 
 [feature.evo.pypi-dependencies]
 evo = "*"
@@ -72,9 +74,6 @@ platforms = ["linux-64"]
 [feature.evo.tasks]
 evo = "evo"
 evo_config =  "evo_config set save_traj_in_zip true"
-evo_traj = {cmd = "evo_traj", depends-on = ["evo_config"]}
-evo_ape = {cmd = "evo_ape", depends-on = ["evo_config"]}
-evo_res = {cmd = "evo_res", depends-on = ["evo_config"]}
 # evo end
 
 # anyfeature begin

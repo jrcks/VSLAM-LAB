@@ -1,4 +1,4 @@
-ablation_glomap_50frames_Thresholds_max_reprojection_error_test:
+test:
   Config: config_debug.yaml
   NumRuns: 1000
   Parameters: {verbose: 0,

@@ -32,6 +32,7 @@ from utilities import ws
 from utilities import show_time
 
 from Run.run_functions import run_sequence
+from Evaluate.evaluate_functions import evaluate_sequence
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -89,7 +90,7 @@ def main():
         run(experiments, args.exp_yaml, args.ablation)
 
     if args.evaluate:
-        evaluate(experiments)
+        evaluate(experiments, args.ablation)
 
     if args.compare:
         compare(experiments, args.exp_yaml)
@@ -179,7 +180,7 @@ def compare(experiments, exp_yaml):
     compare_functions.full_comparison(experiments, VSLAMLAB_BENCHMARK, COMPARISONS_YAML_DEFAULT, comparison_path)
 
 
-def evaluate(experiments):
+def evaluate(experiments, ablation=False):
     print(f"\n{SCRIPT_LABEL}Evaluating (in {VSLAMLAB_EVALUATION}) ...")
     for [_, exp] in experiments.items():
         with open(exp.config_yaml, 'r') as file:
@@ -187,10 +188,10 @@ def evaluate(experiments):
             for dataset_name, sequence_names in config_file_data.items():
                 dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
                 for sequence_name in sequence_names:
-                    dataset.evaluate_sequence(sequence_name, exp)
+                    evaluate_sequence(exp, dataset, sequence_name, ablation)
 
 
-def run(experiments, exp_yaml, ablation=False, ):
+def run(experiments, exp_yaml, ablation=False):
     print(f"\n{SCRIPT_LABEL}Running experiments (in {exp_yaml}) ...")
     start_time = time.time()
 

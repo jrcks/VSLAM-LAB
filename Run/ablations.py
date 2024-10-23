@@ -4,10 +4,8 @@ import shutil
 import numpy as np
 import yaml
 import inspect
-import pandas as pd
 
 from path_constants import RGB_BASE_FOLDER
-from path_constants import ABLATION_PARAMETERS_CSV
 from utilities import ws
 from Baselines.baseline_utilities import append_ablation_parameters_to_csv
 
@@ -175,23 +173,4 @@ def add_noise_to_images_finish(sequence_path, exp_it):
         shutil.rmtree(rgb_path_ablation)
 
 
-def find_groundtruth_txt(trajectories_path, trajectory_file, exp):
-    parameter = exp.parameters['ablation_param'][0]
-    ablation_parameters_csv = os.path.join(trajectories_path, ABLATION_PARAMETERS_CSV)
-    traj_name = os.path.basename(trajectory_file)
-    df = pd.read_csv(ablation_parameters_csv)
-    index_str = traj_name.split('_')[0]
-    expId = int(index_str)
-    exp_row = df[df['expId'] == expId]
-    ablation_values = exp_row[parameter].values[0]
 
-    df_noise_filter = df[df['std_noise'] == 0]
-    gt_id = df_noise_filter[(df_noise_filter[parameter].sub(ablation_values).abs() == df_noise_filter[parameter].sub(
-        ablation_values).abs().min())]
-    if gt_id.loc[gt_id['expId'] == expId].empty:
-        gt_id = np.random.choice(gt_id['expId'].values)
-    else:
-        gt_id = expId
-
-    groundtruth_txt = os.path.join(trajectories_path, f"{str(gt_id).zfill(5)}_KeyFrameTrajectory.txt")
-    return groundtruth_txt

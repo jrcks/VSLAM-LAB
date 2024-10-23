@@ -16,19 +16,15 @@ Specifically downloading sequences, running experiments, and evaluating results.
 import os
 import sys
 from tqdm import tqdm
-
 import cv2
 import yaml
+import subprocess
 
 from path_constants import VSLAM_LAB_DIR
 from utilities import find_files_with_string
 from utilities import ws
 from utilities import check_sequence_integrity
 from path_constants import VSLAM_LAB_EVALUATION_FOLDER
-from Evaluate.evo import evo_ape_zip
-from Evaluate.evo import evo_get_accuracy
-
-from Run.ablations import find_groundtruth_txt
 
 SCRIPT_LABEL = f"[{os.path.basename(__file__)}] "
 
@@ -156,56 +152,6 @@ class DatasetVSLAMLab:
             else:
                 return "corrupted"
         return "non-available"
-
-    ####################################################################################################################
-    # Evaluation methods
-
-    def evaluate_sequence(self, sequence_name, exp):
-        sequence_path = os.path.join(self.dataset_path, sequence_name)
-        groundtruth_file = os.path.join(sequence_path, 'groundtruth.txt')
-
-
-        trajectories_path = os.path.join(exp.folder, self.dataset_folder, sequence_name)
-        trajectory_files = find_files_with_string(trajectories_path, "_KeyFrameTrajectory.txt")
-
-        # Groundtruth evaluation
-        evaluation_folder = os.path.join(trajectories_path, VSLAM_LAB_EVALUATION_FOLDER)
-
-        os.makedirs(evaluation_folder, exist_ok=True)
-        print(f"{ws(4)}Evaluation of '{os.path.basename(exp.folder)}"
-              f"' in '{sequence_name}': {len(trajectory_files)} trajectories")
-
-        for trajectory_file in tqdm(trajectory_files):
-            self.evaluate_trajectory_accuracy(groundtruth_file, trajectory_file, evaluation_folder)
-
-        self.get_accuracy(evaluation_folder)
-        self.clean_evaluaton(evaluation_folder)
-
-        # Pseudo evaluation
-        evaluation_folder = os.path.join(trajectories_path, f"{VSLAM_LAB_EVALUATION_FOLDER}_pseudo")
-
-        os.makedirs(evaluation_folder, exist_ok=True)
-        print(f"{ws(4)}Evaluation of '{os.path.basename(exp.folder)}"
-              f"' in '{sequence_name}': {len(trajectory_files)} trajectories")
-
-        for trajectory_file in tqdm(trajectory_files):
-            groundtruth_file = find_groundtruth_txt(trajectories_path, trajectory_file, exp)
-            self.evaluate_trajectory_accuracy(groundtruth_file, trajectory_file, evaluation_folder)
-
-        self.get_accuracy(evaluation_folder)
-        self.clean_evaluaton(evaluation_folder)
-
-    def evaluate_trajectory_accuracy(self, groundtruth_file, trajectory_file, evaluation_folder):
-        evo_ape_zip(groundtruth_file, trajectory_file, evaluation_folder, 1.0 / self.rgb_hz)
-
-    def get_accuracy(self, evaluation_folder):
-        evo_get_accuracy(evaluation_folder)
-
-    def clean_evaluaton(self, evaluation_folder):
-        for filename in os.listdir(evaluation_folder):
-            if filename.endswith('.zip'):
-                file_path = os.path.join(evaluation_folder, filename)
-                os.remove(file_path)
 
     ####################################################################################################################
     # Utils
