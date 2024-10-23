@@ -303,6 +303,13 @@ def activate_env(vslamlab_env):
     subprocess.run("pixi clean && pixi update", shell=True)
 
 
+def show_time(time_s):
+    if time_s < 60:
+        return f"{time_s:.2f} seconds"
+    if time_s < 3600:
+        return f"{(time_s / 60):.2f} minutes"
+    return f"{(time_s / 3600):.2f} hours"
+
 if __name__ == "__main__":
 
     if len(sys.argv) > 2:

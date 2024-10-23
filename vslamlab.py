@@ -29,6 +29,7 @@ from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, VSLAM_LAB_DI
 from utilities import check_yaml_file_integrity
 from utilities import list_datasets
 from utilities import ws
+from utilities import show_time
 
 from Run.run_functions import run_sequence
 
@@ -193,9 +194,13 @@ def run(experiments, exp_yaml, ablation=False, ):
     print(f"\n{SCRIPT_LABEL}Running experiments (in {exp_yaml}) ...")
     start_time = time.time()
 
+    num_executed_iterations = 0
+    duration_time_total = 0
+    duration_time_average = 0
+    remaining_iterations = 0
+
     while True:
         experiments_ = {}
-        remaining_time = 0
         for [exp_name, exp] in experiments.items():
             remaining_iterations = 0
             baseline = get_baseline(exp.module, VSLAMLAB_BASELINES)
@@ -215,7 +220,11 @@ def run(experiments, exp_yaml, ablation=False, ):
                         if num_system_output_files < exp.num_runs:
                             exp_it = num_system_output_files
                             duration_time = run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation)
-                            remaining_time += (remaining_iterations_seq - 1) * duration_time
+                            duration_time_total += duration_time
+                            num_executed_iterations += 1
+                            remaining_iterations -= 1
+                            #duration_time_average = duration_time_total / num_executed_iterations
+                            #remaining_time += (remaining_iterations_seq - 1) * duration_time_average
 
             if remaining_iterations > 0:
                 experiments_[exp_name] = exp
@@ -224,15 +233,19 @@ def run(experiments, exp_yaml, ablation=False, ):
             break
 
         experiments = experiments_
+
+        duration_time_average = duration_time_total / num_executed_iterations
+        remaining_time = remaining_iterations * duration_time_average
         if remaining_time > 1:
-            print(f"\033[93m[Remaining time until completion: {remaining_time:.2f} seconds]\033[0m")
+            print(f"\n{SCRIPT_LABEL}: Experiment report")
+            print(f"{ws(4)}\033[93mNumber of executed iterations: {num_executed_iterations} / {num_executed_iterations + remaining_iterations} \033[0m")
+            print(f"{ws(4)}\033[93mNumber of remaining iterations: {remaining_iterations}\033[0m")
+            print(f"{ws(4)}\033[93mTotal time consumed: {show_time(duration_time_total)}\033[0m")
+            print(f"{ws(4)}\033[93mAverage time per iteration: {show_time(duration_time_average)}\033[0m")
+            print(f"{ws(4)}\033[93mRemaining time until completion: {show_time(remaining_time)}\033[0m")
 
-    run_time = (time.time() - start_time) / 60.0
-    if run_time > 60.0:
-         print(f"\033[93m[Experiment runtime: {run_time / 60.0} hours]\033[0m")
-    else:
-         print(f"\033[93m[Experiment runtime: {run_time} minutes]\033[0m")
-
+    run_time = (time.time() - start_time)
+    print(f"\033[93m[Experiment runtime: {show_time(run_time)}]\033[0m")
 
 def download(config_files):
     download_issues = find_download_issues(config_files)
