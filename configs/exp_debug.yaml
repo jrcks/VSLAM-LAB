@@ -1,9 +1,9 @@
 glomap_50frames_Thresholds_max_reprojection_error:
   Config: config_debug.yaml
-  NumRuns: 1000
+  NumRuns: 2000
   Parameters: {verbose: 0,
-               image_noise: 1,
                max_rgb: 50,
+               image_noise: 1,
                ablation_param: [Thresholds.max_reprojection_error]}
   Module: glomap
 
