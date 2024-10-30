@@ -6,10 +6,6 @@ from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
 from utilities import downloadFile
 from utilities import decompressFile
 
-from Evaluate.align_trajectories import align_trajectory_with_groundtruth
-from Evaluate import metrics
-
-from Evaluate.evo import evo_ape_zip
 
 class ETH_dataset(DatasetVSLAMLab):
     def __init__(self, benchmark_path):

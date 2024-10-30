@@ -12,7 +12,7 @@ from utilities import check_yaml_file_integrity
 from utilities import find_common_sequences
 
 SCRIPT_LABEL = "[compare_functions.py] "
-VSLAM_LAB_ACCURACY_CSV = 'accuracy.csv'
+VSLAM_LAB_ACCURACY_CSV = 'ate.csv'
 
 
 def full_comparison(experiments, VSLAMLAB_BENCHMARK, COMPARISONS_YAML_DEFAULT, comparison_path):
