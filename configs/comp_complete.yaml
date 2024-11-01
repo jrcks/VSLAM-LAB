@@ -1,5 +1,5 @@
 accuracy_boxplot: 1
 cumulated_error: 1
-image_canvas: 1
-accuracy_radar: 1
+image_canvas: 0
+accuracy_radar: 0
 trajectories: 1

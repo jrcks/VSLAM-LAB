@@ -64,9 +64,7 @@ def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max
     df = pd.read_csv(destination_file_path, delimiter=' ', header=None)
     df.columns = ['ts', 'tx', 'ty', 'tz', 'qx', 'qy', 'qz', 'qw']
     df = df.sort_values(by='ts')
-    #df.to_csv(destination_file_path, index=False)
     #df.to_csv(destination_file_path, header=None, index=False, sep=' ', lineterminator='\n')
-    #df.to_csv(destination_file_path, index=False, sep=' ', lineterminator='\n')
     df.to_csv(destination_file_path, index=False, sep=' ', lineterminator='\n')
 
     # Write aligned gt
@@ -84,8 +82,8 @@ def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max
     df = pd.read_csv(gt_tum, delimiter=' ', header=None)
     df.columns = ['ts', 'tx', 'ty', 'tz', 'qx', 'qy', 'qz', 'qw']
     df = df.sort_values(by='ts')
-    #df.to_csv(gt_tum, index=False, header=None)
-    df.to_csv(gt_tum, header=None, index=False, sep=' ', lineterminator='\n')
+    #df.to_csv(gt_tum, header=None, index=False, sep=' ', lineterminator='\n')
+    df.to_csv(gt_tum,  index=False, sep=' ', lineterminator='\n')
 
 def evo_get_accuracy(metric, evaluation_folder):
 

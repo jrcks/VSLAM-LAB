@@ -4,6 +4,7 @@ import shutil
 import numpy as np
 import yaml
 import inspect
+import time
 
 from path_constants import RGB_BASE_FOLDER
 from path_constants import ABLATION_PARAMETERS_CSV
@@ -139,6 +140,7 @@ def add_noise_to_images_start(exp_it, exp, dataset, sequence_name):
     os.makedirs(rgb_path_ablation, exist_ok=True)
 
     def add_gaussian_noise(image_, mean=0, std_dev=25):
+        np.random.seed(int(time.time() * 1000) % (2**32))
         noise = np.random.normal(mean, std_dev, image_.shape).astype(np.float32)
         noisy_image_ = image_ + noise
         noisy_image_ = np.clip(noisy_image_, 0, 255).astype(np.uint8)

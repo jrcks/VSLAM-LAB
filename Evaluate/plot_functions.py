@@ -90,26 +90,24 @@ def plot_trajectories(dataset_sequences, exp_names, dataset_nicknames, experimen
                                                                sequence_name, VSLAM_LAB_EVALUATION_FOLDER)
 
                 if i_exp == 0:
-                    gt_file = os.path.join(vslam_lab_evaluation_folder_seq, 'gt.tum')
-                    gt_traj = pd.read_csv(gt_file)
+                    idx = accuracies[dataset_name][sequence_name][exp_name]['rmse'].idxmin()
+                    gt_file = os.path.join(vslam_lab_evaluation_folder_seq, f'{idx:05d}_gt.tum')
+                    gt_traj = pd.read_csv(gt_file, delimiter=' ')
                     pca_df = pd.DataFrame(gt_traj, columns=['tx', 'ty', 'tz'])
                     pca = PCA(n_components=2)
                     pca.fit(pca_df)
                     gt_transformed = pca.transform(pca_df)
-                    axs[i_traj].plot(gt_transformed[:, 0], gt_transformed[:, 1], label='gt', linestyle='-',
-                                        color='black')
-
+                    axs[i_traj].plot(gt_transformed[:, 0], gt_transformed[:, 1], label='gt', linestyle='-', color='black')
 
                 search_pattern = os.path.join(vslam_lab_evaluation_folder_seq, '*_KeyFrameTrajectory.tum*')
                 files = glob.glob(search_pattern)
                 idx = accuracies[dataset_name][sequence_name][exp_name]['rmse'].idxmin()
-                aligned_traj = pd.read_csv(files[idx])
+                aligned_traj = pd.read_csv(files[idx], delimiter=' ')
                 pca_df = pd.DataFrame(aligned_traj, columns=['tx', 'ty', 'tz'])
                 traj_transformed = pca.transform(pca_df)
 
                 axs[i_traj].plot(traj_transformed[:, 0], traj_transformed[:, 1],
                                     label=exp_name, marker='.', linestyle='-', color=colors[i_exp])
-
 
             axs[i_traj].grid(True)
             axs[i_traj].set_title(dataset_nicknames[dataset_name][i_sequence])
