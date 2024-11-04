@@ -1,11 +1,11 @@
-droidslam_noise:
-  Config: config_debug.yaml
-  NumRuns: 2000
-  Parameters: {verbose: 0, upsample: 0,
-               ablation_param: [settings.filter_thresh],
-               image_noise: 1,
-               max_rgb: 50}
-  Module: droidslam
+#droidslam_noise:
+#  Config: config_debug.yaml
+#  NumRuns: 2000
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.filter_thresh],
+#               image_noise: 1,
+#               max_rgb: 50}
+#  Module: droidslam
 
 #glomap_50frames_noise: ???????????
 #  Config: config_debug.yaml
@@ -32,7 +32,7 @@ droidslam_noise:
 
 #glomap_50frames_BundleAdjustment_thres_loss_function:
 #  Config: config_debug.yaml
-#  NumRuns: 2000
+#  NumRuns: 1000
 #  Parameters: {verbose: 0,
 #               max_rgb: 50,
 #               image_noise: 1,
@@ -41,7 +41,7 @@ droidslam_noise:
 
 #glomap_50frames_TwoViewGeometry_max_error:
 #  Config: config_debug.yaml
-#  NumRuns: 2000
+#  NumRuns: 3500
 #  Parameters: {verbose: 0,
 #               max_rgb: 50,
 #               image_noise: 1,

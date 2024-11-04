@@ -10,11 +10,12 @@ import pandas as pd
 import numpy as np
 from utilities import find_files_with_string
 from path_constants import ABLATION_PARAMETERS_CSV
+import re
 
 #from sklearn.covariance import EllipticEnvelope
 #from Evaluate.metrics import recall_ate
 
-def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max_time_difference=0.1):
+def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max_time_difference=0.1, index = "none"):
     accuracy_csv = os.path.join(evaluation_folder, f"{metric}.csv")
     traj_file_name = os.path.basename(trajectory_file).replace(".txt", "")
 
@@ -24,6 +25,10 @@ def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max
     #last_column = trajectory_sorted.iloc[:, -1]
     #trajectory_sorted = trajectory_sorted.iloc[:, :-1]
     #trajectory_sorted.insert(4, 'last_column', last_column)
+    if index != "none":
+        traj_file_name = traj_file_name.replace("KeyFrameTrajectory", f"{index:02d}_KeyFrameTrajectory")
+        trajectory_file = os.path.join(evaluation_folder, f"{traj_file_name}.txt")
+
     trajectory_sorted.to_csv(trajectory_file, header=None, index=False, sep=' ', lineterminator='\n')
 
     # Check if evaluation already exists
@@ -43,7 +48,7 @@ def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max
     if metric == 'rpe':
         command = f"evo_rpe tum {groundtruth_file} {trajectory_file} --all_pairs --delta 5 -va -as --save_results {traj_zip}"
 
-    subprocess.run(command, shell=True)#, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     if not os.path.exists(traj_zip):
         return
 
@@ -86,7 +91,6 @@ def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max
     df.to_csv(gt_tum,  index=False, sep=' ', lineterminator='\n')
 
 def evo_get_accuracy(metric, evaluation_folder):
-
     # Append new data to accuracy_raw
     accuracy_raw = os.path.join(evaluation_folder, f'{metric}_raw.csv')
     if os.path.exists(accuracy_raw):
@@ -120,23 +124,15 @@ def evo_get_accuracy(metric, evaluation_folder):
             num_evaluation_points = sum(1 for line in file) - 1
             df.loc[df['traj_name'] == traj_name, 'Number of Evaluation Points'] = num_evaluation_points
             keyframe_traj_file_not_aligned = os.path.join(evaluation_folder, '..', traj_name)
+            keyframe_traj_file_not_aligned = re.sub(r"_(\d{2})_", "_", keyframe_traj_file_not_aligned)
         with open(keyframe_traj_file_not_aligned, 'r') as file:
             num_estimated_frames = sum(1 for line in file)
             df.loc[df['traj_name'] == traj_name, 'Number of Estimated Frames'] = num_estimated_frames
 
-    outlier_indices = []
-    cleaned_df = df
-
     accuracy = os.path.join(evaluation_folder, f'{metric}.csv')
     if os.path.exists(accuracy):
         os.remove(accuracy)
-    cleaned_df.to_csv(accuracy, index=False)
-
-    outlier_file_names = df.iloc[outlier_indices].iloc[:, 0]
-    for outlier_file_name in outlier_file_names:
-        traj_file = os.path.join(evaluation_folder, f"{outlier_file_name.replace(".txt", "")}.tum")
-        if (os.path.exists(traj_file)):
-            os.remove(traj_file)
+    df.to_csv(accuracy, index=False)
 
     # Remove zip files
     for filename in os.listdir(evaluation_folder):
@@ -155,15 +151,22 @@ def find_groundtruth_txt(trajectories_path, trajectory_file, parameter):
 
     min_noise = df['std_noise'].min()
     df_noise_filter = df[df['std_noise'] == min_noise]
-    gt_ids = df_noise_filter[(df_noise_filter[parameter].sub(ablation_values).abs() == df_noise_filter[parameter].sub(
-        ablation_values).abs().min())]
 
-    gt_id = expId
-    while gt_id == expId:
-        gt_id = np.random.choice(gt_ids['expId'].values)
+    threshold_percent = 0.1
+    lower_bound = ablation_values * (1 - threshold_percent / 100)
+    upper_bound = ablation_values * (1 + threshold_percent / 100)
 
-    groundtruth_txt = os.path.join(trajectories_path, f"{str(gt_id).zfill(5)}_KeyFrameTrajectory.txt")
-    return groundtruth_txt
+    gt_ids = df_noise_filter[
+        (df_noise_filter[parameter] >= lower_bound) & (df_noise_filter[parameter] <= upper_bound)
+    ]
+    groundtruths_txt = []
+    for gt_id in gt_ids['expId'].values:
+        groundtruth_txt = os.path.join(trajectories_path, f"{str(gt_id).zfill(5)}_KeyFrameTrajectory.txt")
+        if gt_id != expId:
+            if os.path.exists(groundtruth_txt):
+                groundtruths_txt.append(groundtruth_txt)
+
+    return groundtruths_txt
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
@@ -179,8 +182,11 @@ if __name__ == "__main__":
             for trajectory_file in tqdm(trajectory_files):
                 if pseudo_groundtruth:
                     parameter = sys.argv[7]
-                    groundtruth_file = find_groundtruth_txt(trajectories_path, trajectory_file, parameter)
-                evo_metric(function_name, groundtruth_file, trajectory_file, evaluation_folder, float(max_time_difference))
+                    groundtruth_files = find_groundtruth_txt(trajectories_path, trajectory_file, parameter)
+                    for idx, groundtruth_file in enumerate(groundtruth_files):
+                        evo_metric(function_name, groundtruth_file, trajectory_file, evaluation_folder, float(max_time_difference), idx)
+                else:
+                    evo_metric(function_name, groundtruth_file, trajectory_file, evaluation_folder, float(max_time_difference))
             evo_get_accuracy(function_name, evaluation_folder)
 
 
