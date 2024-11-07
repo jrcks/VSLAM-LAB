@@ -42,6 +42,9 @@ def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max
     traj_tum = os.path.join(evaluation_folder, f"{traj_file_name}.tum")
     gt_tum = traj_tum.replace("KeyFrameTrajectory", "gt")
 
+    if os.path.exists(traj_zip):
+        return
+
     # Evaluate
     if metric == 'ate':
         command = (f"evo_ape tum {groundtruth_file} {trajectory_file} -va -as "
@@ -93,25 +96,36 @@ def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max
 
 
 def evo_get_accuracy(metric, evaluation_folder):
-    # Append new data to accuracy_raw
+
+    files_in_folder = os.listdir(evaluation_folder)
+    zip_files = [file for file in files_in_folder if file.endswith('.zip')]
+    zip_files.sort()
+    num_zip_files = len(zip_files)
+    if num_zip_files == 0:
+        return
+    chunk_size = 500
+    zip_files_chunks = [zip_files[i:i + chunk_size] for i in range(0, len(zip_files), chunk_size)]
+    zip_files_chunks = [' '.join(os.path.join(evaluation_folder, file) for file in chunk) for chunk in zip_files_chunks]
+
     accuracy_raw = os.path.join(evaluation_folder, f'{metric}_raw.csv')
-    if os.path.exists(accuracy_raw):
-        existing_data = pd.read_csv(accuracy_raw)
-        os.remove(accuracy_raw)
-    else:
-        existing_data = None
+    for zip_file_chunk in zip_files_chunks:
+        if os.path.exists(accuracy_raw):
+            existing_data = pd.read_csv(accuracy_raw)
+            os.remove(accuracy_raw)
+        else:
+            existing_data = None
 
-    command = (f"pixi run -e evo evo_res {os.path.join(evaluation_folder, "*.zip")} --save_table {accuracy_raw}")
-    subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        command = (f"pixi run -e evo evo_res {zip_file_chunk} --save_table {accuracy_raw}")
+        subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-    if os.path.exists(accuracy_raw):
-        new_data = pd.read_csv(accuracy_raw)
-        if existing_data is not None:
-            combined_data = pd.concat([existing_data, new_data], ignore_index=True)
-            combined_data.to_csv(accuracy_raw, index=False)
-    else:
-        if existing_data is not None:
-            existing_data.to_csv(accuracy_raw, index=False)
+        if os.path.exists(accuracy_raw):
+            new_data = pd.read_csv(accuracy_raw)
+            if existing_data is not None:
+                combined_data = pd.concat([existing_data, new_data], ignore_index=True)
+                combined_data.to_csv(accuracy_raw, index=False)
+        else:
+            if existing_data is not None:
+                existing_data.to_csv(accuracy_raw, index=False)
 
     #
     df = pd.read_csv(accuracy_raw)

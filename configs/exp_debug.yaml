@@ -9,7 +9,7 @@
 
 droidslam_50frames_beta:
   Config: config_debug.yaml
-  NumRuns: 2520
+  NumRuns: 1807
   Parameters: {verbose: 0, upsample: 0,
                ablation_param: [settings.beta],
                image_noise: 1,
@@ -79,7 +79,7 @@ droidslam_50frames_beta:
 
 #glomap_50frames_nominal:
 #  Config: config_debug.yaml
-#  NumRuns: 2000
+#  NumRuns: 2
 #  Parameters: {verbose: 0,
 #               max_rgb: 50}
 #  Module: glomap
