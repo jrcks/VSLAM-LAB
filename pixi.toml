@@ -19,6 +19,8 @@ add_dataset_from_image_folders = {cmd = "pixi run -e vslamlab python Datasets/ex
 deactivate_env = {cmd = "pixi run -e vslamlab python utilities.py deactivate_env"}
 activate_env = {cmd = "pixi run -e vslamlab python utilities.py activate_env"}
 
+clean_experiment = {cmd = "pixi run -e vslamlab python Evaluate/clean_experiment.py"}
+
 # environments begin
 [environments]
 vslamlab = {features = ["vslamlab"], no-default-feature = true}
@@ -315,6 +317,8 @@ setup = {cmd = "pixi run -e vslamlab python Baselines/glomap/glomap_setup.py", i
 build-colmap = {cmd = "pixi run -e colmap build -v", inputs = ["Baselines/glomap/*.sh"] }
 build = {cmd = "pixi run -e colmap ./Baselines/glomap/build.sh", depends-on = ["git-clone", "setup", "build-colmap"],  inputs = ["Baselines/glomap/*.sh"] }
 execute = {cmd = 'pixi run -e colmap ./Baselines/glomap/glomap_reconstruction.sh', depends-on = ["build"]}
+rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
+
 # glomap end
 
 # ros begin

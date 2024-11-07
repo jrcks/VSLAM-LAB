@@ -7,6 +7,69 @@
 #               max_rgb: 50}
 #  Module: droidslam
 
+droidslam_50frames_beta:
+  Config: config_debug.yaml
+  NumRuns: 2520
+  Parameters: {verbose: 0, upsample: 0,
+               ablation_param: [settings.beta],
+               image_noise: 1,
+               max_rgb: 50}
+  Module: droidslam
+
+#droidslam_50frames_keyframe_thresh:
+#  Config: config_debug.yaml
+#  NumRuns: 500
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.keyframe_thresh],
+#               image_noise: 1,
+#               max_rgb: 50}
+#  Module: droidslam
+
+#droidslam_50frames_frontend_thresh:
+#  Config: config_debug.yaml
+#  NumRuns: 500
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.frontend_thresh],
+#               image_noise: 1,
+#               max_rgb: 50}
+#  Module: droidslam
+
+#droidslam_50frames_frontend_radius:
+#  Config: config_debug.yaml
+#  NumRuns: 500
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.frontend_radius],
+#               image_noise: 1,
+#               max_rgb: 50}
+#  Module: droidslam
+
+#droidslam_50frames_filter_thresh:
+#  Config: config_debug.yaml
+#  NumRuns: 500
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.filter_thresh],
+#               image_noise: 1,
+#               max_rgb: 50}
+#  Module: droidslam
+
+#droidslam_50frames_backend_thresh:
+#  Config: config_debug.yaml
+#  NumRuns: 500
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.backend_thresh],
+#               image_noise: 1,
+#               max_rgb: 50}
+#  Module: droidslam
+
+#droidslam_50frames_backend_radius:
+#  Config: config_debug.yaml
+#  NumRuns: 500
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.backend_radius],
+#               image_noise: 1,
+#               max_rgb: 50}
+#  Module: droidslam
+
 #glomap_50frames_noise: ???????????
 #  Config: config_debug.yaml
 #  NumRuns: 2000
@@ -32,7 +95,7 @@
 
 #glomap_50frames_BundleAdjustment_thres_loss_function:
 #  Config: config_debug.yaml
-#  NumRuns: 1000
+#  NumRuns: 2000
 #  Parameters: {verbose: 0,
 #               max_rgb: 50,
 #               image_noise: 1,
@@ -56,7 +119,7 @@
 #               image_noise: 1,
 #               ablation_param: [feature_extractor.SiftExtraction_peak_threshold]}
 #  Module: glomap
-
+#
 #glomap_50frames_SiftMatching_max_ratio:
 #  Config: config_debug.yaml
 #  NumRuns: 2000
