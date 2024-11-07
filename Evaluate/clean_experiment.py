@@ -64,8 +64,8 @@ for dataset in datasets:
             log_ablation_parameters_df.to_csv(log_ablation_parameters_csv, index=False)
             log_run_sequence_time_df.to_csv(log_run_sequence_time_csv, index=False)
 
-            evaluation_folders = [item for item in os.listdir(sequence_path) if os.path.isdir(os.path.join(sequence_path, item)) and "evaluation " in item]
+            evaluation_folders = [item for item in os.listdir(sequence_path) if os.path.isdir(os.path.join(sequence_path, item)) and "evaluation" in item]
             for evaluation_folder in evaluation_folders:
-                shutil.rmtree(evaluation_folder)
+                shutil.rmtree(os.path.join(sequence_path, evaluation_folder))
         else:
             print(f"\n{SCRIPT_LABEL}{GREEN}Succesful sequence:{RESET} {sequence_path}")
