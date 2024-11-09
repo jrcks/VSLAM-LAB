@@ -139,8 +139,9 @@ def evo_get_accuracy(metric, evaluation_folder):
             traj_name = keyframe_traj_file.replace('.tum', '.txt')
             num_evaluation_points = sum(1 for line in file) - 1
             df.loc[df['traj_name'] == traj_name, 'Number of Evaluation Points'] = num_evaluation_points
-            keyframe_traj_file_not_aligned = os.path.join(evaluation_folder, '..', traj_name)
-            keyframe_traj_file_not_aligned = re.sub(r"_(\d{2})_", "_", keyframe_traj_file_not_aligned)
+
+            traj_name_0 = re.sub(r"_(\d{2})_", "_", traj_name)
+            keyframe_traj_file_not_aligned = os.path.join(evaluation_folder, '..', traj_name_0)
         with open(keyframe_traj_file_not_aligned, 'r') as file:
             num_estimated_frames = sum(1 for line in file)
             df.loc[df['traj_name'] == traj_name, 'Number of Estimated Frames'] = num_estimated_frames

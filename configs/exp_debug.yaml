@@ -7,14 +7,23 @@
 #               max_rgb: 50}
 #  Module: droidslam
 
-droidslam_50frames_beta:
-  Config: config_debug.yaml
-  NumRuns: 1807
-  Parameters: {verbose: 0, upsample: 0,
-               ablation_param: [settings.beta],
-               image_noise: 1,
-               max_rgb: 50}
-  Module: droidslam
+#droidslam_nominal:
+#  Config: config_debug.yaml
+#  NumRuns: 5
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.beta],
+#               image_noise: 5,
+#               max_rgb: 500}
+#  Module: droidslam
+
+#droidslam_50frames_beta:
+#  Config: config_debug.yaml
+#  NumRuns: 1807
+#  Parameters: {verbose: 0, upsample: 0,
+#               ablation_param: [settings.beta],
+#               image_noise: 1,
+#               max_rgb: 50}
+#  Module: droidslam
 
 #droidslam_50frames_keyframe_thresh:
 #  Config: config_debug.yaml
@@ -84,41 +93,41 @@ droidslam_50frames_beta:
 #               max_rgb: 50}
 #  Module: glomap
 
-#glomap_50frames_Thresholds_max_reprojection_error:
-#  Config: config_debug.yaml
-#  NumRuns: 2000
-#  Parameters: {verbose: 0,
-#               max_rgb: 50,
-#               image_noise: 1,
-#               ablation_param: [Thresholds.max_reprojection_error]}
-#  Module: glomap
+glomap_50frames_Thresholds_max_reprojection_error:
+  Config: config_debug.yaml
+  NumRuns: 2000
+  Parameters: {verbose: 0,
+               max_rgb: 50,
+               image_noise: 1,
+               ablation_param: [Thresholds.max_reprojection_error]}
+  Module: glomap
 
-#glomap_50frames_BundleAdjustment_thres_loss_function:
-#  Config: config_debug.yaml
-#  NumRuns: 2000
-#  Parameters: {verbose: 0,
-#               max_rgb: 50,
-#               image_noise: 1,
-#               ablation_param: [BundleAdjustment.thres_loss_function]}
-#  Module: glomap
+glomap_50frames_BundleAdjustment_thres_loss_function:
+  Config: config_debug.yaml
+  NumRuns: 2000
+  Parameters: {verbose: 0,
+               max_rgb: 50,
+               image_noise: 1,
+               ablation_param: [BundleAdjustment.thres_loss_function]}
+  Module: glomap
 
-#glomap_50frames_TwoViewGeometry_max_error:
-#  Config: config_debug.yaml
-#  NumRuns: 3500
-#  Parameters: {verbose: 0,
-#               max_rgb: 50,
-#               image_noise: 1,
-#               ablation_param: [matcher.TwoViewGeometry_max_error]}
-#  Module: glomap
+glomap_50frames_TwoViewGeometry_max_error:
+  Config: config_debug.yaml
+  NumRuns: 2000
+  Parameters: {verbose: 0,
+               max_rgb: 50,
+               image_noise: 1,
+               ablation_param: [matcher.TwoViewGeometry_max_error]}
+  Module: glomap
 
-#glomap_50frames_SiftExtraction_peak_threshold:
-#  Config: config_debug.yaml
-#  NumRuns: 2000
-#  Parameters: {verbose: 0,
-#               max_rgb: 50,
-#               image_noise: 1,
-#               ablation_param: [feature_extractor.SiftExtraction_peak_threshold]}
-#  Module: glomap
+glomap_50frames_SiftExtraction_peak_threshold:
+  Config: config_debug.yaml
+  NumRuns: 2000
+  Parameters: {verbose: 0,
+               max_rgb: 50,
+               image_noise: 1,
+               ablation_param: [feature_extractor.SiftExtraction_peak_threshold]}
+  Module: glomap
 #
 #glomap_50frames_SiftMatching_max_ratio:
 #  Config: config_debug.yaml
