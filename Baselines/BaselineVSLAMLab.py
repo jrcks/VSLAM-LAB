@@ -53,9 +53,6 @@ class BaselineVSLAMLab:
             else:
                 vslamlab_command += [f"{str(parameter_name)}:{str(parameter_value)}"]
 
-        command_str = ' '.join(vslamlab_command)
-        vslamlab_command = f"pixi run -e {self.baseline_name} execute " + command_str
-
         return vslamlab_command
 
     def build_execute_command_python(self, exp_it, exp, dataset, sequence_name):

@@ -1,14 +1,14 @@
-exp_demo_dso:
-  Config: config_demo.yaml
-  NumRuns: 81
-  Parameters: {Preset: preset:0, Mode: mode:1}
-  Module: dso
-
 exp_demo_orbslam2:
   Config: config_demo.yaml
   NumRuns: 81
-  Parameters: {verbose: 0, vocabulary: Vocabulary/ORBvoc.txt}
+  Parameters: {verbose: 0, vocabulary: Vocabulary/ORBvoc.txt, mode: mono}
   Module: orbslam2
+
+#exp_demo_dso:
+#  Config: config_demo.yaml
+#  NumRuns: 81
+#  Parameters: {Preset: preset:0, Mode: mode:1}
+#  Module: dso
 
 #exp_demo_anyfeature:
 #  Config: config_demo.yaml

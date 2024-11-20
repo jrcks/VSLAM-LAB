@@ -130,7 +130,8 @@ platforms = ["linux-64"]
 [feature.orbslam2.tasks]
 git-clone = "git-clone.sh alejandrofontan ORB_SLAM2_VSLAMLAB Baselines"
 build = {cmd = "./build.sh", depends-on = ["git-clone"], cwd = "Baselines/ORB_SLAM2_VSLAMLAB"}
-execute = {cmd = "./bin/mono", depends-on = ["build"], cwd = "Baselines/ORB_SLAM2_VSLAMLAB"}
+execute_mono = {cmd = "./bin/mono", depends-on = ["build"], cwd = "Baselines/ORB_SLAM2_VSLAMLAB"}
+execute_rgbd = {cmd = "./bin/rgbd", depends-on = ["build"], cwd = "Baselines/ORB_SLAM2_VSLAMLAB"}
 
 [feature.orbslam2.dependencies]
 cxx-compiler="*"

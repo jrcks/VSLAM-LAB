@@ -20,4 +20,6 @@ class GLOMAP_baseline(BaselineVSLAMLab):
 
     def build_execute_command(self, exp_it, exp, dataset, sequence_name):
         vslamlab_command = super().build_execute_command_cpp(exp_it, exp, dataset, sequence_name)
+        vslamlab_command = f"pixi run -e {self.baseline_name} execute " + ' '.join(vslamlab_command)
+
         return vslamlab_command
