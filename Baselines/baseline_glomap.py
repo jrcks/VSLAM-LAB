@@ -20,15 +20,4 @@ class GLOMAP_baseline(BaselineVSLAMLab):
 
     def build_execute_command(self, exp_it, exp, dataset, sequence_name):
         vslamlab_command = super().build_execute_command_cpp(exp_it, exp, dataset, sequence_name)
-
-        exec_command = []
-        for parameter_name, parameter_value in self.default_parameters.items():
-            if parameter_name in exp.parameters:
-                exec_command += [f"{str(parameter_name)}:{str(exp.parameters[parameter_name])}"]
-            else:
-                exec_command += [f"{str(parameter_name)}:{str(parameter_value)}"]
-
-        command_str = ' '.join(exec_command)
-        vslamlab_command = vslamlab_command + " " + command_str
-
         return vslamlab_command

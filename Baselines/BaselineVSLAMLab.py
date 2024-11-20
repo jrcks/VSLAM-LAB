@@ -40,16 +40,23 @@ class BaselineVSLAMLab:
         calibration_yaml = os.path.join(sequence_path, 'calibration.yaml')
         rgb_exp_txt = os.path.join(exp_folder, 'rgb_exp.txt')
 
-        exec_command = [f"sequence_path:{sequence_path}",
-                        f"calibration_yaml:{calibration_yaml}",
-                        f"rgb_txt:{rgb_exp_txt}",
-                        f"exp_folder:{exp_folder}",
-                        f"exp_id:{exp_it}",
-                        f"settings_yaml:{self.settings_yaml}"]
+        vslamlab_command = [f"sequence_path:{sequence_path}",
+                            f"calibration_yaml:{calibration_yaml}",
+                            f"rgb_txt:{rgb_exp_txt}",
+                            f"exp_folder:{exp_folder}",
+                            f"exp_id:{exp_it}",
+                            f"settings_yaml:{self.settings_yaml}"]
 
-        command_str = ' '.join(exec_command)
-        full_command = f"pixi run -e {self.baseline_name} execute " + command_str
-        return full_command
+        for parameter_name, parameter_value in self.default_parameters.items():
+            if parameter_name in exp.parameters:
+                vslamlab_command += [f"{str(parameter_name)}:{str(exp.parameters[parameter_name])}"]
+            else:
+                vslamlab_command += [f"{str(parameter_name)}:{str(parameter_value)}"]
+
+        command_str = ' '.join(vslamlab_command)
+        vslamlab_command = f"pixi run -e {self.baseline_name} execute " + command_str
+
+        return vslamlab_command
 
     def build_execute_command_python(self, exp_it, exp, dataset, sequence_name):
         sequence_path = os.path.join(dataset.dataset_path, sequence_name)

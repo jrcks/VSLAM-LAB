@@ -128,9 +128,9 @@ channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
 platforms = ["linux-64"]
 
 [feature.orbslam2.tasks]
-git-clone = "git-clone.sh alejandrofontan ORB_SLAM2 Baselines"
-build = {cmd = "./Baselines/ORB_SLAM2/build.sh", depends-on = ["git-clone"]}
-execute = {cmd = "./Baselines/ORB_SLAM2/bin/mono", depends-on = ["build"]}
+git-clone = "git-clone.sh alejandrofontan ORB_SLAM2_VSLAMLAB Baselines"
+build = {cmd = "./build.sh", depends-on = ["git-clone"], cwd = "Baselines/ORB_SLAM2_VSLAMLAB"}
+execute = {cmd = "./bin/mono", depends-on = ["build"], cwd = "Baselines/ORB_SLAM2_VSLAMLAB"}
 
 [feature.orbslam2.dependencies]
 cxx-compiler="*"

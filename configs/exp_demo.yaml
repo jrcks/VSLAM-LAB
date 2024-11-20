@@ -7,7 +7,7 @@ exp_demo_dso:
 exp_demo_orbslam2:
   Config: config_demo.yaml
   NumRuns: 81
-  Parameters: {Visualization: Vis:1, Vocabulary_folder: Voc:VSLAM-LAB/Baselines/ORB_SLAM2/Vocabulary}
+  Parameters: {verbose: 0, vocabulary: Vocabulary/ORBvoc.txt}
   Module: orbslam2
 
 #exp_demo_anyfeature:
