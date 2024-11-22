@@ -24,6 +24,7 @@ Baselines/MonoGS
 Baselines/kalibr_catkin
 Baselines/DROID-SLAM
 Baselines/Depth-Anything-V2
+Baselines/staticfusion
 
 configs/exp_demo.yaml
 configs/config_demo.yaml

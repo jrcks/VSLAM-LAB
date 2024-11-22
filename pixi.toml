@@ -37,6 +37,8 @@ r2d2 = {features = ["r2d2"], no-default-feature = true}
 monogs = {features = ["monogs"], no-default-feature = true}
 droidslam = {features = ["droidslam"], no-default-feature = true}
 depthanything = {features = ["depthanything"], no-default-feature = true}
+staticfusion = {features = ["staticfusion"], no-default-feature = true}
+
 # kalibr = {features = ["kalibr"], no-default-feature = true}
 # environments end
 
@@ -495,6 +497,65 @@ tqdm="*"
 opencv-python= "==4.10.0.84"
 gradio_imageslider= "*"
 # depthanything end
+
+# staticfusion begin
+[feature.staticfusion]
+channels = ["https://fast.prefix.dev/conda-forge"]
+platforms = ["linux-64"]
+
+[feature.staticfusion.tasks]
+
+git-clone = {cmd = "git-clone.sh alejandrofontan staticfusion  Baselines"}
+#setup = {cmd = "pixi run -e vslamlab python Baselines/colmap/colmap_setup.py", inputs = ["Baselines/colmap/*.sh"] }
+build = {cmd = "./build.sh", cwd = "Baselines/staticfusion", depends-on = ["git-clone"] }
+#execute = {cmd = './build/StaticFusion-Datasets', cwd = "Baselines/staticfusion"}
+execute = {cmd = './build/StaticFusion-ImageSeqAssoc', cwd = "Baselines/staticfusion"}
+
+[feature.staticfusion.dependencies]
+cxx-compiler="*"
+c-compiler="*"
+ninja="*"
+cmake="3.28"
+pkg-config="*"
+make="*"
+libglvnd-egl-cos7-x86_64 ="*"
+libglvnd-devel-cos7-x86_64 ="*"
+mesa-libegl-devel-cos7-x86_64 ="*"
+mesa-libgl-devel-cos7-x86_64 ="*"
+mesa-dri-drivers-cos7-x86_64 ="*"
+libselinux-cos7-x86_64 ="*"
+libxdamage-cos7-x86_64 ="*"
+libxxf86vm-cos7-x86_64 ="*"
+libxfixes-cos7-x86_64 ="*"
+libxext-cos7-x86_64 ="*"
+libxau-cos7-x86_64 ="*"
+libxcb-cos7-x86_64 ="*"
+xorg-libxext ="*"
+xorg-libx11 ="*"
+xorg-libxfixes="*"
+xorg-libxrender="*"
+xorg-libice="*"
+xorg-libsm="*"
+xorg-libxdmcp="*"
+xorg-libxau="*"
+xorg-libxxf86vm="*"
+xorg-libxrandr="*"
+compilers="*"
+assimp="*"
+freeglut = {version="3.2.2", build="ha6d2627_3", channel="conda-forge"}
+opencv = {version="4.10.0", build="qt6_py312haea69d2_610", channel="conda-forge"}
+python = {version="3.12.7", build="hc5c86c4_0_cpython", channel="conda-forge"}
+suitesparse="*"
+pybind11="*"
+libegl="*"
+glfw="*"
+eigen="*"
+tbb-devel="*"
+tbb="*"
+epoxy="*"
+setuptools="*"
+wheel="*"
+# staticfusion end
 
 # kalibr begin
 # [feature.kalibr]
