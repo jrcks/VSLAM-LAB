@@ -206,8 +206,7 @@ platforms = ["linux-64"]
 
 [feature.dust3r.tasks]
 git-clone = "git-clone.sh naver dust3r Baselines"
-build = {cmd = "cp Baselines/extra-files/dust3r_execute.py  Baselines/dust3r && cp Datasets/extra-files/downsample_rgb_frames.py  Baselines/dust3r", depends-on = ["git-clone"]}
-execute = {cmd = 'python Baselines/dust3r/dust3r_execute.py', depends-on = ["build"]}
+execute = {cmd = 'python Baselines/extra-files/dust3r/dust3r_execute.py', depends-on = ["git-clone"]}
 
 [feature.dust3r.dependencies]
 cmake="*"
