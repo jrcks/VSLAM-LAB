@@ -542,9 +542,9 @@ xorg-libxxf86vm="*"
 xorg-libxrandr="*"
 compilers="*"
 assimp="*"
-freeglut = {version="3.2.2", build="ha6d2627_3", channel="conda-forge"}
-opencv = {version="4.10.0", build="qt6_py312haea69d2_610", channel="conda-forge"}
-python = {version="3.12.7", build="hc5c86c4_0_cpython", channel="conda-forge"}
+freeglut= {version="3.2.2", build="ha6d2627_3", channel="https://fast.prefix.dev/conda-forge"}
+opencv= {version="4.10.0", build="qt6_py312haea69d2_610", channel="https://fast.prefix.dev/conda-forge"}
+python= {version="3.12.7", build="hc5c86c4_0_cpython", channel="https://fast.prefix.dev/conda-forge"}
 suitesparse="*"
 pybind11="*"
 libegl="*"
