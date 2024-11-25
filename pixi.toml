@@ -209,9 +209,9 @@ git-clone = "git-clone.sh naver dust3r Baselines"
 execute = {cmd = 'python Baselines/extra-files/dust3r/dust3r_execute.py', depends-on = ["git-clone"]}
 
 [feature.dust3r.dependencies]
-cmake="*"
-python = "*"
-pytorch-cuda="*"
+cmake= {version="3.14.0", build="hf94ab9c_0", channel="https://fast.prefix.dev/conda-forge"}
+python = {version="3.11.0", build="he550d4f_1_cpython", channel="https://fast.prefix.dev/conda-forge"}
+pytorch-cuda = "*"
 huggingface_hub="*"
 gradio="*"
 matplotlib="*"
@@ -221,7 +221,7 @@ scipy="*"
 einops="*"
 trimesh="*"
 tensorboard="*"
-pyglet="*"
+pyglet="<2"
 safetensors="*"
 
 [feature.dust3r.pypi-dependencies]
@@ -541,9 +541,9 @@ xorg-libxxf86vm="*"
 xorg-libxrandr="*"
 compilers="*"
 assimp="*"
-freeglut = {version="3.2.2", build="ha6d2627_3", channel="conda-forge"}
-opencv = {version="4.10.0", build="qt6_py312haea69d2_610", channel="conda-forge"}
-python = {version="3.12.7", build="hc5c86c4_0_cpython", channel="conda-forge"}
+freeglut= {version="3.2.2", build="ha6d2627_3", channel="https://fast.prefix.dev/conda-forge"}
+opencv= {version="4.10.0", build="qt6_py312haea69d2_610", channel="https://fast.prefix.dev/conda-forge"}
+python= {version="3.12.7", build="hc5c86c4_0_cpython", channel="https://fast.prefix.dev/conda-forge"}
 suitesparse="*"
 pybind11="*"
 libegl="*"
