@@ -212,7 +212,6 @@ execute = {cmd = 'python Baselines/dust3r/dust3r_execute.py', depends-on = ["bui
 [feature.dust3r.dependencies]
 cmake= {version="3.14.0", build="hf94ab9c_0", channel="https://fast.prefix.dev/conda-forge"}
 python = {version="3.11.0", build="he550d4f_1_cpython", channel="https://fast.prefix.dev/conda-forge"}
-#pytorch-cuda = {version="12.1", build="ha16c6d3_6", channel="pytorch"}
 pytorch-cuda = "*"
 huggingface_hub="*"
 gradio="*"
