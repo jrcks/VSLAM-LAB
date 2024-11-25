@@ -210,9 +210,10 @@ build = {cmd = "cp Baselines/extra-files/dust3r_execute.py  Baselines/dust3r && 
 execute = {cmd = 'python Baselines/dust3r/dust3r_execute.py', depends-on = ["build"]}
 
 [feature.dust3r.dependencies]
-cmake="*"
-python = "*"
-pytorch-cuda="*"
+cmake= {version="3.14.0", build="hf94ab9c_0", channel="https://fast.prefix.dev/conda-forge"}
+python = {version="3.11.0", build="he550d4f_1_cpython", channel="https://fast.prefix.dev/conda-forge"}
+#pytorch-cuda = {version="12.1", build="ha16c6d3_6", channel="pytorch"}
+pytorch-cuda = "*"
 huggingface_hub="*"
 gradio="*"
 matplotlib="*"
@@ -222,7 +223,7 @@ scipy="*"
 einops="*"
 trimesh="*"
 tensorboard="*"
-pyglet="*"
+pyglet="<2"
 safetensors="*"
 
 [feature.dust3r.pypi-dependencies]
