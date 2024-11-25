@@ -1,7 +1,7 @@
 exp_test_orbslam2:
   Config: config_debug.yaml
   NumRuns: 1
-  Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: mono}
+  Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: rgbd}
   Module: orbslam2
 
 #droidslam_noise:

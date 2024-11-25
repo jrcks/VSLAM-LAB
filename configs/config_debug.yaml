@@ -1,7 +1,7 @@
-#replica:
-#  - 'office0'
-rgbdtum:
-  - 'rgbd_dataset_freiburg3_structure_texture_far'
+replica:
+  - 'office0'
+#rgbdtum:
+#  - 'rgbd_dataset_freiburg3_structure_texture_far'
 #eth:
 #  - 'table_3'
 #kitti:

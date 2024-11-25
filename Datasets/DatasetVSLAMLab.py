@@ -105,11 +105,8 @@ class DatasetVSLAMLab:
     def solve_download_issue(self, download_issue):
         return
 
-    def write_calibration_yaml(self, camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name):
-
+    def get_calibration_yaml(self, camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
-        calibration_yaml = os.path.join(sequence_path, 'calibration.yaml')
-
         rgb_path = os.path.join(sequence_path, 'rgb')
         rgb_files = [f for f in os.listdir(rgb_path) if os.path.isfile(os.path.join(rgb_path, f))]
         image_0 = cv2.imread(os.path.join(rgb_path, rgb_files[0]))
@@ -138,6 +135,26 @@ class DatasetVSLAMLab:
             "# Camera frames per second",
             "Camera.fps: " + str(self.rgb_hz)
         ]
+
+        return yaml_content_lines
+
+    def write_calibration_yaml(self, camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name):
+
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        calibration_yaml = os.path.join(sequence_path, 'calibration.yaml')
+
+        yaml_content_lines = self.get_calibration_yaml(camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name)
+
+        with open(calibration_yaml, 'w') as file:
+            for line in yaml_content_lines:
+                file.write(f"{line}\n")
+
+    def write_calibration_rgbd_yaml(self, camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name, depth_factor):
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        calibration_yaml = os.path.join(sequence_path, 'calibration.yaml')
+
+        yaml_content_lines = self.get_calibration_yaml(camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name)
+        yaml_content_lines.extend(["", "# Depth map factor", "depth_factor: " + str(depth_factor)])
 
         with open(calibration_yaml, 'w') as file:
             for line in yaml_content_lines:
