@@ -1,24 +1,18 @@
 import os.path
-
 from Baselines.BaselineVSLAMLab import BaselineVSLAMLab
-from path_constants import VSLAMLAB_BASELINES
 
 
 class ORBSLAM2_baseline(BaselineVSLAMLab):
-    def __init__(self, baselines_path):
+    def __init__(self):
         baseline_name = 'orbslam2'
         baseline_folder = 'ORB_SLAM2_VSLAMLAB'
-        baseline_path = os.path.join(VSLAMLAB_BASELINES, baseline_folder)
-        default_parameters = {'verbose': 1,
-                              'vocabulary': os.path.join(baseline_path, 'Vocabulary', 'ORBvoc.txt'),
-                              'mode': 'mono'}
 
         # Initialize the baseline
-        super().__init__(baseline_name, baselines_path)
-        self.label = f"\033[96m{baseline_name}\033[0m"
-        self.baseline_path = baseline_path
-        self.default_parameters = default_parameters
-        self.settings_yaml = os.path.join(VSLAMLAB_BASELINES, baseline_folder, f'{baseline_name}_settings.yaml')
+        super().__init__(baseline_name, baseline_folder)
+
+        self.default_parameters = {'verbose': 1,
+                                   'vocabulary': os.path.join(self.baseline_path, 'Vocabulary', 'ORBvoc.txt'),
+                                   'mode': 'mono'}
 
     def build_execute_command(self, exp_it, exp, dataset, sequence_name):
 
@@ -29,8 +23,17 @@ class ORBSLAM2_baseline(BaselineVSLAMLab):
             mode = exp.parameters['mode']
 
         if mode == "mono":
-            vslamlab_command = f"pixi run -e {self.baseline_name} execute_mono " + ' '.join(vslamlab_command)
+            vslamlab_command = vslamlab_command.replace('execute', 'execute_mono')
         if mode == "rgbd":
-            vslamlab_command = f"pixi run -e {self.baseline_name} execute_rgbd " + ' '.join(vslamlab_command)
+            vslamlab_command = vslamlab_command.replace('execute', 'execute_rgbd')
 
         return vslamlab_command
+
+    def is_installed(self):
+        return (os.path.isfile(os.path.join(self.baseline_path, 'bin', 'mono')) and
+                os.path.isfile(os.path.join(self.baseline_path, 'bin', 'rgbd')))
+
+    def info_print(self):
+        super().info_print()
+        print(f"Default executable: Baselines/ORB_SLAM2_VSLAMLAB/bin/mono")
+        print(f"Default executable: Baselines/ORB_SLAM2_VSLAMLAB/bin/rgbd")

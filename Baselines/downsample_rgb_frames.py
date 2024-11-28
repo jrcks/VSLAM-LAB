@@ -2,7 +2,7 @@ import argparse
 import os
 
 # Label for script-specific outputs
-SCRIPT_LABEL = f"[{os.path.basename(__file__)}] "
+SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 
 def downsample_rgb(timestamps, rgb_paths, step, max_count):

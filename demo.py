@@ -35,13 +35,13 @@ def main():
     exp.module = baseline_name
 
     os.makedirs(exp.folder, exist_ok=True)
-    baseline = get_baseline(baseline_name, VSLAMLAB_BASELINES)
+    baseline = get_baseline(baseline_name)
     exp.parameters = baseline.get_default_parameters()
 
     dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
-    dataset.download_sequence(sequence_name)
-    print(f"\n{SCRIPT_LABEL}Running {baseline.label} in {dataset_name}/{sequence_name} ...")
 
+    print(f"\n{SCRIPT_LABEL}Running {baseline.label} in {dataset.dataset_label} / {dataset.dataset_color}{sequence_name} ...")
+    dataset.download_sequence(sequence_name)
     run_sequence(0, exp, baseline, dataset, sequence_name)
 
 if __name__ == "__main__":

@@ -13,7 +13,9 @@ SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 
 def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
-    print(f"\n{SCRIPT_LABEL}Running (it {exp_it + 1}/{exp.num_runs}) {baseline.label} in {dataset.dataset_color}{sequence_name}\033[0m of {dataset.dataset_label} ...")
+    # Check baseline is installed
+    baseline.check_installation()
+
     run_time_start = time.time()
 
     # Create experiment folder
@@ -32,6 +34,7 @@ def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
         exec_command = ablations.prepare_ablation(exp_it, exp, baseline, dataset, sequence_name, exec_command)
 
     # Execute experiment
+    print(f"\n{SCRIPT_LABEL}Running (it {exp_it + 1}/{exp.num_runs}) {baseline.label} in {dataset.dataset_color}{sequence_name}\033[0m of {dataset.dataset_label} ...")
     baseline.execute(exec_command, exp_it, exp_folder)
 
     # Finish Ablation
@@ -50,8 +53,9 @@ def create_rgb_exp_txt(exp, dataset, sequence_name):
     rgb_txt = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}.txt")
     rgb_exp_txt = os.path.join(exp_folder, f"{RGB_BASE_FOLDER}_exp.txt")
 
-    if not os.path.exists(rgb_exp_txt):
-        shutil.copy(rgb_txt, rgb_exp_txt)
+    if os.path.exists(rgb_exp_txt):
+        os.remove(rgb_exp_txt)
+    shutil.copy(rgb_txt, rgb_exp_txt)
 
     if 'max_rgb' in exp.parameters:
         min_fps = dataset.rgb_hz / 10

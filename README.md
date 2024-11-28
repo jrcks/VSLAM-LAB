@@ -45,7 +45,7 @@ Example commands:
 pixi run demo droidslam replica office0
 pixi run demo monogs hamlyn rectified01
 pixi run demo orbslam2 rgbdtum rgbd_dataset_freiburg1_xyz
-pixi run demo dso monotum sequence_25
+pixi run demo dust3r 7scenes chess_seq-01
 pixi run demo glomap eth table_3
 ```
 *To change the paths where VSLAM-LAB-Benchmark or/and VSLAM-LAB-Evaluation data are stored (for example, to /media/${USER}/data), use the following commands:*
@@ -63,22 +63,22 @@ pixi run vslamlab --exp_yaml configs/exp_demo.yaml
 
 Experiments in **VSLAM-LAB** as sequences of entries in a YAML file (see example **~/VSLAM-LAB/configs/exp_demo_short.yaml**):
 ```
-exp_01:
-  Module: dso                     # anyfeature/orbslam2/dso/colmap/glomap/dust3r/...
-  Parameters: {}                  # Vector with parameters that will be input to the baseline executable 
-  Config: config_demo_short.yaml  # YAML file containing the sequences to be run 
-  NumRuns: 1                      # Maximum number of executions per sequence
+exp_vslamlab:
+  Config: config_demo.yaml     # YAML file containing the sequences to be run 
+  NumRuns: 1                   # Maximum number of executions per sequence
+  Parameters: {verbose: 1}     # Vector with parameters that will be input to the baseline executable 
+  Module: droidslam            # droidslam/monogs/orbslam2/dust3r/glomap/...                    
 ```
 **Config** files are YAML files containing the list of sequences to be executed in the experiment (see example **~/VSLAM-LAB/configs/config_demo_short.yaml**):
 ```
-rgbdtum: 
+rgbdtum:
   - 'rgbd_dataset_freiburg1_xyz'
-eth: 
+hamlyn:
+  - 'rectified01'
+7scenes:
+  - 'chess_seq-01'
+eth:
   - 'table_3'
-  - 'planar_2'
-kitti:
-  - '04'
-  - '09'
 euroc:
   - 'MH_01_easy'
 monotum:
@@ -140,14 +140,16 @@ We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6
 
 | Baselines                                                                   | System |     Sensors      |                                   License                                   |    Label     |
 |:----------------------------------------------------------------------------|:------:|:----------------:|:---------------------------------------------------------------------------:|:------------:|
-| [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM) | VSLAM  |       mono       | [GPLv3](https://github.com/alejandrofontan/VSLAM-LAB/blob/main/LICENSE.txt) | `anyfeature` |
-| [**DSO**](https://github.com/alejandrofontan/dso)                           |   VO   |       mono       |       [GPLv3](https://github.com/JakobEngel/dso/blob/master/LICENSE)        |    `dso`     |
-| [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2)               | VSLAM  | mono/RGBD/Stereo |    [GPLv3](https://github.com/raulmur/ORB_SLAM2/blob/master/LICENSE.txt)    |  `orbslam2`  | 
-| [**COLMAP**](https://colmap.github.io/)                                     |  SfM   |       mono       |                [BSD](https://colmap.github.io/license.html)                 |   `colmap`   | 
+| [**DROID-SLAM**](https://github.com/princeton-vl/DROID-SLAM)                | VSLAM  |       mono       |    [BSD-3](https://github.com/princeton-vl/DROID-SLAM/blob/main/LICENSE)    | `droidslam`  |
 | [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)                       |  SfM   |       mono       |         [BSD-3](https://github.com/colmap/glomap/blob/main/LICENSE)         |   `glomap`   |
+| [**MonoGS**](https://github.com/muskie82/MonoGS)                            | VSLAM  | mono/RGBD/Stereo |     [License](https://github.com/muskie82/MonoGS?tab=License-1-ov-file)     |   `monogs`   | 
+| [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2)               | VSLAM  | mono/RGBD/Stereo |    [GPLv3](https://github.com/raulmur/ORB_SLAM2/blob/master/LICENSE.txt)    |  `orbslam2`  | 
 | [**DUST3R**](https://dust3r.europe.naverlabs.com)                           |  SfM   |       mono       |    [CC BY-NC-SA 4.0](https://github.com/naver/dust3r/blob/main/LICENSE)     |   `dust3r`   | 
-| [**MonoGS**](https://github.com/muskie82/MonoGS)                            | VSLAM  |       mono/RGBD/Stereo       |     [License](https://github.com/muskie82/MonoGS?tab=License-1-ov-file)     |   `monogs`   | 
-| [**DROID-SLAM**](https://github.com/princeton-vl/DROID-SLAM) | VSLAM  |       mono/RGBD/Stereo       |    [BSD-3](https://github.com/princeton-vl/DROID-SLAM/blob/main/LICENSE)    | `droidslam`  | 
+| [**COLMAP**](https://colmap.github.io/)                                     |  SfM   |       mono       |                [BSD](https://colmap.github.io/license.html)                 |   `colmap`   | 
+| [**DSO**](https://github.com/alejandrofontan/dso)                           |   VO   |       mono       |       [GPLv3](https://github.com/JakobEngel/dso/blob/master/LICENSE)        |    `dso`     |
+| [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM) | VSLAM  |       mono       | [GPLv3](https://github.com/alejandrofontan/VSLAM-LAB/blob/main/LICENSE.txt) | `anyfeature` |
+| [**evo**](https://github.com/princeton-vl/DROID-SLAM)                       |  Eval  |        -         |    [GPLv3](https://github.com/MichaelGrupp/evo/blob/master/LICENSE)    |    `evo`     |
+
 
 
 | Datasets                                                                                                                        |   Data    |    Mode    |    Label    |

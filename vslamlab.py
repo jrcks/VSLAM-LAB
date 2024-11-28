@@ -204,7 +204,7 @@ def run(experiments, exp_yaml, ablation=False):
         experiments_ = {}
         for [exp_name, exp] in experiments.items():
             remaining_iterations = 0
-            baseline = get_baseline(exp.module, VSLAMLAB_BASELINES)
+            baseline = get_baseline(exp.module)
             with open(exp.config_yaml, 'r') as file:
                 config_file_data = yaml.safe_load(file)
                 for dataset_name, sequence_names in config_file_data.items():

@@ -25,7 +25,7 @@ if __name__ == '__main__':
     parser.add_argument("--exp_folder", type=str, help="path to save results")
     parser.add_argument("--exp_it", type=str, help="experiment iteration")
     parser.add_argument("--settings_yaml", type=str, help="settings_yaml")
-    parser.add_argument("--verbose", action="store_true")
+    parser.add_argument("--verbose", type=str, help="verbose")
 
     parser.add_argument('--device', type=str, default='cuda', help="")
     parser.add_argument('--batch_size', type=int, default=1, help="")
@@ -34,11 +34,12 @@ if __name__ == '__main__':
     parser.add_argument('--niter', type=int, default=300, help="")
     parser.add_argument('--img_size', type=int, default=512, help="")
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
     sequence_path = args.sequence_path
     rgb_txt = args.rgb_txt
     exp_folder = args.exp_folder
     exp_id = args.exp_it
+    verbose = bool(int(args.verbose))
 
     device = args.device
     batch_size = args.batch_size
@@ -94,5 +95,5 @@ if __name__ == '__main__':
                 qy) + " " + str(qz) + " " + str(qw) + "\n"
             file.write(line)
 
-    if args.verbose:
+    if verbose:
         scene.show()

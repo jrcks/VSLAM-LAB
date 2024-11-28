@@ -11,7 +11,6 @@ from PIL import Image
 
 from path_constants import VSLAM_LAB_DIR
 
-
 class Experiment:
     def __init__(self):
         self.config_yaml = ""
@@ -309,6 +308,7 @@ def show_time(time_s):
     if time_s < 3600:
         return f"{(time_s / 60):.2f} minutes"
     return f"{(time_s / 3600):.2f} hours"
+
 
 if __name__ == "__main__":
 

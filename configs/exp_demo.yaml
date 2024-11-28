@@ -1,50 +1,29 @@
-exp_demo_orbslam2:
+demo_droidslam:
   Config: config_demo.yaml
-  NumRuns: 81
-  Parameters: {verbose: 0, vocabulary: Vocabulary/ORBvoc.txt, mode: mono}
-  Module: orbslam2
+  NumRuns: 1
+  Parameters: {verbose: 1}
+  Module: droidslam
 
-#exp_demo_dso:
-#  Config: config_demo.yaml
-#  NumRuns: 81
-#  Parameters: {Preset: preset:0, Mode: mode:1}
-#  Module: dso
-
-#exp_demo_anyfeature:
-#  Config: config_demo.yaml
-#  NumRuns: 0
-#  Parameters: {Visualization: Vis:1, Feature: Feat:brisk48, AnyFeature Path: anyfeat:VSLAM-LAB/Baselines/AnyFeature-VSLAM}
-#  Module: anyfeature
-
-#exp_demo_colmap:
+#demo_glomap:
 #  Config: config_demo.yaml
 #  NumRuns: 1
-#  Parameters: {Verbose: verbose:1, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50}
-#  Module: colmap
-#
-
-#exp_demo_glomap:
-#  Config: config_demo.yaml
-#  NumRuns: 1
-#  Parameters: {Verbose: verbose:0, matcher_type: matcher_type:sequential, use_gpu: use_gpu:1, max_rgb: max_rgb:50,
-#               settings_yaml: settings_yaml:Baselines/glomap/glomap_settings.yaml,
-#               ablation_param: ablation_param:Thresholds.max_reprojection_error}
+#  Parameters: {verbose: 1}
 #  Module: glomap
-
-#exp_demo_dust3r:
+#
+#demo_monogs:
 #  Config: config_demo.yaml
 #  NumRuns: 1
-#  Parameters: {} # {Verbose: -v}
-#  Module: dust3r
-
-#exp_demo_monogs:
-#  Config: config_demo.yaml
-#  NumRuns: 1
-#  Parameters: {config: config:Baselines/MonoGS/configs/mono/vslamlab/vslamlab.yaml, verbose: verbose:1}
+#  Parameters: {verbose: 1}
 #  Module: monogs
-
-#exp_demo_droidslam:
+#
+#demo_orbslam2:
 #  Config: config_demo.yaml
 #  NumRuns: 1
-#  Parameters: {Verbose: verbose:0, Upsample: upsample:0}
-#  Module: droidslam
+#  Parameters: {verbose: 0}
+#  Module: orbslam2
+#
+#demo_dust3r:
+#  Config: config_demo.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 0}
+#  Module: dust3r

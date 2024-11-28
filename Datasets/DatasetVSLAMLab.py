@@ -26,7 +26,7 @@ from utilities import ws
 from utilities import check_sequence_integrity
 from path_constants import VSLAM_LAB_EVALUATION_FOLDER
 
-SCRIPT_LABEL = f"[{os.path.basename(__file__)}] "
+SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 
 class DatasetVSLAMLab:
@@ -57,7 +57,7 @@ class DatasetVSLAMLab:
         # Check if sequence is already available
         sequence_availability = self.check_sequence_availability(sequence_name)
         if sequence_availability == "available":
-            print(f"{ws(4)}Sequence '{sequence_name}' is already downloaded.")
+            print(f"\n{SCRIPT_LABEL}Sequence {self.dataset_color}{sequence_name}\033[92m is already downloaded.\033[0m")
             return
         if sequence_availability == "corrupted":
             print(f"{ws(8)}Some files in sequence {sequence_name} are corrupted.")
