@@ -4,6 +4,12 @@ demo_droidslam:
   Parameters: {verbose: 1}
   Module: droidslam
 
+demo_orbslam2:
+  Config: config_demo.yaml
+  NumRuns: 1
+  Parameters: {verbose: 0}
+  Module: orbslam2
+
 #demo_glomap:
 #  Config: config_demo.yaml
 #  NumRuns: 1
@@ -15,12 +21,6 @@ demo_droidslam:
 #  NumRuns: 1
 #  Parameters: {verbose: 1}
 #  Module: monogs
-#
-#demo_orbslam2:
-#  Config: config_demo.yaml
-#  NumRuns: 1
-#  Parameters: {verbose: 0}
-#  Module: orbslam2
 #
 #demo_dust3r:
 #  Config: config_demo.yaml
