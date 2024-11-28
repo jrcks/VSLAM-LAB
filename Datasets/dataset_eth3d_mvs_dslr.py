@@ -11,10 +11,10 @@ from path_constants import VSLAMLAB_BENCHMARK
 from Evaluate.align_trajectories import align_trajectory_with_groundtruth
 from Evaluate import metrics
 
-from Baselines.colmap_to_vslamlab import get_colmap_keyframes
-from Baselines.colmap_to_vslamlab import get_colmap_keyframes
-from Baselines.colmap_to_vslamlab import write_trajectory_tum_format
-from Baselines.colmap_to_vslamlab import get_timestamps
+# from Baselines.colmap_to_vslamlab import get_colmap_keyframes
+# from Baselines.colmap_to_vslamlab import get_colmap_keyframes
+# from Baselines.colmap_to_vslamlab import write_trajectory_tum_format
+# from Baselines.colmap_to_vslamlab import get_timestamps
 class ETH3D_MVS_DSLR_dataset(DatasetVSLAMLab):
     def __init__(self, benchmark_path):
         # Initialize the dataset

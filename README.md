@@ -42,7 +42,7 @@ pixi run demo <baseline> <dataset> <sequence>
 For a full list of available systems and datasets, see the [VSLAM-LAB Supported Baselines and Datasets](#vslam-lab-supported-baselines-and-datasets).
 Example commands:
 ```
-pixi run demo droidslam replica office0
+pixi run demo droidslam euroc MH_01_easy
 pixi run demo monogs hamlyn rectified01
 pixi run demo orbslam2 rgbdtum rgbd_dataset_freiburg1_xyz
 pixi run demo dust3r 7scenes chess_seq-01
