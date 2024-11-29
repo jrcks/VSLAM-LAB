@@ -1,4 +1,5 @@
 # ADD your imports here
+from Datasets.dataset_lizardisland import LIZARDISLAND_dataset
 from Datasets.dataset_ariel import ARIEL_dataset
 from Datasets.dataset_7scenes import SEVENSCENES_dataset
 from Datasets.dataset_eth import ETH_dataset
@@ -22,6 +23,7 @@ def get_dataset(dataset_name, benchmark_path):
     dataset_name = dataset_name.lower()
     switcher = {
         # ADD your datasets here
+        "lizardisland": lambda: LIZARDISLAND_dataset(benchmark_path),
         "hamlyn": lambda: HAMLYN_dataset(benchmark_path),
         "replica": lambda: REPLICA_dataset(benchmark_path),
         "drunkards": lambda: DRUNKARDS_dataset(benchmark_path),
