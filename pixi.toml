@@ -30,6 +30,7 @@ glomap = {features = ["glomap"], no-default-feature = true, solve-group = "colma
 monogs = {features = ["monogs"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
 dust3r = {features = ["dust3r"], no-default-feature = true}
+spann3r = {features = ["spann3r"], no-default-feature = true}
 
 evo = {features = ["evo"], no-default-feature = true}
 
@@ -391,6 +392,28 @@ safetensors = ">=0.4.5,<0.5"
 [feature.dust3r.pypi-dependencies]
 torchvision = {version = ">=0.20.1,<0.21"}
 roma = {version = ">=1.5.1,<2"}
+# dust3r end
+
+########################################################################################################################
+########################################################################################################################
+# spann3r begin
+#[feature.spann3r]
+#channels = ["https://fast.prefix.dev/conda-forge", "pytorch", "nvidia"]
+#platforms = ["linux-64"]
+
+#[feature.spann3r.tasks]
+#git-clone = "git-clone.sh HengyiWang spann3r Baselines"
+#setup = {cmd = "pip install -r requirements.txt && pip install -U -f https://www.open3d.org/docs/latest/getting_started.html open3d && cd croco/models/curope/ && python setup.py build_ext --inplace", cwd = "Baselines/spann3r"}
+#setup = {cmd = "cd croco/models/curope/ && python setup.py build_ext --inplace", cwd = "Baselines/spann3r"}
+
+#[feature.spann3r.dependencies]
+#cmake = "3.14.0"
+#python = "3.11.0"
+#pytorch-cuda = "12.4,<13"
+#pip="*"
+
+#[feature.spann3r.pypi-dependencies]
+#torchvision = {version = ">=0.20.1,<0.21"}
 # dust3r end
 
 ########################################################################################################################
