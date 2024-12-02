@@ -35,11 +35,12 @@ evo = {features = ["evo"], no-default-feature = true}
 
 dso = {features = ["dso"], no-default-feature = true}
 anyfeature = {features = ["anyfeature"], no-default-feature = true}
-
 monodataset = {features = ["monodataset"], no-default-feature = true}
+
+depthanything = {features = ["depthanything"], no-default-feature = true}
+
 # ros-env = {features = ["ros-env"], no-default-feature = true}
 # r2d2 = {features = ["r2d2"], no-default-feature = true}
-# depthanything = {features = ["depthanything"], no-default-feature = true}
 # staticfusion = {features = ["staticfusion"], no-default-feature = true}
 # kalibr = {features = ["kalibr"], no-default-feature = true}
 
@@ -392,6 +393,37 @@ torchvision = {version = ">=0.20.1,<0.21"}
 roma = {version = ">=1.5.1,<2"}
 # dust3r end
 
+########################################################################################################################
+########################################################################################################################
+# depthanything begin
+[feature.depthanything]
+channels = ["nvidia/label/cuda-12.0.0","https://fast.prefix.dev/conda-forge"]
+platforms = ["linux-64"]
+
+[feature.depthanything.system-requirements]
+cuda = "12.0"
+
+[feature.depthanything.tasks]
+git-clone = {cmd = "git-clone.sh DepthAnything Depth-Anything-V2 Baselines"}
+setup = {cmd = "pixi run --frozen -e vslamlab python Baselines/extra-files/Depth-Anything-V2/depthanythingv2_download_weights.py"}
+execute = {cmd = 'python Baselines/extra-files/Depth-Anything-V2/run.py', depends-on = ["git-clone", "setup"]}
+check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
+version_cuda = 'python -c "import torch; print(torch.version.cuda)"'
+
+[feature.depthanything.dependencies]
+cuda = "12.0.0"
+python = ">=3.11.10,<3.12"
+pytorch = {version = ">=2.1.0,<2.2", build ="*cuda12*"}
+torchvision = {version = ">=0.16.1,<0.17", build ="*cuda12*"}
+tqdm = ">=4.67.1,<4.68"
+
+[feature.depthanything.pypi-dependencies]
+opencv-python= "==4.10.0.84"
+gradio_imageslider= "*"
+# depthanything end
+
+########################################################################################################################
+########################################################################################################################
 # anyfeature begin
 [feature.anyfeature]
 channels = ["fontan", "https://fast.prefix.dev/conda-forge", "huggingface"]
@@ -542,29 +574,7 @@ libzip = "*"
 #torchvision="*"
 ## r2d2 end
 #
-## depthanything begin
-#[feature.depthanything]
-#channels = ["conda-forge","nvidia/label/cuda-12.0.0"]
-#platforms = ["linux-64"]
-#
-#[feature.depthanything.system-requirements]
-#cuda = "12.0"
-#
-#[feature.depthanything.tasks]
-#git-clone = {cmd = "git-clone.sh DepthAnything Depth-Anything-V2 Baselines", inputs = ["Baselines/Depth-Anything-V2"]}
-#execute = {cmd = 'python Baselines/extra-files/Depth-Anything-V2/run.py'}
-#
-#[feature.depthanything.dependencies]
-#pytorch = {version="2.5.1", build="cuda126_py313he9a4f5b_303", channel="conda-forge"}
-#python= {version="3.13.0", build="h9ebbce0_100_cp313", channel="conda-forge"}
-#torchvision= {version="0.20.1", build="cuda126py313hf79861d_0", channel="conda-forge"}
-#tqdm="*"
-#
-#[feature.depthanything.pypi-dependencies]
-#opencv-python= "==4.10.0.84"
-#gradio_imageslider= "*"
-## depthanything end
-#
+
 ## staticfusion begin
 #[feature.staticfusion]
 #channels = ["https://fast.prefix.dev/conda-forge"]

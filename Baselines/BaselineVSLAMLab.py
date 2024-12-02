@@ -28,8 +28,10 @@ class BaselineVSLAMLab:
             print(f"\n{SCRIPT_LABEL}git clone {self.label}\033[0m : {self.baseline_path}")
             print(f"{ws(6)} log file: {log_file_path}")
             subprocess.run(git_clone_command, shell=True, stdout=log_file, stderr=log_file)
+
     def is_installed(self):
         return False
+
     def install(self):
         if self.is_installed():
             return

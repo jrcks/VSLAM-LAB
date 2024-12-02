@@ -50,7 +50,12 @@ def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
 def create_rgb_exp_txt(exp, dataset, sequence_name):
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)
     exp_folder = os.path.join(exp.folder, dataset.dataset_folder, sequence_name)
-    rgb_txt = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}.txt")
+
+    if 'rgb_txt' in exp.parameters:
+        rgb_txt = os.path.join(sequence_path, exp.parameters['rgb_txt'])
+    else:
+        rgb_txt = os.path.join(sequence_path, f"{RGB_BASE_FOLDER}.txt")
+
     rgb_exp_txt = os.path.join(exp_folder, f"{RGB_BASE_FOLDER}_exp.txt")
 
     if os.path.exists(rgb_exp_txt):
