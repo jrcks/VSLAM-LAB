@@ -30,7 +30,7 @@ glomap = {features = ["glomap"], no-default-feature = true, solve-group = "colma
 monogs = {features = ["monogs"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
 dust3r = {features = ["dust3r"], no-default-feature = true}
-spann3r = {features = ["spann3r"], no-default-feature = true}
+#spann3r = {features = ["spann3r"], no-default-feature = true}
 
 evo = {features = ["evo"], no-default-feature = true}
 
