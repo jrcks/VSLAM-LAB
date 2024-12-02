@@ -1,7 +1,19 @@
-exp_test_orbslam2:
+exp_depth_anything_sensor_orbslam2:
   Config: config_debug.yaml
-  NumRuns: 1
+  NumRuns: 20
   Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: rgbd}
+  Module: orbslam2
+
+exp_depth_anything_orbslam2:
+  Config: config_debug.yaml
+  NumRuns: 20
+  Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: rgbd, rgb_txt: rgbd_depth_anything_v2.txt}
+  Module: orbslam2
+
+exp_depth_anything_mono_orbslam2:
+  Config: config_debug.yaml
+  NumRuns: 20
+  Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: mono}
   Module: orbslam2
 
 #droidslam_noise:

@@ -6,25 +6,65 @@ import torch
 import json
 from tqdm import tqdm
 import sys
+import shutil
 
-Depth_Anything_V2_path = os.path.join(os.getcwd(), 'Baselines', 'Depth-Anything-V2', 'metric_depth')
+Depth_Anything_V2_path = os.path.join(os.getcwd(), 'Baselines', 'Depth-Anything-V2')
 checkpoints_path = os.path.join(Depth_Anything_V2_path, 'checkpoints')
 sys.path.append(Depth_Anything_V2_path)
 
 from depth_anything_v2.dpt import DepthAnythingV2
 
+def analyze_image(raw_image):
+    if raw_image is None:
+        raise FileNotFoundError(f"Image file '{filename}' not found.")
+
+    # Flatten the image to 1D for statistical analysis
+    flat_image = raw_image.flatten()
+
+    # Calculate statistics
+    mean_val = np.mean(flat_image)
+    median_val = np.median(flat_image)
+    max_val = np.max(flat_image)
+    min_val = np.min(flat_image)
+
+    # Find the minimum value different from zero
+    non_zero_pixels = flat_image[flat_image > 0]  # Exclude zero values
+    min_non_zero_val = np.min(non_zero_pixels) if non_zero_pixels.size > 0 else 0
+
+    stats = {
+        "mean": mean_val,
+        "median": median_val,
+        "max": max_val,
+        "min": min_val,
+        "min_non_zero": min_non_zero_val,
+    }
+    print("Image Statistics:")
+    for key, value in stats.items():
+        print(f"{key}: {value}")
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Depth Anything V2 Metric Depth Estimation')
+    parser = argparse.ArgumentParser(description='Depth Anything V2')
 
     parser.add_argument('--sequence_path', type=str)
+    parser.add_argument('--rgb_txt', type=str)
+
     parser.add_argument('--input-size', type=int, default=518)
     parser.add_argument('--encoder', type=str, default='vitl', choices=['vits', 'vitb', 'vitl', 'vitg'])
-    parser.add_argument('--load-from', type=str,
-                        default=os.path.join(checkpoints_path, 'depth_anything_v2_metric_hypersim_vitl.pth'))
     parser.add_argument('--max-depth', type=float, default=13)
 
     args = parser.parse_args()
     sequence_path = args.sequence_path
+    rgb_txt = args.rgb_txt
+
+    # Check depth folder
+    depth_folder = os.path.join(sequence_path, 'depth_anything_v2')
+    #if os.path.exists(depth_folder):
+    #    shutil.rmtree(depth_folder)
+    os.makedirs(depth_folder, exist_ok=True)
+
+    rgbd_txt = os.path.join(sequence_path, 'rgbd_depth_anything_v2.txt')
+    if os.path.isfile(rgbd_txt):
+        os.remove(rgbd_txt)
 
     DEVICE = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu'
 
@@ -35,71 +75,55 @@ if __name__ == '__main__':
         'vitg': {'encoder': 'vitg', 'features': 384, 'out_channels': [1536, 1536, 1536, 1536]}
     }
 
-    depth_anything = DepthAnythingV2(**{**model_configs[args.encoder], 'max_depth': args.max_depth})
-    depth_anything.load_state_dict(torch.load(args.load_from, map_location='cpu'))
+    depth_anything = DepthAnythingV2(**{**model_configs[args.encoder]})
+    depth_anything.load_state_dict(torch.load(os.path.join(checkpoints_path, f'depth_anything_v2_{args.encoder}.pth'), map_location='cpu'))
     depth_anything = depth_anything.to(DEVICE).eval()
 
-    # Find rgb subfolders
-    rgb_txt_files = []
-    for item in os.listdir(sequence_path):
-        item_path = os.path.join(sequence_path, item)
-        if os.path.isfile(item_path) and 'rgb' in item.lower():
-            rgb_txt_files.append(item_path)
+    # Load images from rgb.txt
+    rgb_paths = []
+    rgb_timestamps = []
+    with open(rgb_txt, 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            parts = line.strip().split()
+            rgb_paths.append(os.path.join(sequence_path, parts[1]))
+            rgb_timestamps.append(parts[0])
 
-    rgb_paths = {}
-    rgb_timestamps = {}
+    rgbd_assoc = []
+    for k, filename in enumerate(tqdm(rgb_paths)):
 
-    for rgb_txt in rgb_txt_files:
-        rgb_paths[rgb_txt] = []
-        rgb_timestamps[rgb_txt] = []
+        # raw_image = cv2.imread(filename)
+        # depth = depth_anything.infer_image(raw_image, args.input_size)
+        #
+        # zero_values = depth < 0.00000001
+        # depth[zero_values] = -1.0
+        # depth = (1.0 / depth)
+        # depth[zero_values] = 0.0
+        #
+        rgbImage = filename
+        depthImage = os.path.join(depth_folder, os.path.splitext(os.path.basename(filename))[0] + '.png')
+        # depthImage = os.path.join(depth_folder, os.path.splitext(os.path.basename(filename))[0] + '.npy')
+        # jsonFile = os.path.join(depth_folder, os.path.splitext(os.path.basename(filename))[0] + '.json')
+        #
+        # metadata = {
+        #     "depthMin": str(depth.min()),
+        #     "depthMax": str(depth.max()),
+        #     "normalizationFactor": str(65535),
+        #     "rgbImage": str(rgbImage),
+        #     "depthImage": str(depthImage),
+        #     "normalization": str("depth = (depth - depth.min()) / (depth.max() - depth.min()) * 65535"),
+        #     "type": str("uint16"),
+        #     "Description": "Normalized Depth image"
+        # }
+        #
+        # np.save(depthImage, depth)
 
-        with open(rgb_txt, 'r') as file:
-            lines = file.readlines()
-            for line in lines:
-                parts = line.strip().split()
-                rgb_paths[rgb_txt].append(os.path.join(sequence_path, parts[1]))
-                rgb_timestamps[rgb_txt].append(parts[0])
+        # with open(jsonFile, 'w') as json_file:
+        #     json.dump(metadata, json_file)
 
-    for filenames in rgb_paths.values():
-        outdir = os.path.join(sequence_path, 'depth')
-        os.makedirs(outdir, exist_ok=True)
-        rgbd_assoc_txt = os.path.join(sequence_path, 'rgbd_assoc.txt')
-        rgbd_assoc = []
+        rgbd_assoc.append(f"{rgb_timestamps[k]} rgb/{os.path.basename(rgbImage)}  "
+                          f"{rgb_timestamps[k]} depth_anything_v2/{os.path.basename(depthImage)}")
 
-        for k, filename in enumerate(tqdm(filenames)):
-            raw_image = cv2.imread(filename)
-
-            depth = depth_anything.infer_image(raw_image, args.input_size)
-
-            rgbImage = filename
-            depthImage = os.path.join(outdir, os.path.splitext(os.path.basename(filename))[0] + '.png')
-            jsonFile = os.path.join(outdir, os.path.splitext(os.path.basename(filename))[0] + '.json')
-
-            metadata = {
-               "depthMin": str(depth.min()),
-               "depthMax": str(depth.max()),
-               "normalizationFactor": str(65535),
-               "rgbImage": str(rgbImage),
-               "depthImage": str(depthImage),
-               "normalization": str("depth = (depth - depth.min()) / (depth.max() - depth.min()) * 65535"),
-               "type": str("uint16"),
-               "Description": "Normalized Depth image"
-            }
-
-            #depth = (depth - depth.min()) / (depth.max() - depth.min()) * 65535.0
-            depth = depth * 5000.0
-            depth = depth.astype(np.uint16)
-            cv2.imwrite(depthImage, depth)
-
-            with open(jsonFile, 'w') as json_file:
-               json.dump(metadata, json_file)
-
-            # rgbd_assoc.append(f"{rgb_timestamps[rgb_txt][k]} rgb/{os.path.basename(rgbImage)}  "
-            #                   f"depth/{os.path.basename(depthImage)} "
-            #                   f"depth/{os.path.basename(jsonFile)}")
-            rgbd_assoc.append(f"{rgb_timestamps[rgb_txt][k]} rgb/{os.path.basename(rgbImage)}  "
-                              f"{rgb_timestamps[rgb_txt][k]} depth/{os.path.basename(depthImage)} ")
-
-        with open(rgbd_assoc_txt, 'w') as file:
-            for line in rgbd_assoc:
-                file.write(line + '\n')
+    with open(rgbd_txt, 'w') as file:
+        for line in rgbd_assoc:
+            file.write(line + '\n')
