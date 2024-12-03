@@ -430,6 +430,7 @@ cuda = "12.0"
 git-clone = {cmd = "git-clone.sh DepthAnything Depth-Anything-V2 Baselines"}
 setup = {cmd = "pixi run --frozen -e vslamlab python Baselines/extra-files/Depth-Anything-V2/depthanythingv2_download_weights.py"}
 execute = {cmd = 'python Baselines/extra-files/Depth-Anything-V2/run.py', depends-on = ["git-clone", "setup"]}
+anchor = {cmd = 'python Baselines/extra-files/Depth-Anything-V2/test_detph_anything.py'}
 check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
 version_cuda = 'python -c "import torch; print(torch.version.cuda)"'
 
@@ -439,6 +440,7 @@ python = ">=3.11.10,<3.12"
 pytorch = {version = ">=2.1.0,<2.2", build ="*cuda12*"}
 torchvision = {version = ">=0.16.1,<0.17", build ="*cuda12*"}
 tqdm = ">=4.67.1,<4.68"
+scikit-learn = "*"
 
 [feature.depthanything.pypi-dependencies]
 opencv-python= "==4.10.0.84"
