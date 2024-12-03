@@ -82,7 +82,6 @@ def image_stream(sequence_path, rgb_txt, calibration_yaml, stride):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    print("rgbddddddddddddddddddddddddddddddddddddddddddddddddddddd")
     parser.add_argument("--sequence_path", type=str, help="path to image directory")
     parser.add_argument("--calibration_yaml", type=str, help="path to calibration file")
     parser.add_argument("--rgb_txt", type=str, help="path to image list")
