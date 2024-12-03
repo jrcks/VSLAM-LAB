@@ -97,9 +97,12 @@ platforms = ["linux-64"]
 cuda = "12.0"
 
 [feature.droidslam.tasks]
-git-clone = {cmd = "git-clone.sh alejandrofontan DROID-SLAM Baselines"}
-install = {cmd = "python setup.py install && python droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
-execute = {cmd = 'python droidslam_vslamlab.py', cwd = "Baselines/DROID-SLAM"}
+git-clone = {cmd = "git-clone.sh princeton-vl DROID-SLAM Baselines"}
+copy-files = {cmd = "cp Baselines/extra-files/DROID-SLAM/*droidslam* Baselines/DROID-SLAM"}
+download-weights = {cmd = "python droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
+install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["copy-files", "download-weights"]}
+execute_mono = {cmd = 'python droidslam_vslamlab_mono.py',  cwd = 'Baselines/DROID-SLAM'}
+execute_rgbd = {cmd = 'python droidslam_vslamlab_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
 
 [feature.droidslam.pypi-options]
 no-build-isolation = ["torch-scatter"]
