@@ -20,7 +20,7 @@ Baselines/ORB_SLAM2_VSLAMLAB
 Baselines/colmap
 Baselines/glomap
 Baselines/r2d2
-Baselines/MonoGS
+Baselines/MonoGS_VSLAMLAB
 Baselines/kalibr_catkin
 Baselines/DROID-SLAM
 Baselines/Depth-Anything-V2

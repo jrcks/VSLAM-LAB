@@ -117,11 +117,6 @@ if __name__ == '__main__':
         scaledDepthImage = np.divide(1.0, scaledInvDepthImage, where=scaledInvDepthImage != 0.0)
         scaledDepthImage = np.where((scaledDepthImage < min_depth) | (scaledDepthImage > max_depth), 0.0, scaledDepthImage)
 
-        #scaledInvDepthImage[scaledInvDepthImage < 0.0000001] = -1.0
-        #scaledDepthImage = 1.0 / scaledInvDepthImage
-        #scaledDepthImage[scaledDepthImage < min_depth] = 0.0
-        #scaledDepthImage[scaledDepthImage > max_depth] = 0.0
-
         scaledDepthImage = scaledDepthImage * scale_factor
         scaledDepthImage = scaledDepthImage.astype(np.uint16)
         cv2.imwrite(scaledDepthImage_path, scaledDepthImage)
@@ -141,7 +136,7 @@ if __name__ == '__main__':
         # with open(jsonFile, 'w') as json_file:
         #     json.dump(metadata, json_file)
 
-        rgbd_assoc.append(f"{rgb_timestamps[k]} rgb/{os.path.basename(rgbImage_path)}  "
+        rgbd_assoc.append(f"{rgb_timestamps[k]} rgb/{os.path.basename(rgbImage_path)} "
                           f"{rgb_timestamps[k]} {depth_folder_name}/{os.path.basename(scaledDepthImage_path)}")
 
     # Save associations file

@@ -289,9 +289,9 @@ platforms = ["linux-64"]
 cuda = "12.4"
 
 [feature.monogs.tasks]
-git-clone = "git-clone.sh alejandrofontan MonoGS Baselines"
-install = {cmd = "pip install submodules/simple-knn submodules/diff-gaussian-rasterization", cwd = "Baselines/MonoGS"}
-execute = {cmd = 'python slam.py', cwd = "Baselines/MonoGS"}
+git-clone = "git-clone.sh alejandrofontan MonoGS_VSLAMLAB Baselines"
+install = {cmd = "pip install submodules/simple-knn submodules/diff-gaussian-rasterization", cwd = "Baselines/MonoGS_VSLAMLAB"}
+execute = {cmd = 'python slam.py', cwd = "Baselines/MonoGS_VSLAMLAB"}
 check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
 
 [feature.monogs.dependencies]

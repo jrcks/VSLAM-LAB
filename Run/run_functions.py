@@ -47,6 +47,7 @@ def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
 
     return duration_time
 
+
 def create_rgb_exp_txt(exp, dataset, sequence_name):
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)
     exp_folder = os.path.join(exp.folder, dataset.dataset_folder, sequence_name)
