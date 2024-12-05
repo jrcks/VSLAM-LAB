@@ -1,20 +1,62 @@
-exp_depth_anything_sensor_orbslam2:
+glomap_lizard:
   Config: config_debug.yaml
-  NumRuns: 20
-  Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: rgbd}
-  Module: orbslam2
+  NumRuns: 1
+  Parameters: {verbose: 1} #, rgb_txt: rgb_500.txt}
+  Module: glomap
 
-exp_depth_anything_orbslam2:
-  Config: config_debug.yaml
-  NumRuns: 20
-  Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: rgbd, rgb_txt: rgbd_depth_anything_v2.txt}
-  Module: orbslam2
-
-exp_depth_anything_mono_orbslam2:
-  Config: config_debug.yaml
-  NumRuns: 20
-  Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: mono}
-  Module: orbslam2
+#exp_depth_monogs:
+#  Config: config_debug.yaml
+#  NumRuns: 3
+#  Parameters: {verbose: 1, mode: rgbd}
+#  Module: monogs
+#
+#exp_depth_anything_monogs:
+#  Config: config_debug.yaml
+#  NumRuns: 3
+#  Parameters: {verbose: 1, mode: rgbd, rgb_txt: rgbd_depth_anything_v2.txt}
+#  Module: monogs
+#
+#exp_mono_monogs:
+#  Config: config_debug.yaml
+#  NumRuns: 3
+#  Parameters: {verbose: 1, mode: mono}
+#  Module: monogs
+#
+#exp_depth_droidslam:
+#  Config: config_debug.yaml
+#  NumRuns: 3
+#  Parameters: {verbose: 1, mode: rgbd}
+#  Module: droidslam
+#
+#exp_depth_anything_droidslam:
+#  Config: config_debug.yaml
+#  NumRuns: 3
+#  Parameters: {verbose: 1, mode: rgbd, rgb_txt: rgbd_depth_anything_v2.txt}
+#  Module: droidslam
+#
+#exp_mono_droidslam:
+#  Config: config_debug.yaml
+#  NumRuns: 3
+#  Parameters: {verbose: 1, mode: mono}
+#  Module: droidslam
+#
+#exp_depth_orbslam2:
+#  Config: config_debug.yaml
+#  NumRuns: 3
+#  Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: rgbd}
+#  Module: orbslam2
+#
+#exp_depth_anything_orbslam2:
+#  Config: config_debug.yaml
+#  NumRuns: 3
+#  Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: rgbd, rgb_txt: rgbd_depth_anything_v2.txt}
+#  Module: orbslam2
+#
+#exp_mono_orbslam2:
+#  Config: config_debug.yaml
+#  NumRuns: 3
+#  Parameters: {verbose: 1, vocabulary: Vocabulary/ORBvoc.txt, mode: mono}
+#  Module: orbslam2
 
 #droidslam_noise:
 #  Config: config_debug.yaml
