@@ -65,8 +65,7 @@ def create_rgb_exp_txt(exp, dataset, sequence_name):
 
     if 'max_rgb' in exp.parameters:
         min_fps = dataset.rgb_hz / 10
-        downsampled_paths, downsampled_timestamps = downsample_rgb_frames(rgb_txt, exp.parameters['max_rgb'], min_fps, True)
-
+        downsampled_paths, downsampled_timestamps, downsampled_rows = downsample_rgb_frames(rgb_txt, exp.parameters['max_rgb'], min_fps, True)
         with open(rgb_exp_txt, 'w') as file:
-            for timestamp, path in zip(downsampled_timestamps, downsampled_paths):
-                file.write(f"{timestamp} {path}\n")
+            for row in downsampled_rows:
+                file.write(f"{row}\n")
