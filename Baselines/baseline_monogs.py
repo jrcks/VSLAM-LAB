@@ -26,7 +26,6 @@ class MONOGS_baseline(BaselineVSLAMLab):
         if mode == "rgbd":
             vslamlab_command = vslamlab_command.replace('vslamlab.yaml', 'vslamlab_rgbd.yaml')
 
-        print(vslamlab_command)
         return vslamlab_command
 
     def is_installed(self):

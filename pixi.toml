@@ -38,7 +38,8 @@ dso = {features = ["dso"], no-default-feature = true}
 anyfeature = {features = ["anyfeature"], no-default-feature = true}
 monodataset = {features = ["monodataset"], no-default-feature = true}
 
-depthanything = {features = ["depthanything"], no-default-feature = true}
+depthpro = {features = ["depthpro"], no-default-feature = true}
+#depthanything = {features = ["depthanything"], no-default-feature = true}
 
 # ros-env = {features = ["ros-env"], no-default-feature = true}
 # r2d2 = {features = ["r2d2"], no-default-feature = true}
@@ -423,33 +424,56 @@ roma = {version = ">=1.5.1,<2"}
 
 ########################################################################################################################
 ########################################################################################################################
-# depthanything begin
-[feature.depthanything]
+# depthpro begin
+[feature.depthpro]
 channels = ["nvidia/label/cuda-12.0.0","https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
-[feature.depthanything.system-requirements]
+[feature.depthpro.system-requirements]
 cuda = "12.0"
 
-[feature.depthanything.tasks]
-git-clone = {cmd = "git-clone.sh DepthAnything Depth-Anything-V2 Baselines"}
-setup = {cmd = "pixi run --frozen -e vslamlab python Baselines/extra-files/Depth-Anything-V2/depthanythingv2_download_weights.py"}
-execute = {cmd = 'python Baselines/extra-files/Depth-Anything-V2/run.py', depends-on = ["git-clone", "setup"]}
-anchor = {cmd = 'python Baselines/extra-files/Depth-Anything-V2/test_detph_anything.py'}
-check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
-version_cuda = 'python -c "import torch; print(torch.version.cuda)"'
+[feature.depthpro.tasks]
+git-clone = {cmd = "git-clone.sh apple ml-depth-pro Baselines"}
+install = {cmd = "pip install -e . && ./get_pretrained_models.sh", cwd = "Baselines/ml-depth-pro"}
+execute = {cmd = 'python ../extra-files/depth_estimation/depthpro_vslamlab.py', cwd = "Baselines/ml-depth-pro"}
 
-[feature.depthanything.dependencies]
-cuda = "12.0.0"
-python = ">=3.11.10,<3.12"
-pytorch = {version = ">=2.1.0,<2.2", build ="*cuda12*"}
-torchvision = {version = ">=0.16.1,<0.17", build ="*cuda12*"}
-tqdm = ">=4.67.1,<4.68"
-scikit-learn = "*"
+[feature.depthpro.dependencies]
+python = ">3.9,<3.10"
+pip="*"
 
-[feature.depthanything.pypi-dependencies]
-opencv-python= "==4.10.0.84"
-gradio_imageslider= "*"
+[feature.depthpro.pypi-dependencies]
+opencv-python= "*"
+# depthpro end
+
+########################################################################################################################
+########################################################################################################################
+# depthanything begin
+#[feature.depthanything]
+#channels = ["nvidia/label/cuda-12.0.0","https://fast.prefix.dev/conda-forge"]
+#platforms = ["linux-64"]
+#
+#[feature.depthanything.system-requirements]
+#cuda = "12.0"
+#
+#[feature.depthanything.tasks]
+#git-clone = {cmd = "git-clone.sh DepthAnything Depth-Anything-V2 Baselines"}
+#setup = {cmd = "pixi run --frozen -e vslamlab python Baselines/extra-files/Depth-Anything-V2/depthanythingv2_download_weights.py"}
+#execute = {cmd = 'python Baselines/extra-files/Depth-Anything-V2/run.py', depends-on = ["git-clone", "setup"]}
+#anchor = {cmd = 'python Baselines/extra-files/Depth-Anything-V2/test_detph_anything.py'}
+#check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
+#version_cuda = 'python -c "import torch; print(torch.version.cuda)"'
+#
+#[feature.depthanything.dependencies]
+#cuda = "12.0.0"
+#python = ">=3.11.10,<3.12"
+#pytorch = {version = ">=2.1.0,<2.2", build ="*cuda12*"}
+#torchvision = {version = ">=0.16.1,<0.17", build ="*cuda12*"}
+#tqdm = ">=4.67.1,<4.68"
+#scikit-learn = "*"
+#
+#[feature.depthanything.pypi-dependencies]
+#opencv-python= "==4.10.0.84"
+#gradio_imageslider= "*"
 # depthanything end
 
 ########################################################################################################################

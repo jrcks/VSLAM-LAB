@@ -26,6 +26,7 @@ Baselines/DROID-SLAM
 Baselines/Depth-Anything-V2
 Baselines/staticfusion
 Baselines/spann3r
+Baselines/ml-depth-pro
 Baselines/*.txt*
 
 configs/exp_demo.yaml
