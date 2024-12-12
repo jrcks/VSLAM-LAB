@@ -5,7 +5,7 @@ from Baselines.BaselineVSLAMLab import BaselineVSLAMLab
 class ORBSLAM2_baseline(BaselineVSLAMLab):
     def __init__(self):
         baseline_name = 'orbslam2'
-        baseline_folder = 'ORB_SLAM2_VSLAMLAB'
+        baseline_folder = 'ORB_SLAM2'
 
         # Initialize the baseline
         super().__init__(baseline_name, baseline_folder)
@@ -35,5 +35,5 @@ class ORBSLAM2_baseline(BaselineVSLAMLab):
 
     def info_print(self):
         super().info_print()
-        print(f"Default executable: Baselines/ORB_SLAM2_VSLAMLAB/bin/mono")
-        print(f"Default executable: Baselines/ORB_SLAM2_VSLAMLAB/bin/rgbd")
+        print(f"Default executable: Baselines/ORB_SLAM2/bin/mono")
+        print(f"Default executable: Baselines/ORB_SLAM2/bin/rgbd")

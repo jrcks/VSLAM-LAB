@@ -16,7 +16,7 @@ Baselines/AnyFeature-VSLAM
 Baselines/dso
 Baselines/dust3r
 Baselines/mono_dataset_code
-Baselines/ORB_SLAM2_VSLAMLAB
+Baselines/ORB_SLAM2
 Baselines/colmap
 Baselines/glomap
 Baselines/r2d2
