@@ -10,7 +10,7 @@ class DEPTHPRO_baseline(BaselineVSLAMLab):
         # Initialize the baseline
         super().__init__(baseline_name, baseline_folder)
 
-        self.default_parameters = {'verbose': 1, 'max-depth': 8, 'min-depth': 0.5}
+        self.default_parameters = {'verbose': 1, 'max-depth': 8, 'min-depth': 0.5, 'anchor': 1}
 
     def build_execute_command(self, exp_it, exp, dataset, sequence_name):
         return super().build_execute_command_python(exp_it, exp, dataset, sequence_name)
