@@ -37,3 +37,16 @@ class ORBSLAM2_baseline(BaselineVSLAMLab):
         super().info_print()
         print(f"Default executable: Baselines/ORB_SLAM2/bin/mono")
         print(f"Default executable: Baselines/ORB_SLAM2/bin/rgbd")
+
+    def modify_yaml_parameter(self,yaml_file, section_name, parameter_name, new_value):
+        with open(yaml_file, 'r') as file:
+            lines = file.readlines()
+
+        modified_lines = []
+        for line in lines:
+            if f"{section_name}.{parameter_name}" in line:
+                line = f"{section_name}.{parameter_name}: {new_value}\n"
+            modified_lines.append(line)
+
+        with open(yaml_file, 'w') as file:
+            file.writelines(modified_lines)
