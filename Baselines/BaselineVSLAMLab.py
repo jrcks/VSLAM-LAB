@@ -6,6 +6,7 @@ from path_constants import VSLAMLAB_BASELINES
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
+
 class BaselineVSLAMLab:
 
     def __init__(self, baseline_name, baseline_folder, default_parameters=''):
@@ -50,14 +51,16 @@ class BaselineVSLAMLab:
     def info_print(self):
         print(f'Name: {self.label}')
         is_installed = self.is_installed()
-        print(f"Installed:\033[92m {is_installed}\033[0m" if is_installed else f"Installed:\033[91m {is_installed}\033[0m")
-        print(f"Path:\033[92m {self.baseline_path}\033[0m" if is_installed else f"Path:\033[91m {self.baseline_path}\033[0m")
+        print(
+            f"Installed:\033[92m {is_installed}\033[0m" if is_installed else f"Installed:\033[91m {is_installed}\033[0m")
+        print(
+            f"Path:\033[92m {self.baseline_path}\033[0m" if is_installed else f"Path:\033[91m {self.baseline_path}\033[0m")
         print(f'Default parameters: {self.get_default_parameters()}')
 
     def execute(self, command, exp_it, exp_folder):
         log_file_path = os.path.join(exp_folder, "system_output_" + str(exp_it).zfill(5) + ".txt")
         with open(log_file_path, 'w') as log_file:
-            print(f"{ws(6)} log file: {log_file_path}")
+            print(f"{ws(8)}log file: {log_file_path}")
             subprocess.run(command, stdout=log_file, stderr=log_file, shell=True)
 
     def build_execute_command(self, sequence_path, exp_folder, exp_it, parameters):
@@ -115,3 +118,6 @@ class BaselineVSLAMLab:
 
         vslamlab_command = f"pixi run --frozen -e {self.baseline_name} execute " + ' '.join(vslamlab_command)
         return vslamlab_command
+
+    def modify_yaml_parameter(self, settings_ablation_yaml, section_name, parameter_name, value):
+        return

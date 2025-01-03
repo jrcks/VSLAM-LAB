@@ -5,6 +5,7 @@ import numpy as np
 import yaml
 import inspect
 import time
+import pandas as pd
 
 from path_constants import RGB_BASE_FOLDER
 from path_constants import ABLATION_PARAMETERS_CSV
@@ -15,37 +16,31 @@ from Baselines.baseline_utilities import append_ablation_parameters_to_csv
 SCRIPT_LABEL = f"\033[35m[{os.path.basename(__file__)}]\033[0m "
 
 
-def prepare_ablation(exp_it, exp, baseline, dataset, sequence_name, exec_command):
-    print(f"{ws(8)}Sequence {dataset.dataset_color}{sequence_name}\033[0m preparing ablation ...")
+def prepare_ablation(exp_it, exp, baseline, dataset, sequence_name, exec_command, ablation):
+    print(f"\n{SCRIPT_LABEL}Sequence {dataset.dataset_color}{sequence_name}\033[0m preparing ablation: {ablation}")
+    #print(f"\n{SCRIPT_LABEL}Running (it {exp_it + 1}/{exp.num_runs}) {baseline.label} in {dataset.dataset_color}{sequence_name}\033[0m of {dataset.dataset_label} ...")
+
     exp_folder = os.path.join(exp.folder, dataset.dataset_folder, sequence_name)
     settings_yaml = baseline.settings_yaml
+    ablation_parameters_csv = pd.read_csv(ablation)
 
-    # Start log for ablation parameters
-    ablation_parameters = {}
-    ablation_parameters['expId'] = str(exp_it).zfill(5)
-    ablation_parameters_csv = os.path.join(exp_folder, ABLATION_PARAMETERS_CSV)
+    # Create new _settings_ablation.yaml file
+    settings_ablation_yaml = os.path.join(exp_folder, os.path.basename(settings_yaml).replace('_settings', '_settings_ablation'))
+    if os.path.exists(settings_ablation_yaml):
+        os.remove(settings_ablation_yaml)
+    shutil.copy(settings_yaml, settings_ablation_yaml)
+    exec_command = exec_command.replace(settings_yaml, settings_ablation_yaml)
 
-    ## Define ablations
-
-    # Ablation: add noise to images
-    if 'image_noise' in exp.parameters:
-        ablation_parameters_i = add_noise_to_images_start(exp_it, exp, dataset, sequence_name)
-        ablation_parameters.update(ablation_parameters_i)
-
-    # Ablation: modify parameters
-    if 'ablation_param' in exp.parameters:
-        settings_ablation_yaml = settings_yaml.replace('_settings', '_settings_ablation')
-        if os.path.exists(settings_ablation_yaml):
-            os.remove(settings_ablation_yaml)
-        shutil.copy(settings_yaml, settings_ablation_yaml)
-
-        ablation_params = exp.parameters['ablation_param']
-        for ablation_param in ablation_params:
-            ablation_parameters_i = parameter_ablation_start(exp_it, ablation_param, settings_ablation_yaml)
-            ablation_parameters.update(ablation_parameters_i)
-
-        append_ablation_parameters_to_csv(ablation_parameters_csv, ablation_parameters)
-        exec_command = exec_command.replace(settings_yaml, settings_ablation_yaml)
+    # Update _settings_ablation.yaml file
+    row = ablation_parameters_csv.iloc[exp_it]
+    for parameter, value in row.items():
+        if parameter == 'exp_it':
+            continue
+        if parameter == 'image_noise':
+            continue
+        section_name, parameter_name = parameter.split('.', 1)
+        baseline.modify_yaml_parameter(settings_ablation_yaml, section_name, parameter_name, value)
+        print(f"{ws(8)}{section_name}: {parameter_name}: {value}")
 
     return exec_command
 
@@ -53,59 +48,8 @@ def prepare_ablation(exp_it, exp, baseline, dataset, sequence_name, exec_command
 def finish_ablation(exp_it, baseline, dataset, sequence_name):
     print(f"{ws(8)}Sequence '{sequence_name}' finishing ablation ...")
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)
-    add_noise_to_images_finish(sequence_path, exp_it)
-    parameter_ablation_finish(baseline)
+    #add_noise_to_images_finish(sequence_path, exp_it)
 
-
-def modify_yaml_parameter(yaml_file, section_name, parameter_name, new_value):
-    with open(yaml_file, 'r') as file:
-        data = yaml.safe_load(file)
-
-    if section_name in data and parameter_name in data[section_name]:
-        data[section_name][parameter_name] = new_value
-        print(f"    Parameter '{parameter_name}' in section '{section_name}' updated to '{new_value}'.")
-    else:
-        print(f"    Parameter '{parameter_name}' or section '{section_name}' not found in the YAML file.")
-
-    # Write the changes back to the YAML file
-    with open(yaml_file, 'w') as file:
-        yaml.safe_dump(data, file)
-
-    print(f"    YAML file '{yaml_file}' has been updated.")
-
-
-def parameter_ablation_start(exp_it, ablation_param, settings_ablation_yaml):
-    min_exp = -5
-    max_exp = 2
-    num_it = 100
-    b = min_exp
-    m = (max_exp - min_exp) / (num_it - 1)
-
-    def parameter_ablation(it_):
-        it__ = (it_ % num_it)
-        return 10 ** (m * it__ + b)
-
-    source_code = inspect.getsource(parameter_ablation)
-    parameter_policy = source_code[source_code.find('return') + len('return'):].strip()
-
-    print(f"{SCRIPT_LABEL} Parameter policy: {ablation_param} = {parameter_policy}")
-    value = parameter_ablation(exp_it)
-    print(f"    it = {exp_it}")
-    print(f"    ablation value = {value}")
-
-    section_name, parameter_name = ablation_param.split('.', 1)
-    modify_yaml_parameter(settings_ablation_yaml, section_name, parameter_name, value)
-
-    ablation_parameters = {ablation_param: value}
-
-    return ablation_parameters
-
-
-def parameter_ablation_finish(baseline):
-    settings_yaml = baseline.settings_yaml
-    settings_ablation_yaml = settings_yaml.replace('_settings', '_settings_ablation')
-    if os.path.exists(settings_ablation_yaml):
-        os.remove(settings_ablation_yaml)
 
 
 def add_noise_to_images_start(exp_it, exp, dataset, sequence_name):

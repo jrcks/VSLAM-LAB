@@ -12,7 +12,7 @@ from Baselines.downsample_rgb_frames import downsample_rgb_frames
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 
-def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
+def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=None):
     # Check baseline is installed
     baseline.check_installation()
 
@@ -30,15 +30,15 @@ def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
     exec_command = baseline.build_execute_command(exp_it, exp, dataset, sequence_name)
 
     # Prepare Ablation
-    if ablation:
-        exec_command = ablations.prepare_ablation(exp_it, exp, baseline, dataset, sequence_name, exec_command)
+    if ablation is not None:
+        exec_command = ablations.prepare_ablation(exp_it, exp, baseline, dataset, sequence_name, exec_command, ablation)
 
     # Execute experiment
     print(f"\n{SCRIPT_LABEL}Running (it {exp_it + 1}/{exp.num_runs}) {baseline.label} in {dataset.dataset_color}{sequence_name}\033[0m of {dataset.dataset_label} ...")
     baseline.execute(exec_command, exp_it, exp_folder)
 
     # Finish Ablation
-    if ablation:
+    if ablation is not None:
         ablations.finish_ablation(exp_it, baseline, dataset, sequence_name)
 
     # Log iteration duration
