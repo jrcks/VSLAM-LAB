@@ -1,0 +1,5 @@
+dataset_name: antarctica
+rgb_hz: 30.0
+url_download_root: " "
+sequence_names:
+  - DJI_202401111904_001

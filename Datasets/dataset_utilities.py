@@ -16,6 +16,7 @@ from Datasets.dataset_caves import CAVES_dataset
 from Datasets.dataset_lamar import LAMAR_dataset
 from Datasets.dataset_eth3d_mvs_dslr import ETH3D_MVS_DSLR_dataset
 from Datasets.dataset_yandiwanba import YANDIWANBA_dataset
+from Datasets.dataset_antarctica import ANTARCTICA_dataset
 
 SCRIPT_LABEL = "[dataset_utilities.py] "
 
@@ -40,7 +41,8 @@ def get_dataset(dataset_name, benchmark_path):
         "caves": lambda: CAVES_dataset(benchmark_path),
         "lamar": lambda: LAMAR_dataset(benchmark_path),
         "eth3d_mvs_dslr": lambda: ETH3D_MVS_DSLR_dataset(benchmark_path),
-        "yandiwanba": lambda: YANDIWANBA_dataset(benchmark_path)
+        "yandiwanba": lambda: YANDIWANBA_dataset(benchmark_path),
+        "antarctica": lambda: ANTARCTICA_dataset(benchmark_path)
     }
 
     return switcher.get(dataset_name, lambda: "Invalid case")()
