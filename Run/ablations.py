@@ -16,13 +16,13 @@ from Baselines.baseline_utilities import append_ablation_parameters_to_csv
 SCRIPT_LABEL = f"\033[35m[{os.path.basename(__file__)}]\033[0m "
 
 
-def prepare_ablation(exp_it, exp, baseline, dataset, sequence_name, exec_command, ablation):
-    print(f"\n{SCRIPT_LABEL}Sequence {dataset.dataset_color}{sequence_name}\033[0m preparing ablation: {ablation}")
+def prepare_ablation(exp_it, exp, baseline, dataset, sequence_name, exec_command):
+    print(f"\n{SCRIPT_LABEL}Sequence {dataset.dataset_color}{sequence_name}\033[0m preparing ablation: {exp.ablation_csv}")
     #print(f"\n{SCRIPT_LABEL}Running (it {exp_it + 1}/{exp.num_runs}) {baseline.label} in {dataset.dataset_color}{sequence_name}\033[0m of {dataset.dataset_label} ...")
 
     exp_folder = os.path.join(exp.folder, dataset.dataset_folder, sequence_name)
     settings_yaml = baseline.settings_yaml
-    ablation_parameters_csv = pd.read_csv(ablation)
+    ablation_parameters_csv = pd.read_csv(exp.ablation_csv)
 
     # Create new _settings_ablation.yaml file
     settings_ablation_yaml = os.path.join(exp_folder, os.path.basename(settings_yaml).replace('_settings', '_settings_ablation'))

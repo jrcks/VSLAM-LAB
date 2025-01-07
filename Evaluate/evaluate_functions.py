@@ -6,7 +6,7 @@ from path_constants import VSLAM_LAB_EVALUATION_FOLDER
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
-def evaluate_sequence(exp, dataset, sequence_name, ablation=None):
+def evaluate_sequence(exp, dataset, sequence_name, ablation=False):
     trajectories_path = os.path.join(exp.folder, dataset.dataset_folder, sequence_name)
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)
     groundtruth_file = os.path.join(sequence_path, 'groundtruth.txt')

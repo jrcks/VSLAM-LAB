@@ -54,7 +54,7 @@ def main():
 
     parser.add_argument('--list_datasets', action='store_true', help="List available datasets.")
 
-    parser.add_argument('-ablation', type=str, default=None, help="Path to ablation.csv")
+    parser.add_argument('-ablation', action='store_true', help="")
 
     args = parser.parse_args()
 
@@ -88,8 +88,6 @@ def main():
 
     if args.run:
         run(experiments, args.exp_yaml, args.ablation)
-
-    exit(0)
 
     if args.evaluate:
         evaluate(experiments, args.ablation)
@@ -152,6 +150,7 @@ def load_experiments(exp_yaml):
         experiments[exp_name].num_runs = settings.get('NumRuns', 1)
         experiments[exp_name].module = settings.get('Module', "default")
         experiments[exp_name].parameters = settings['Parameters']
+        experiments[exp_name].ablation_csv = settings.get('Ablation', None)
 
         #if settings['Parameters']:
         #    for parameter_name in settings['Parameters']:
@@ -182,7 +181,7 @@ def compare(experiments, exp_yaml):
     compare_functions.full_comparison(experiments, VSLAMLAB_BENCHMARK, COMPARISONS_YAML_DEFAULT, comparison_path)
 
 
-def evaluate(experiments, ablation=None):
+def evaluate(experiments, ablation=False):
     print(f"\n{SCRIPT_LABEL}Evaluating (in {VSLAMLAB_EVALUATION}) ...")
     for [_, exp] in experiments.items():
         with open(exp.config_yaml, 'r') as file:
@@ -193,7 +192,7 @@ def evaluate(experiments, ablation=None):
                     evaluate_sequence(exp, dataset, sequence_name, ablation)
 
 
-def run(experiments, exp_yaml, ablation=None):
+def run(experiments, exp_yaml, ablation=False):
     print(f"\n{SCRIPT_LABEL}Running experiments (in {exp_yaml}) ...")
     start_time = time.time()
 

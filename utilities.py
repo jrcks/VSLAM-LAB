@@ -18,6 +18,7 @@ class Experiment:
         self.num_runs = 1
         self.parameters = []
         self.module = ""
+        self.ablation_csv = None
 
 
 def list_datasets():
