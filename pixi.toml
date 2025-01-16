@@ -31,7 +31,7 @@ monogs = {features = ["monogs"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
 dust3r = {features = ["dust3r"], no-default-feature = true}
 #spann3r = {features = ["spann3r"], no-default-feature = true}
-#droidcalib = {features = ["droidcalib"], no-default-feature = true}
+droidcalib = {features = ["droidcalib"], no-default-feature = true}
 
 evo = {features = ["evo"], no-default-feature = true}
 
@@ -42,7 +42,7 @@ monodataset = {features = ["monodataset"], no-default-feature = true}
 depthpro = {features = ["depthpro"], no-default-feature = true}
 #depthanything = {features = ["depthanything"], no-default-feature = true}
 
-# ros-env = {features = ["ros-env"], no-default-feature = true}
+ros-env = {features = ["ros-env"], no-default-feature = true}
 # r2d2 = {features = ["r2d2"], no-default-feature = true}
 # staticfusion = {features = ["staticfusion"], no-default-feature = true}
 # kalibr = {features = ["kalibr"], no-default-feature = true}
@@ -133,46 +133,46 @@ torch-scatter = {version = ">=2.1.2,<3"}
 ########################################################################################################################
 ########################################################################################################################
 # droidcalib begin
-#[feature.droidcalib]
-#channels = ["nvidia/label/cuda-12.0.0","https://fast.prefix.dev/conda-forge"]
-#platforms = ["linux-64"]
-#
-#[feature.droidcalib.system-requirements]
-#cuda = "12.0"
-#
-#[feature.droidcalib.tasks]
-#git-clone = {cmd = "git-clone.sh boschresearch DroidCalib Baselines"}
-#install = {cmd = "python setup.py install", cwd = "Baselines/DroidCalib"}
-#execute = {cmd = "python demo.py --imagedir=/media/fontan/data/VSLAM-LAB-Benchmark/LIZARDISLAND/LIRS_FEB1/rgb --opt_intr --camera_model=mei --visualize" , cwd = "Baselines/DroidCalib"}
-##copy-files = {cmd = "cp Baselines/extra-files/DROID-SLAM/*droidslam* Baselines/DROID-SLAM"}
-##download-weights = {cmd = "python droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
-##install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["copy-files", "download-weights"]}
-##execute_mono = {cmd = 'python droidslam_vslamlab_mono.py',  cwd = 'Baselines/DROID-SLAM'}
-##execute_rgbd = {cmd = 'python droidslam_vslamlab_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
-#
-#[feature.droidcalib.pypi-options]
-#no-build-isolation = ["torch-scatter"]
-#
-#[feature.droidcalib.dependencies]
-#pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
-#cuda = "12.0.0"
-#pip = ">=24.2,<25"
-#python="3.11.*"
-#compilers = ">=1.7.0,<1.8.0"
-#make="4.2.1"
-#cmake = ">=3.30.3,<4"
-#tqdm = ">=4.66.5,<5"
-#open3d = ">=0.18.0,<0.19"
-#scipy = ">=1.14.1,<2"
-#opencv = ">=4.10.0,<5"
-#suitesparse = ">=7.8.2,<8"
-#matplotlib = ">=3.9.2,<4"
-#pyyaml = ">=6.0.2,<7"
-#huggingface_hub="*"
-#
-#[feature.droidcalib.pypi-dependencies]
-#torch-scatter = {version = ">=2.1.2,<3"}
-# droidslam end
+[feature.droidcalib]
+channels = ["nvidia/label/cuda-12.0.0","https://fast.prefix.dev/conda-forge"]
+platforms = ["linux-64"]
+
+[feature.droidcalib.system-requirements]
+cuda = "12.0"
+
+[feature.droidcalib.tasks]
+git-clone = {cmd = "git-clone.sh boschresearch DroidCalib Baselines"}
+install = {cmd = "python setup.py install", cwd = "Baselines/DroidCalib"}
+execute = {cmd = "python demo.py --imagedir=/media/fontan/data/VSLAM-LAB-Benchmark/LIZARDISLAND/LIRS_FEB1/rgb --opt_intr --camera_model=mei --visualize" , cwd = "Baselines/DroidCalib"}
+#copy-files = {cmd = "cp Baselines/extra-files/DROID-SLAM/*droidslam* Baselines/DROID-SLAM"}
+#download-weights = {cmd = "python droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
+#install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["copy-files", "download-weights"]}
+#execute_mono = {cmd = 'python droidslam_vslamlab_mono.py',  cwd = 'Baselines/DROID-SLAM'}
+#execute_rgbd = {cmd = 'python droidslam_vslamlab_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
+
+[feature.droidcalib.pypi-options]
+no-build-isolation = ["torch-scatter"]
+
+[feature.droidcalib.dependencies]
+pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
+cuda = "12.0.0"
+pip = ">=24.2,<25"
+python="3.11.*"
+compilers = ">=1.7.0,<1.8.0"
+make="4.2.1"
+cmake = ">=3.30.3,<4"
+tqdm = ">=4.66.5,<5"
+open3d = ">=0.18.0,<0.19"
+scipy = ">=1.14.1,<2"
+opencv = ">=4.10.0,<5"
+suitesparse = ">=7.8.2,<8"
+matplotlib = ">=3.9.2,<4"
+pyyaml = ">=6.0.2,<7"
+huggingface_hub="*"
+
+[feature.droidcalib.pypi-dependencies]
+torch-scatter = {version = ">=2.1.2,<3"}
+# droidcalib end
 
 ########################################################################################################################
 ########################################################################################################################
@@ -605,15 +605,16 @@ pangolin="*"
 # dso end
 
 ## ros begin
-#[feature.ros-env]
-#channels = ["https://fast.prefix.dev/conda-forge", "robostack-staging"]
-#platforms = ["linux-64"]
-#
-#[feature.ros-env.dependencies]
-#ros-noetic-desktop="*"
-#
-#[feature.ros-env.tasks]
-#extract-rosbag-frames = "python Datasets/extra-files/extract_rosbag_frames.py"
+[feature.ros-env]
+channels = ["https://fast.prefix.dev/conda-forge", "robostack-staging"]
+platforms = ["linux-64"]
+
+[feature.ros-env.dependencies]
+ros-noetic-desktop="*"
+tqdm="*"
+
+[feature.ros-env.tasks]
+extract-rosbag-frames = "python Datasets/extra-files/extract_rosbag_frames.py"
 ## ros end
 
 # monodataset begin

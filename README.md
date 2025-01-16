@@ -101,7 +101,7 @@ Datasets in **VSLAM-LAB** are stored in a folder named **VSLAM-LAB-Benchmark**, 
             └── ...
         ├── calibration.yaml
         ├── rgb.txt
-        └── groundtruth
+        └── groundtruth.txt
     └── sequence_02
         ├── ...
     └── ...   
@@ -109,7 +109,7 @@ Datasets in **VSLAM-LAB** are stored in a folder named **VSLAM-LAB-Benchmark**, 
 
 2. Derive a new class **dataset_{your_dataset}.py** for your dataset from  **~/VSLAM-LAB/Datasets/Dataset_vslamlab.py**, and create a corresponding YAML configuration file named **dataset_{your_dataset}.yaml**.
 	
-3. Include the call for your dataset in function *def get_dataset(...)* in **~/VSLAM-LAB/Datasets/Dataset_utilities.py**
+3. Include the call for your dataset in function *def get_dataset(...)* in **~/VSLAM-LAB/Datasets/get_dataset.py**
 ```
  from Datasets.dataset_{your_dataset} import {YOUR_DATASET}_dataset
     ...
@@ -173,4 +173,5 @@ We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6
 | [**The Drunkard's Dataset**](https://davidrecasens.github.io/TheDrunkard%27sOdometry)                                           | synthetic |  handheld  | `drunkards` |
 | [**The Replica Dataset**](https://github.com/facebookresearch/Replica-Dataset) - [**iMAP**](https://edgarsucar.github.io/iMAP/) | synthetic |  handheld  |  `replica`  |
 | [**Hamlyn Rectified Dataset**](https://davidrecasens.github.io/EndoDepthAndMotion/)                                             |   real    |  handheld  |  `hamlyn`   |
-| [**Underwater caves sonar and vision data set**](https://cirs.udg.edu/caves-dataset/)                                             |   real    | underwater |   `caves`   |
+| [**Underwater caves sonar and vision data set**](https://cirs.udg.edu/caves-dataset/)                                           |   real    | underwater |   `caves`   |
+| [**HILTI-OXFORD 2022**](http://hilti-challenge.com/dataset-2022.html)   |   real    | handheld |  `hilti2022`  |
