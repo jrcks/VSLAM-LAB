@@ -12,7 +12,7 @@ Module: VSLAM-LAB - demo.py
 import os
 import sys
 
-from Datasets.dataset_utilities import get_dataset
+from Datasets.get_dataset import get_dataset
 from Baselines.baseline_utilities import get_baseline
 
 from path_constants import VSLAMLAB_BENCHMARK

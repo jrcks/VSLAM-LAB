@@ -6,9 +6,6 @@ from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
 from utilities import downloadFile
 from utilities import decompressFile
 
-from Evaluate.align_trajectories import align_trajectory_with_groundtruth
-from Evaluate import metrics
-
 
 class DATASET_NAME_TEMPLATE_dataset(DatasetVSLAMLab):
     def __init__(self, benchmark_path):
@@ -41,7 +38,4 @@ class DATASET_NAME_TEMPLATE_dataset(DatasetVSLAMLab):
         return
 
     def remove_unused_files(self, sequence_name):
-        return
-
-    def evaluate_trajectory_accuracy(self, trajectory_txt, groundtruth_txt):
         return

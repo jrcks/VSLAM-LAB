@@ -72,7 +72,7 @@ class DatasetVSLAMLab:
         self.download_process(sequence_name)
 
     def download_process(self, sequence_name):
-        msg = f"Downloading sequence '{sequence_name}' from dataset '{self.dataset_name}' ..."
+        msg = f"Downloading sequence {self.dataset_color}{sequence_name}\033[0m from dataset {self.dataset_color}{self.dataset_name}\033[0m ..."
         print(SCRIPT_LABEL + msg)
         self.download_sequence_data(sequence_name)
         self.create_rgb_folder(sequence_name)

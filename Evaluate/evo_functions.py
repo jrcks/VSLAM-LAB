@@ -53,6 +53,7 @@ def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max
         command = f"evo_rpe tum {groundtruth_file} {trajectory_file} --all_pairs --delta 5 -va -as --save_results {traj_zip}"
 
     subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
     if not os.path.exists(traj_zip):
         return
 

@@ -20,7 +20,7 @@ import yaml
 from inputimeout import inputimeout, TimeoutOccurred
 
 from Evaluate import compare_functions
-from Datasets.dataset_utilities import get_dataset
+from Datasets.get_dataset import get_dataset
 from Baselines.baseline_utilities import get_baseline
 
 from path_constants import COMPARISONS_YAML_DEFAULT, CONFIG_DEFAULT, EXP_YAML_DEFAULT
