@@ -1,13 +1,8 @@
-import os
-import yaml
-import shutil
+import os, yaml
+import pandas as pd
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
-from utilities import downloadFile
-from utilities import decompressFile
-
-from Evaluate.align_trajectories import align_trajectory_with_groundtruth
-from Evaluate import metrics
+from utilities import downloadFile, decompressFile
 
 
 class RGBDTUM_dataset(DatasetVSLAMLab):
@@ -30,6 +25,8 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
         self.sequence_nicknames = [s.replace('texture', 'tx') for s in self.sequence_nicknames]
 
     def download_sequence_data(self, sequence_name):
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+
         # Variables
         compressed_name = sequence_name
         compressed_name_ext = compressed_name + '.tgz'
@@ -55,32 +52,47 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
             downloadFile(download_url, self.dataset_path)
 
         # Decompress the file
-        if os.path.exists(decompressed_folder):
-            shutil.rmtree(decompressed_folder)
+        if not os.path.exists(sequence_path):
+            decompressFile(compressed_file, self.dataset_path)
+            os.rename(decompressed_folder, sequence_path)
+            rgb_txt = os.path.join(sequence_path, 'rgb.txt')
+            os.rename(rgb_txt, rgb_txt.replace('rgb.txt', 'rgb_original.txt'))
 
-        sequence_path = os.path.join(self.dataset_path, sequence_name)
-        decompressFile(compressed_file, self.dataset_path)
-        os.rename(decompressed_folder, sequence_path)
-
-        # Delete the compressed file
-        if os.path.exists(compressed_file):
-            os.remove(compressed_file)
-
+       
     def create_rgb_txt(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         rgb_txt = os.path.join(sequence_path, 'rgb.txt')
+        depth_txt = os.path.join(sequence_path, 'depth.txt')
+        rgb_original_txt = os.path.join(sequence_path, 'rgb_original.txt')
+        if os.path.exists(rgb_txt):
+            return   
 
-        with open(rgb_txt, 'r') as file:
-            lines = file.readlines()
+        rgb_df = pd.read_csv(rgb_original_txt, sep=' ', comment='#', header=None, names=['timestamp', 'rgb_filename'])
+        depth_df = pd.read_csv(depth_txt, sep=' ', comment='#', header=None, names=['timestamp', 'depth_filename'])
 
-        number_of_lines = len(lines)
-        rgb_path = os.path.join(sequence_path, 'rgb')
-        rgb_files = [f for f in os.listdir(rgb_path) if os.path.isfile(os.path.join(rgb_path, f))]
+        time_difference_threshold = 0.02 
+        def find_closest_depth(rgb_ts):
+            diff = abs(depth_df['timestamp'] - rgb_ts)
+            min_diff_idx = diff.idxmin()
+            if diff[min_diff_idx] <= time_difference_threshold:
+                return depth_df.loc[min_diff_idx, 'depth_filename']
+            return None
 
-        if (len(rgb_files) + 3) == number_of_lines:
-            new_lines = lines[3:]
-            with open(rgb_txt, 'w') as file:
-                file.writelines(new_lines)
+        rgb_df['matched_depth'] = rgb_df['timestamp'].apply(find_closest_depth)
+        matched_pairs = rgb_df.dropna(subset=['matched_depth']).copy()
+        matched_pairs['depth_timestamp'] = matched_pairs.apply(
+            lambda row: depth_df.loc[depth_df['depth_filename'] == row['matched_depth'], 'timestamp'].values[0],
+            axis=1
+        )
+
+        matched_pairs['timestamp'] = matched_pairs['timestamp'].apply(lambda x: f"{x:.6f}")
+        matched_pairs['depth_timestamp'] = matched_pairs['depth_timestamp'].apply(lambda x: f"{x:.6f}")
+
+        matched_pairs[['timestamp', 'rgb_filename', 'depth_timestamp', 'matched_depth']].to_csv(
+            rgb_txt, sep=' ', index=False, header=False
+        )
+
+
 
     def create_calibration_yaml(self, sequence_name):
         if "freiburg1" in sequence_name:
@@ -97,6 +109,7 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
     def create_groundtruth_txt(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         groundtruth_txt = os.path.join(sequence_path, 'groundtruth.txt')
+        groundtruth_csv = os.path.join(sequence_path, 'groundtruth.csv')
 
         if not os.path.exists(groundtruth_txt):
             return
@@ -108,8 +121,13 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
         with open(groundtruth_txt, 'w') as file:
             file.writelines(new_lines)
 
+        header = "ts,tx,ty,tz,qx,qy,qz,qw\n"
+        new_lines.insert(0, header)
+        with open(groundtruth_csv, 'w') as file:
+            for line in new_lines:
+                values = line.split()
+                file.write(','.join(values) + '\n')
+
     def remove_unused_files(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         os.remove(os.path.join(sequence_path, 'accelerometer.txt'))
-        os.remove(os.path.join(sequence_path, 'depth.txt'))
-        shutil.rmtree(os.path.join(sequence_path, "depth"))
