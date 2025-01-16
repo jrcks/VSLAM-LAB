@@ -1,45 +1,195 @@
-glomap_lizard:
+exp_test_hilti:
   Config: config_debug.yaml
   NumRuns: 1
-  Parameters: {verbose: 1} #, rgb_txt: rgb_500.txt}
+  Parameters: {verbose: 1, max_rgb: 200}
   Module: glomap
+
+#exp_depth_orbslam2_invz_gtdepth_ablation:
+#  Config: config_debug.yaml
+#  NumRuns: 200
+#  Parameters: {verbose: 0, mode: rgbd}
+#  Ablation: /home/fontan/ablation.csv
+#  Module: orbslam2
+#
+#exp_depth_orbslam2_invz_depthpro_ablation:
+#  Config: config_debug.yaml
+#  NumRuns: 200
+#  Parameters: {verbose: 0, mode: rgbd, rgb_txt: rgbd_depth_pro.txt}
+#  Ablation: /home/fontan/ablation.csv
+#  Module: orbslam2
+
+#exp_depth_orbslam2_gtdepth_ablation:
+#  Config: config_debug.yaml
+#  NumRuns: 200
+#  Parameters: {verbose: 0, mode: rgbd}
+#  Ablation: /home/fontan/ablation.csv
+#  Module: orbslam2
+#
+#exp_depth_orbslam2_depthpro_ablation:
+#  Config: config_debug.yaml
+#  NumRuns: 200
+#  Parameters: {verbose: 0, mode: rgbd, rgb_txt: rgbd_depth_pro.txt}
+#  Ablation: /home/fontan/ablation.csv
+#  Module: orbslam2
+
+#exp_ablation_glomap:
+#  Config: config_debug.yaml
+#  NumRuns: 2
+#  Parameters: {verbose: 1, max_rgb: 50}
+#  Module: glomap
+
+
+#exp_depth_orbslam2_gtdepth:
+#  Config: config_debug.yaml
+#  NumRuns: 25
+#  Parameters: {verbose: 0, mode: rgbd}
+#  Module: orbslam2
+#
+#exp_depth_orbslam2_mono:
+#  Config: config_debug.yaml
+#  NumRuns: 25
+#  Parameters: {verbose: 0, mode: mono}
+#  Module: orbslam2
+#
+#exp_depth_orbslam2_depthpro:
+#  Config: config_debug.yaml
+#  NumRuns: 25
+#  Parameters: {verbose: 0, mode: rgbd, rgb_txt: rgbd_depth_pro.txt}
+#  Module: orbslam2
+
+#exp_antarctica:
+#  Config: config_debug.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 1}
+#  Module: droidslam
+
+#exp_antarctica_dust3r:
+#  Config: config_debug.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 1, rgb_txt: rgb_20.txt, 'max_rgb': 10}
+#  Module: dust3r
+
+#exp_antarctica_orbslam2:
+#  Config: config_debug.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 1}
+#  Module: orbslam2
+
+#exp_antarctica_monogs:
+#  Config: config_debug.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 1}
+#  Module: monogs
+
+#exp_antarctica_glomap:
+#  Config: config_debug.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 1, rgb_txt: rgb_66.txt}
+#  Module: glomap
+
+#exp_depthpro:
+#  Config: config_debug.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 1}
+#  Module: depthpro
+
+#exp_depth_orbslam2_mono:
+#  Config: config_debug.yaml
+#  NumRuns: 30
+#  Parameters: {verbose: 0, mode: mono}
+#  Module: orbslam2
+#
+#exp_depth_orbslam2_gtdepth:
+#  Config: config_debug.yaml
+#  NumRuns: 30
+#  Parameters: {verbose: 0, mode: rgbd}
+#  Module: orbslam2
+#
+#exp_depth_orbslam2_depthpro:
+#  Config: config_debug.yaml
+#  NumRuns: 30
+#  Parameters: {verbose: 0, mode: rgbd, rgb_txt: rgbd_depth_pro.txt}
+#  Module: orbslam2
+##
+#exp_depth_orbslam2_depthpro_anchored:
+#  Config: config_debug.yaml
+#  NumRuns: 30
+#  Parameters: {verbose: 0, mode: rgbd, rgb_txt: rgbd_depth_pro_anchored.txt }
+#  Module: orbslam2
+
+#exp_yandiwamba:
+#  Config: config_debug.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 1, max_rgb: 50}
+#  Module: glomap
+
+#exp_yandiwamba:
+#  Config: config_debug.yaml
+#  NumRuns: 51278
+#  Parameters: {verbose: 1}
+#  Module: monogs
+
+#exp_depthpro:
+#  Config: config_debug.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 1}
+#  Module: depthpro
+
+#monogs_lizard:
+#  Config: config_debug.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 1, rgb_txt: rgb.txt}
+#  Module: monogs
 
 #exp_depth_monogs:
 #  Config: config_debug.yaml
 #  NumRuns: 3
-#  Parameters: {verbose: 1, mode: rgbd}
+#  Parameters: {verbose: 0, mode: rgbd, max_rgb: 50000}
 #  Module: monogs
 #
 #exp_depth_anything_monogs:
 #  Config: config_debug.yaml
 #  NumRuns: 3
-#  Parameters: {verbose: 1, mode: rgbd, rgb_txt: rgbd_depth_anything_v2.txt}
+#  Parameters: {verbose: 0, mode: rgbd, rgb_txt: rgbd_depth_anything_v2.txt}
 #  Module: monogs
 #
 #exp_mono_monogs:
 #  Config: config_debug.yaml
 #  NumRuns: 3
-#  Parameters: {verbose: 1, mode: mono}
+#  Parameters: {verbose: 0, mode: mono}
 #  Module: monogs
-#
-#exp_depth_droidslam:
+
+#exp_depth_droidslam_gtdepth:
 #  Config: config_debug.yaml
-#  NumRuns: 3
-#  Parameters: {verbose: 1, mode: rgbd}
+#  NumRuns: 25
+#  Parameters: {verbose: 0, mode: rgbd}
 #  Module: droidslam
 #
-#exp_depth_anything_droidslam:
+#exp_depth_droidslam_depthanything:
 #  Config: config_debug.yaml
-#  NumRuns: 3
-#  Parameters: {verbose: 1, mode: rgbd, rgb_txt: rgbd_depth_anything_v2.txt}
+#  NumRuns: 25
+#  Parameters: {verbose: 0, mode: rgbd, rgb_txt: rgbd_depth_anything_v2.txt}
 #  Module: droidslam
 #
-#exp_mono_droidslam:
+#exp_depth_droidslam_depthpro:
 #  Config: config_debug.yaml
-#  NumRuns: 3
-#  Parameters: {verbose: 1, mode: mono}
+#  NumRuns: 25
+#  Parameters: {verbose: 0, mode: rgbd, rgb_txt: rgbd_depth_pro.txt}
 #  Module: droidslam
+
+#exp_depth_droidslam_depthpro_anchored:
+#  Config: config_debug.yaml
+#  NumRuns: 1
+#  Parameters: {verbose: 1, mode: rgbd, rgb_txt: rgbd_depth_pro_anchored.txt}
+#  Module: droidslam
+
 #
+#exp_depth_droidslam_mono:
+#  Config: config_debug.yaml
+#  NumRuns: 25
+#  Parameters: {verbose: 0, mode: mono}
+#  Module: droidslam
+
 #exp_depth_orbslam2:
 #  Config: config_debug.yaml
 #  NumRuns: 3
