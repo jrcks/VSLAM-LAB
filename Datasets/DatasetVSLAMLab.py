@@ -5,26 +5,15 @@ Module: VSLAM-LAB - Datasets - DatasetVSLAMLab.py
 - Created: 2024-07-12
 - Updated: 2024-07-12
 - License: GPLv3 License
-- List of Known Dependencies;
-    * ...
 
 DatasetVSLAMLab: A class to handle Visual SLAM dataset-related operations.
-Specifically downloading sequences, running experiments, and evaluating results.
 
 """
 
-import os
-import sys
-from tqdm import tqdm
-import cv2
-import yaml
-import subprocess
+import os, sys, cv2, yaml
+from utilities import ws, check_sequence_integrity
+from path_constants import VSLAM_LAB_DIR, VSLAM_LAB_EVALUATION_FOLDER
 
-from path_constants import VSLAM_LAB_DIR
-from utilities import find_files_with_string
-from utilities import ws
-from utilities import check_sequence_integrity
-from path_constants import VSLAM_LAB_EVALUATION_FOLDER
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -33,7 +22,6 @@ class DatasetVSLAMLab:
 
     def __init__(self, dataset_name, benchmark_path):
 
-        # Init dataset paths
         self.dataset_name = dataset_name
         self.dataset_color = "\033[38;2;255;165;0m"
         self.dataset_label = f"{self.dataset_color}{dataset_name}\033[0m"
