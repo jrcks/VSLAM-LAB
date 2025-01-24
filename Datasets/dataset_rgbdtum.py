@@ -1,9 +1,10 @@
 import os, yaml
 import pandas as pd
+import numpy as np
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
 from utilities import downloadFile, decompressFile
-
+from Datasets.dataset_utilities import undistort_rgb_rad_tan, undistort_depth_rad_tan
 
 class RGBDTUM_dataset(DatasetVSLAMLab):
     def __init__(self, benchmark_path):
@@ -28,8 +29,7 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
 
         # Variables
-        compressed_name = sequence_name
-        compressed_name_ext = compressed_name + '.tgz'
+        compressed_name_ext = sequence_name + '.tgz'
         decompressed_name = sequence_name
 
         if "freiburg1" in sequence_name:
@@ -95,6 +95,8 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
 
 
     def create_calibration_yaml(self, sequence_name):
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        rgb_txt = os.path.join(sequence_path, 'rgb.txt')
         if "freiburg1" in sequence_name:
             fx, fy, cx, cy, k1, k2, p1, p2, k3 = (
                 517.306408, 516.469215, 318.643040, 255.313989, 0.262383, -0.953104, -0.005358, 0.002628, 1.163314)
@@ -104,7 +106,13 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
         if "freiburg3" in sequence_name:
             fx, fy, cx, cy, k1, k2, p1, p2, k3 = 535.4, 539.2, 320.1, 247.6, 0.0, 0.0, 0.0, 0.0, 0.0
 
-        self.write_calibration_yaml('OPENCV', fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name)
+        if "freiburg1" in sequence_name or "freiburg2" in sequence_name:
+            camera_matrix = np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1]])
+            distortion_coeffs = np.array([k1, k2, p1, p2, k3])
+            fx, fy, cx, cy = undistort_rgb_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coeffs)
+            undistort_depth_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coeffs)
+
+        self.write_calibration_yaml('OPENCV', fx, fy, cx, cy, 0.0, 0.0, 0.0, 0.0, 0.0, sequence_name)
 
     def create_groundtruth_txt(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
