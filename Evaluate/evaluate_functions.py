@@ -21,7 +21,7 @@ def evaluate_sequence(exp, dataset, sequence_name, ablation=False):
     print(f"\n{SCRIPT_LABEL}ATE evaluation: {groundtruth_file}")
 
     command =  "pixi run -e evo evo_config set save_traj_in_zip true"
-    subprocess.run(command, shell=True)
+    subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     command = (f"pixi run -e evo python Evaluate/evo_functions.py ate {1.0 / dataset.rgb_hz} {trajectories_path} {evaluation_folder} {groundtruth_file} {pseudo_groundtruth}")
     subprocess.run(command, shell=True)
