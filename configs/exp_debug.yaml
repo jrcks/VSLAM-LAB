@@ -1,7 +1,7 @@
-exp_test_hilti:
+exp_test:
   Config: config_debug.yaml
-  NumRuns: 1
-  Parameters: {verbose: 1, max_rgb: 200}
+  NumRuns: 5
+  Parameters: {verbose: 0, max_rgb: 200}
   Module: glomap
 
 #exp_depth_orbslam2_invz_gtdepth_ablation:
