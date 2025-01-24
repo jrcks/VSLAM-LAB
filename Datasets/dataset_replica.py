@@ -1,13 +1,11 @@
-import os
-import yaml
-import shutil
+import os, yaml, shutil 
 import numpy as np
+
 from scipy.spatial.transform import Rotation
 from inputimeout import inputimeout, TimeoutOccurred
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
-from utilities import downloadFile
-from utilities import decompressFile
+from utilities import downloadFile, decompressFile
 from path_constants import VSLAMLAB_BENCHMARK
 from utilities import ws
 
@@ -30,9 +28,9 @@ class REPLICA_dataset(DatasetVSLAMLab):
     def download_sequence_data(self, sequence_name):
 
         # Variables
-        compressed_name = "Replica"
-        compressed_name_ext = compressed_name + '.zip'
+        compressed_name_ext = 'Replica.zip'
         decompressed_name = self.dataset_name.upper()
+        
         download_url = self.url_download_root
 
         # Constants
