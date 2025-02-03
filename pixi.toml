@@ -100,7 +100,7 @@ cuda = "12.0"
 
 [feature.droidslam.tasks]
 git-clone = {cmd = "git-clone.sh VSLAM-LAB DROID-SLAM Baselines"}
-download-weights = {cmd = "python droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
+download-weights = {cmd = "python vslamlab_droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
 install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["download-weights"]}
 execute_mono = {cmd = 'python vslamlab_droidslam_mono.py',  cwd = 'Baselines/DROID-SLAM'}
 execute_rgbd = {cmd = 'python vslamlab_droidslam_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
