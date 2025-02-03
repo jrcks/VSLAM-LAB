@@ -1,5 +1,4 @@
 import os.path
-import yaml
 from Baselines.BaselineVSLAMLab import BaselineVSLAMLab
 
 
@@ -22,14 +21,4 @@ class GLOMAP_baseline(BaselineVSLAMLab):
         super().info_print()
         print(f"Default executable: Baselines/glomap/bin/glomap")
 
-    def modify_yaml_parameter(self, yaml_file, section_name, parameter_name, new_value):
-        with open(yaml_file, 'r') as file:
-            data = yaml.safe_load(file)
 
-        if section_name in data and parameter_name in data[section_name]:
-            data[section_name][parameter_name] = new_value
-        else:
-            print(f"    Parameter '{parameter_name}' or section '{section_name}' not found in the YAML file.")
-
-        with open(yaml_file, 'w') as file:
-            yaml.safe_dump(data, file)

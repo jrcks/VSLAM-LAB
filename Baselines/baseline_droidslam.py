@@ -30,4 +30,4 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
 
     def info_print(self):
         super().info_print()
-        print(f"Default executable: Baselines/DROID-SLAM/droidslam_vslamlab.py")
+        print(f"Default executable: Baselines/DROID-SLAM/droidslam_vslamlab_mono.py")

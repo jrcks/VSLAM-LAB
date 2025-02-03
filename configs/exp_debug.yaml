@@ -1,8 +1,8 @@
 exp_test:
   Config: config_debug.yaml
-  NumRuns: 5
-  Parameters: {verbose: 0, max_rgb: 200}
-  Module: glomap
+  NumRuns: 1
+  Parameters: {verbose: 1}
+  Module: droidslam
 
 #exp_depth_orbslam2_invz_gtdepth_ablation:
 #  Config: config_debug.yaml

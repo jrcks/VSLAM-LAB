@@ -72,7 +72,7 @@ py7zr="*"
 
 # evo begin
 [feature.evo.dependencies]
-python="3.12"
+python="=3.12"
 py7zr="*"
 tqdm="*"
 
@@ -99,23 +99,19 @@ platforms = ["linux-64"]
 cuda = "12.0"
 
 [feature.droidslam.tasks]
-git-clone = {cmd = "git-clone.sh princeton-vl DROID-SLAM Baselines"}
-copy-files = {cmd = "cp Baselines/extra-files/DROID-SLAM/*droidslam* Baselines/DROID-SLAM"}
+git-clone = {cmd = "git-clone.sh VSLAM-LAB DROID-SLAM Baselines"}
 download-weights = {cmd = "python droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
-install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["copy-files", "download-weights"]}
-execute_mono = {cmd = 'python droidslam_vslamlab_mono.py',  cwd = 'Baselines/DROID-SLAM'}
-execute_rgbd = {cmd = 'python droidslam_vslamlab_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
-
-[feature.droidslam.pypi-options]
-no-build-isolation = ["torch-scatter"]
+install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["download-weights"]}
+execute_mono = {cmd = 'python vslamlab_droidslam_mono.py',  cwd = 'Baselines/DROID-SLAM'}
+execute_rgbd = {cmd = 'python vslamlab_droidslam_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
 
 [feature.droidslam.dependencies]
 pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
-cuda = "12.0.0"
+cuda = "=12.0.0"
 pip = ">=24.2,<25"
 python="3.11.*"
 compilers = ">=1.7.0,<1.8.0"
-make="4.2.1"
+make="=4.2.1"
 cmake = ">=3.30.3,<4"
 tqdm = ">=4.66.5,<5"
 open3d = ">=0.18.0,<0.19"
@@ -125,9 +121,7 @@ suitesparse = ">=7.8.2,<8"
 matplotlib = ">=3.9.2,<4"
 pyyaml = ">=6.0.2,<7"
 huggingface_hub="*"
-
-[feature.droidslam.pypi-dependencies]
-torch-scatter = {version = ">=2.1.2,<3"}
+torch-scatter =">=2.1.1,<2.2"
 # droidslam end
 
 ########################################################################################################################
@@ -155,11 +149,11 @@ no-build-isolation = ["torch-scatter"]
 
 [feature.droidcalib.dependencies]
 pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
-cuda = "12.0.0"
+cuda = "=12.0.0"
 pip = ">=24.2,<25"
 python="3.11.*"
 compilers = ">=1.7.0,<1.8.0"
-make="4.2.1"
+make="=4.2.1"
 cmake = ">=3.30.3,<4"
 tqdm = ">=4.66.5,<5"
 open3d = ">=0.18.0,<0.19"
@@ -227,7 +221,7 @@ libboost-devel = "*"
 suitesparse = ">=5.10.1,<5.11"
 eigen = ">=3.4.0,<3.5"
 freeimage = ">=3.18.0,<3.19"
-glog = "0.6.0"
+glog = "=0.6.0"
 gflags = ">=2.2.2,<2.3"
 glew = ">=2.1.0,<2.2"
 cgal-cpp = ">=6.0.1,<6.1"
@@ -295,7 +289,7 @@ libboost-devel = "*"
 suitesparse = ">=5.10.1,<5.11"
 eigen = ">=3.4.0,<3.5"
 freeimage = ">=3.18.0,<3.19"
-glog = "0.6.0"
+glog = "=0.6.0"
 gflags = ">=2.2.2,<2.3"
 glew = ">=2.1.0,<2.2"
 cgal-cpp = ">=6.0.1,<6.1"
@@ -344,8 +338,8 @@ check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
 
 [feature.monogs.dependencies]
 python = ">=3.8.19,<3.9"
-cuda = "12.4"
-pytorch = {version="2.4.0", build="py3.8_cuda12.4*", channel="pytorch"}
+cuda = "12.4.*"
+pytorch = {version="=2.4.0", build="py3.8_cuda12.4*", channel="pytorch"}
 pip = ">=24.3.1,<24.4"
 torchvision = {version="0.19.*", channel="pytorch"}
 torchaudio = {version="2.4.*", channel="pytorch"}
@@ -410,7 +404,7 @@ pkg-config = ">=0.29.2 ,<0.30"
 opencv = ">=4.10.0 ,<5"
 eigen = ">=3.4.0 ,<3.5.0"
 yaml-cpp = ">=0.8.0,<0.9"
-pangolin = {version="2024.07.03", build="h3c9d71d_0", channel="fontan"}
+pangolin = {version="=2024.07.03", build="h3c9d71d_0", channel="fontan"}
 # orbslam2 end
 
 ########################################################################################################################
@@ -425,9 +419,9 @@ git-clone = "git-clone.sh naver dust3r Baselines"
 execute = {cmd = 'python Baselines/extra-files/dust3r/dust3r_execute.py'}
 
 [feature.dust3r.dependencies]
-cmake = "3.14.0"
-python = "3.11.0"
-pytorch-cuda = "12.4,<13"
+cmake = "=3.14.0"
+python = "=3.11.0"
+pytorch-cuda = "12.4.*,<13"
 huggingface_hub = ">=0.26.2,<0.27"
 gradio = ">=3.24.1,<4"
 matplotlib = ">=3.9.1,<4"

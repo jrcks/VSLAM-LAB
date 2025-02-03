@@ -1,7 +1,6 @@
+import os, yaml
 import subprocess
-
 from utilities import ws
-import os
 from path_constants import VSLAMLAB_BASELINES
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
@@ -13,7 +12,7 @@ class BaselineVSLAMLab:
         self.baseline_name = baseline_name
         self.baseline_path = os.path.join(VSLAMLAB_BASELINES, baseline_folder)
         self.label = f"\033[96m{baseline_name}\033[0m"
-        self.settings_yaml = os.path.join(VSLAMLAB_BASELINES, baseline_folder, f'{baseline_name}_settings.yaml')
+        self.settings_yaml = os.path.join(VSLAMLAB_BASELINES, baseline_folder, f'vslamlab_{baseline_name}_settings.yaml')
         self.default_parameters = default_parameters
 
     def get_default_parameters(self):
@@ -119,5 +118,14 @@ class BaselineVSLAMLab:
         vslamlab_command = f"pixi run --frozen -e {self.baseline_name} execute " + ' '.join(vslamlab_command)
         return vslamlab_command
 
-    def modify_yaml_parameter(self, settings_ablation_yaml, section_name, parameter_name, value):
-        return
+    def modify_yaml_parameter(self, settings_ablation_yaml, section_name, parameter_name, new_value):
+        with open(settings_ablation_yaml, 'r') as file:
+            data = yaml.safe_load(file)
+
+        if section_name in data and parameter_name in data[section_name]:
+            data[section_name][parameter_name] = new_value
+        else:
+            print(f"    Parameter '{parameter_name}' or section '{section_name}' not found in the YAML file.")
+
+        with open(settings_ablation_yaml, 'w') as file:
+            yaml.safe_dump(data, file)
