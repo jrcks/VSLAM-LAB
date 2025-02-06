@@ -24,7 +24,10 @@ clean_experiment = {cmd = "pixi run -e vslamlab python Evaluate/clean_experiment
 # environments begin
 [environments]
 vslamlab = {features = ["vslamlab"], no-default-feature = true}
+
 droidslam = {features = ["droidslam"], no-default-feature = true}
+dpvo = {features = ["dpvo"], no-default-feature = true}
+
 colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
 glomap = {features = ["glomap"], no-default-feature = true, solve-group = "colmap"}
 monogs = {features = ["monogs"], no-default-feature = true}
@@ -123,6 +126,72 @@ pyyaml = ">=6.0.2,<7"
 huggingface_hub="*"
 torch-scatter =">=2.1.1,<2.2"
 # droidslam end
+
+########################################################################################################################
+########################################################################################################################
+# dpvo begin
+[feature.dpvo]
+channels = ["pyg", "pytorch", "nvidia/label/cuda-12.1.0", "conda-forge", "main", "r", "msys2"]
+
+platforms = ["linux-64"]
+
+[feature.dpvo.system-requirements]
+cuda = "12.0"
+
+[feature.dpvo.tasks]
+git-clone = {cmd = "git-clone.sh VSLAM-LAB DPVO Baselines"}
+download-models-and-data = {cmd = "./download_models_and_data.sh", cwd = "Baselines/DPVO"}
+build_pangolin = {cmd = "mkdir -p build && cd build && cmake .. && make -j12", cwd = "Baselines/DPVO/Pangolin"}
+install_DPViewer = {cmd = "pip install .", cwd = "Baselines/DPVO/DPViewer"}
+install = {cmd = "pip install .", cwd = "Baselines/DPVO", depends-on = ["download-models-and-data", "build_pangolin", "install_DPViewer"]}
+execute = {cmd = 'python vslamlab_dpvo_mono.py' ,cwd = 'Baselines/DPVO'}
+
+[feature.dpvo.dependencies]
+libnvjitlink = "=12.1.105"
+pip = "*"
+cuda = "12.1.*"
+cuda-toolkit = "12.1.*"
+python = "*"
+pytorch = "2.3.1.*"
+pytorch-scatter = "2.1.2.*"
+pytorch-cuda = "12.1.*"
+torchvision = "0.18.*"
+numba = "*"
+
+compilers="=1.6.0"
+libxkbcommon="*"
+xorg-xorgproto="*"
+
+mesa-libegl-devel-cos7-x86_64 ="*"
+mesa-libgl-devel-cos7-x86_64 ="*"
+mesa-dri-drivers-cos7-x86_64 ="*"
+libglvnd-egl-cos7-x86_64 ="*"
+libglvnd-devel-cos7-x86_64 ="*"
+libselinux-cos7-x86_64 ="*"
+libxdamage-cos7-x86_64 ="*"
+libxxf86vm-cos7-x86_64 ="*"
+libxfixes-cos7-x86_64 ="*"
+libxext-cos7-x86_64 ="*"
+libxau-cos7-x86_64 ="*"
+libxcb-cos7-x86_64 ="*"
+
+glew = "*"
+wayland = "*"
+eigen = "*"
+pkg-config = "*"
+
+[feature.dpvo.pypi-dependencies]
+tensorboard = "*"
+tqdm = "*"
+einops = "*"
+pypose = "*"
+kornia = "*"
+numpy = "*"
+plyfile = "*"
+evo = "*"
+opencv-python = "*"
+yacs = "*"
+# dpvo end
 
 ########################################################################################################################
 ########################################################################################################################
