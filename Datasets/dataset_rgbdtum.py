@@ -58,7 +58,6 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
             rgb_txt = os.path.join(sequence_path, 'rgb.txt')
             os.rename(rgb_txt, rgb_txt.replace('rgb.txt', 'rgb_original.txt'))
 
-       
     def create_rgb_txt(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         rgb_txt = os.path.join(sequence_path, 'rgb.txt')
@@ -112,7 +111,7 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
             fx, fy, cx, cy = undistort_rgb_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coeffs)
             undistort_depth_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coeffs)
 
-        self.write_calibration_yaml('OPENCV', fx, fy, cx, cy, 0.0, 0.0, 0.0, 0.0, 0.0, sequence_name)
+        self.write_calibration_yaml('PINHOLE', fx, fy, cx, cy, 0.0, 0.0, 0.0, 0.0, 0.0, sequence_name)
 
     def create_groundtruth_txt(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
