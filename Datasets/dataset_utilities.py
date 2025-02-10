@@ -109,3 +109,34 @@ def undistort_fisheye(rgb_txt, sequence_path, camera_matrix, distortion_coeffs):
     fx, fy, cx, cy = (new_camera_matrix[0, 0], new_camera_matrix[1, 1],
                       new_camera_matrix[0, 2], new_camera_matrix[1, 2])
     return fx, fy, cx, cy
+
+
+def resize_rgb_images(rgb_txt, sequence_path, target_width, target_height, camera_matrix):
+    
+    rgb_paths, *_ = load_rgb_txt(rgb_txt)
+
+    # Load the first image to get original dimensions and compute scaling factors
+    sample_rgb_path = os.path.join(sequence_path, rgb_paths[0])
+    sample_rgb = cv2.imread(sample_rgb_path)
+    original_height, original_width = sample_rgb.shape[:2]
+
+    # Scaling factors for adjusting the camera intrinsic parameters
+    scale = np.sqrt(target_width * target_height * original_width / original_height) / original_width
+    w = int(original_width * scale)
+    h = int(original_height * scale)
+    scale_x = w / original_width
+    scale_y = h / original_height
+
+    # Resize all RGB images
+    for rgb_subpath in tqdm(rgb_paths, desc="Resizing RGB Images"):
+        rgb_path = os.path.join(sequence_path, rgb_subpath)
+        rgb_image = cv2.imread(rgb_path)
+        resized_rgb = cv2.resize(rgb_image, (w, h), interpolation=cv2.INTER_LINEAR)
+        cv2.imwrite(rgb_path, resized_rgb)
+
+    # Adjust the camera matrix for the new resolution
+    fx, fy, cx, cy = (camera_matrix[0,0] * scale_x, camera_matrix[1,1] * scale_y,
+                      camera_matrix[0,2] * scale_x, camera_matrix[1,2] * scale_y)
+    
+    return fx, fy, cx, cy
+
