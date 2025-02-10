@@ -5,8 +5,11 @@
 #  - exp14_basement_2
   #- exp16_attic_to_upper_gallery_2
   #- exp18_corridor_lower_gallery_2
-#antarctica:
-#- 'DJI_202401111904_001'
+antarctica:
+  #- 'DJI_202401111904_001'
+  #- 'DJI_202401111932_002'
+  #- 'DJI_202401111932_003'
+  - 'DJI_202401112014_004'
 
 #yandiwanba:
   #- 'test1'
@@ -22,9 +25,9 @@
 #  - 'room0'
 #  - 'room1'
 #  - 'room2'
-rgbdtum:
+#rgbdtum:
   #- 'rgbd_dataset_freiburg3_structure_texture_far'
-  - 'rgbd_dataset_freiburg1_xyz'
+#  - 'rgbd_dataset_freiburg1_xyz'
 
 #eth:
 #  - 'table_3'

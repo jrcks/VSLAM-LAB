@@ -1,8 +1,32 @@
-exp_test:
-  Config: config_debug.yaml
-  NumRuns: 1
-  Parameters: {verbose: 1}
+# exp_dpvo_antarctica:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 1, matcher_type: exhaustive, max_rgb: 1000000}
+#   Module: glomap
+
+exp_dpvo_rgbdtum:
+  Config: config_rgbdtum.yaml
+  NumRuns: 10
+  Parameters: {verbose: 0}
+  Module: dpvo
+
+exp_droidslam_rgbdtum:
+  Config: config_rgbdtum.yaml
+  NumRuns: 10
+  Parameters: {verbose: 0}
   Module: droidslam
+
+# exp_dpvo_eth:
+#   Config: config_eth.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: dpvo
+
+# exp_droidslam_eth:
+#   Config: config_eth.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: droidslam
 
 #exp_depth_orbslam2_invz_gtdepth_ablation:
 #  Config: config_debug.yaml
