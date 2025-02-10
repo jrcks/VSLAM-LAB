@@ -1,11 +1,8 @@
-import os
-import yaml
+import os, yaml
 import shutil
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
-from utilities import downloadFile
-from utilities import decompressFile
-
+from utilities import downloadFile, decompressFile
 
 class ETH_dataset(DatasetVSLAMLab):
     def __init__(self, benchmark_path):
@@ -23,10 +20,12 @@ class ETH_dataset(DatasetVSLAMLab):
         self.sequence_nicknames = [s.replace('_', ' ') for s in self.sequence_names]
 
     def download_sequence_data(self, sequence_name):
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+
         # Variables
-        compressed_name = sequence_name + '_mono'
-        compressed_name_ext = compressed_name + '.zip'
+        compressed_name_ext = sequence_name + '_mono' + '.zip'
         decompressed_name = sequence_name
+
         download_url = os.path.join(self.url_download_root, 'datasets', compressed_name_ext)
 
         # Constants
@@ -38,13 +37,12 @@ class ETH_dataset(DatasetVSLAMLab):
             downloadFile(download_url, self.dataset_path)
 
         # Decompress the file
-        if os.path.exists(decompressed_folder):
-            shutil.rmtree(decompressed_folder)
-        decompressFile(compressed_file, self.dataset_path)
+        if not os.path.exists(decompressed_folder):
+            decompressFile(compressed_file, self.dataset_path)
+            groundtruth_txt = os.path.join(sequence_path, 'groundtruth.txt')
+            os.rename(groundtruth_txt, groundtruth_txt.replace('groundtruth.txt', 'groundtruth_raw.txt'))
 
-        # Delete the compressed file
-        if os.path.exists(compressed_file):
-            os.remove(compressed_file)
+
 
     def create_calibration_yaml(self, sequence_name):
 
@@ -61,16 +59,24 @@ class ETH_dataset(DatasetVSLAMLab):
     def create_groundtruth_txt(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         groundtruth_txt = os.path.join(sequence_path, 'groundtruth.txt')
-        if not os.path.exists(groundtruth_txt):
-            return
-
-        number_of_grountruth_header_lines = 1
-        with open(groundtruth_txt, 'r') as file:
+        groundtruth_csv = os.path.join(sequence_path, 'groundtruth.csv')
+        groundtruth_raw_txt = os.path.join(sequence_path, 'groundtruth_raw.txt')
+        
+        with open(groundtruth_raw_txt, 'r') as file:
             lines = file.readlines()
 
+        number_of_grountruth_header_lines = 1
+        new_lines = lines[number_of_grountruth_header_lines:]
         with open(groundtruth_txt, 'w') as file:
-            file.writelines(lines[number_of_grountruth_header_lines:])
+            file.writelines(new_lines)
 
+        header = "ts,tx,ty,tz,qx,qy,qz,qw\n"
+        new_lines.insert(0, header)
+        with open(groundtruth_csv, 'w') as file:
+            for line in new_lines:
+                values = line.split()
+                file.write(','.join(values) + '\n')
+        
     def remove_unused_files(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         os.remove(os.path.join(sequence_path, 'calibration.txt'))
