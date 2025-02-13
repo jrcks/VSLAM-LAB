@@ -12,6 +12,7 @@ Module: VSLAM-LAB - vslamlab.py
 import argparse
 import glob
 import os
+import subprocess
 import sys
 import time
 import shutil
@@ -225,6 +226,8 @@ def run(experiments, exp_yaml, ablation=False):
                             duration_time_total += duration_time
                             num_executed_iterations += 1
                             remaining_iterations -= 1
+                            command =  "pixi run -e default clean_swap"
+                            subprocess.run(command, shell=True)
                             #duration_time_average = duration_time_total / num_executed_iterations
                             #remaining_time += (remaining_iterations_seq - 1) * duration_time_average
 
