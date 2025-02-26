@@ -3,8 +3,7 @@ import os
 
 # Label for script-specific outputs
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
-
-
+    
 def downsample_rgb(timestamps, rgb_paths, rows, step, max_count):
     selected_rgb_paths = []
     selected_timestamps = []
@@ -26,6 +25,13 @@ def downsample_rgb(timestamps, rgb_paths, rows, step, max_count):
 
     return selected_rgb_paths, selected_timestamps, selected_rows
 
+def get_rows(rows_idx, rgb_txt):
+    rows = []
+    with open(rgb_txt, 'r') as file:
+        for line in file:
+            rows.append(line)
+    rows = [line.strip() for line in rows]
+    return [rows[i] for i in rows_idx if 0 <= i < len(rows)]
 
 def downsample_rgb_frames(rgb_txt, max_rgb_count, min_fps, verbose=False):
     # Read timestamps and paths from rgb.txt

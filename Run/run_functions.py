@@ -7,7 +7,7 @@ import shutil
 from Baselines.baseline_utilities import log_run_sequence_time
 from path_constants import RGB_BASE_FOLDER
 from Run import ablations
-from Baselines.downsample_rgb_frames import downsample_rgb_frames
+from Baselines.downsample_rgb_frames import downsample_rgb_frames, get_rows
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -63,9 +63,17 @@ def create_rgb_exp_txt(exp, dataset, sequence_name):
         os.remove(rgb_exp_txt)
     shutil.copy(rgb_txt, rgb_exp_txt)
 
-    if 'max_rgb' in exp.parameters:
-        min_fps = dataset.rgb_hz / 10
-        downsampled_paths, downsampled_timestamps, downsampled_rows = downsample_rgb_frames(rgb_txt, exp.parameters['max_rgb'], min_fps, True)
+    max_rgb = 'max_rgb' in exp.parameters
+    rgb_idx = 'rgb_idx' in exp.parameters
+
+    if max_rgb or rgb_idx:
+        if max_rgb:
+            min_fps = dataset.rgb_hz / 10
+            _, _, downsampled_rows = downsample_rgb_frames(rgb_txt, exp.parameters['max_rgb'], min_fps, True)
+
+        if rgb_idx:
+            downsampled_rows = get_rows(list(range(exp.parameters['rgb_idx'][0], exp.parameters['rgb_idx'][1]+1)), rgb_txt)
+        
         with open(rgb_exp_txt, 'w') as file:
             for row in downsampled_rows:
                 file.write(f"{row}\n")
