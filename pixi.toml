@@ -74,6 +74,7 @@ google-api-python-client="*"
 google-auth-oauthlib="*"
 huggingface_hub="*"
 py7zr="*"
+ray-all="*"
 
 # evo begin
 [feature.evo.dependencies]
@@ -210,7 +211,7 @@ cuda = "12.0"
 [feature.mast3rslam.tasks]
 git-clone = {cmd = "git-clone.sh VSLAM-LAB MASt3R-SLAM Baselines"}
 download-weights = {cmd = "./vslamlab_mast3rslam_download_weights.sh", cwd = "Baselines/MASt3R-SLAM"}
-#install = {cmd = "pip install -e thirdparty/mast3r && pip install -e thirdparty/in3d && pip install --no-build-isolation -e ." , cwd = "Baselines/MASt3R-SLAM", depends-on = ["download-weights"]}
+install = {cmd = "pip install -e thirdparty/mast3r && pip install -e thirdparty/in3d && pip install --no-build-isolation -e ." , cwd = "Baselines/MASt3R-SLAM", depends-on = ["download-weights"]}
 install_1 = {cmd = "pip install -e thirdparty/mast3r" , cwd = "Baselines/MASt3R-SLAM"}
 install_2 = {cmd = "pip install -e thirdparty/in3d" , cwd = "Baselines/MASt3R-SLAM"}
 install_3 = {cmd = "pip install --no-build-isolation -e ." , cwd = "Baselines/MASt3R-SLAM"}
