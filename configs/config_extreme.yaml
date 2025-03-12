@@ -1,0 +1,24 @@
+rgbdtum:
+#- 'rgbd_dataset_freiburg3_nostructure_notexture_far'
+- 'rgbd_dataset_freiburg3_walking_xyz'
+eth:
+- 'ceiling_2'
+- 'einstein_global_light_changes_1'
+openloris:
+- cafe1-1
+drunkards:
+- '00000_1024_level0'
+# rgbdtum:
+# # - 'rgbd_dataset_freiburg3_structure_notexture_far'
+# - 'rgbd_dataset_freiburg3_nostructure_notexture_far'
+# - 'rgbd_dataset_freiburg3_walking_xyz'
+# #- 'rgbd_dataset_freiburg3_nostructure_texture_near_withloop'
+# eth:
+# - 'ceiling_2'
+# - 'einstein_global_light_changes_1'
+# # tartanair:
+# # - 'ME005'
+# openloris:
+# - cafe1-1
+
+

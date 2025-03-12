@@ -1,0 +1,17 @@
+rgbdtum:
+- 'rgbd_dataset_freiburg1_desk2'
+#- 'rgbd_dataset_freiburg3_structure_notexture_far'
+- 'rgbd_dataset_freiburg3_nostructure_notexture_far'
+eth:
+- 'large_loop_1'
+hilti2022:
+- 'exp04_construction_upper_level'
+
+euroc:
+ - 'MH_04_difficult'
+
+# rgbdtum:
+# # - 'rgbd_dataset_freiburg3_structure_notexture_far'
+# - 'rgbd_dataset_freiburg3_nostructure_notexture_far'
+# - 'rgbd_dataset_freiburg3_walking_xyz'
+# #- 'rgbd_dataset_freiburg3_nostructure_texture_near_withloop'
