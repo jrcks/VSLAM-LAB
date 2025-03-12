@@ -1,20 +1,154 @@
+exp_config_medium_dpvo:
+  Config: config_medium.yaml
+  NumRuns: 5
+  Parameters: {verbose: 0, rgb_idx: [0,1999]}
+  Module: dpvo
+
+exp_config_medium_orbslam2:
+  Config: config_medium.yaml
+  NumRuns: 5
+  Parameters: {verbose: 0, rgb_idx: [0,1999]}
+  Module: orbslam2
+
+exp_glomap_glomap:
+  Config: config_glomap.yaml
+  NumRuns: 1
+  Parameters: {verbose: 0, rgb_idx: [0,999]}
+  Module: glomap
+
+exp_mast3rslam_glomap:
+  Config: config_glomap.yaml
+  NumRuns: 1
+  Parameters: {verbose: 0, rgb_idx: [0,999]}
+  Module: mast3rslam
+
+# exp_config_easy_det_dpvo:
+#   Config: config_easy.yaml
+#   NumRuns: 100
+#   Parameters: {verbose: 0, rgb_idx: [0,999]}
+#   Module: dpvo
+
+# exp_config_easy_det_orbslam2:
+#   Config: config_easy.yaml
+#   NumRuns: 100
+#   Parameters: {verbose: 0, rgb_idx: [0,999]}
+#   Module: orbslam2
+
+# exp_config_weird_droidslam:
+#   Config: config_weird.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0, rgb_idx: [0,999]}
+#   Module: droidslam
+
+# exp_config_easy_dpvo:
+#   Config: config_easy.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: dpvo
+
+# exp_config_easy_orbslam2:
+#   Config: config_easy.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: orbslam2
+
+
+# exp_glomap_squidle_test_0_499:
+#   Config: config_squidle.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0, rgb_idx: [0, 499], matcher_type: exhaustive}
+#   Module: glomap
+
+# exp_glomap_squidle_test_400_999:
+#   Config: config_squidle.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0, rgb_idx: [400, 999], matcher_type: exhaustive}
+#   Module: glomap
+
+# exp_glomap_squidle_test_900_1499:
+#   Config: config_squidle.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0, rgb_idx: [900, 1499], matcher_type: exhaustive}
+#   Module: glomap
+
+# exp_glomap_squidle_test_1400_1999:
+#   Config: config_squidle.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0, rgb_idx: [1400, 1999], matcher_type: exhaustive}
+#   Module: glomap
+
+# exp_glomap_squidle_test_1900_2499:
+#   Config: config_squidle.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0, rgb_idx: [1900, 2499], matcher_type: exhaustive}
+#   Module: glomap
+
+# exp_glomap_squidle_test_2400_3010:
+#   Config: config_squidle.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0, rgb_idx: [2400, 3010], matcher_type: exhaustive}
+#   Module: glomap
+
 # exp_dpvo_antarctica:
 #   Config: config_debug.yaml
 #   NumRuns: 1
 #   Parameters: {verbose: 1, matcher_type: exhaustive, max_rgb: 1000000}
 #   Module: glomap
 
-exp_dpvo_rgbdtum:
-  Config: config_rgbdtum.yaml
-  NumRuns: 10
-  Parameters: {verbose: 0}
-  Module: dpvo
+# exp_glomap_scannetplusplus:
+#   Config: config_scannetplusplus.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 1, max_rgb: 50}
+#   Module: glomap
 
-exp_droidslam_rgbdtum:
-  Config: config_rgbdtum.yaml
-  NumRuns: 10
-  Parameters: {verbose: 0}
-  Module: droidslam
+# exp_dpvo_nuim:
+#   Config: config_nuim.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: dpvo
+
+# exp_droidslam_nuim:
+#   Config: config_nuim.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: droidslam
+
+# exp_dpvo_rgbdtum:
+#   Config: config_rgbdtum.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: dpvo
+
+# exp_droidslam_rgbdtum:
+#   Config: config_rgbdtum.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: droidslam
+
+# exp_glomap_rgbdtum:
+#   Config: config_rgbdtum.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 1, max_rgb: 50}
+#   Module: glomap
+
+# exp_orbslam2_rgbdtum:
+#   Config: config_rgbdtum.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: orbslam2
+
+
+# exp_glomap_eth:
+#   Config: config_eth.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: glomap
+
+# exp_orbslam2_eth:
+#   Config: config_eth.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: orbslam2
 
 # exp_dpvo_eth:
 #   Config: config_eth.yaml

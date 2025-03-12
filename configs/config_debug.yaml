@@ -1,3 +1,13 @@
+# openloris:
+#   - cafe1-1
+  # - cafe1-2
+  # - market1-1
+  # - market1-2
+  # - market1-3
+
+madmax:
+  - A-0
+
 #hilti2022:
   #- exp04_construction_upper_level
   #- exp05_construction_upper_level_2
@@ -5,11 +15,11 @@
 #  - exp14_basement_2
   #- exp16_attic_to_upper_gallery_2
   #- exp18_corridor_lower_gallery_2
-antarctica:
+#antarctica:
   #- 'DJI_202401111904_001'
   #- 'DJI_202401111932_002'
   #- 'DJI_202401111932_003'
-  - 'DJI_202401112014_004'
+ # - 'DJI_202401112014_004'
 
 #yandiwanba:
   #- 'test1'
@@ -26,8 +36,9 @@ antarctica:
 #  - 'room1'
 #  - 'room2'
 #rgbdtum:
-  #- 'rgbd_dataset_freiburg3_structure_texture_far'
-#  - 'rgbd_dataset_freiburg1_xyz'
+#  - 'rgbd_dataset_freiburg3_structure_texture_far'
+  #- 'rgbd_dataset_freiburg1_xyz'
+#  - 'rgbd_dataset_freiburg3_long_office_household'
 
 #eth:
 #  - 'table_3'
