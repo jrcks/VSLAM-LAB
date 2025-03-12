@@ -96,14 +96,27 @@ def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max
     df.to_csv(gt_tum, index=False, sep=' ', lineterminator='\n')
 
 
-def evo_get_accuracy(metric, evaluation_folder):
-
+def evo_get_accuracy(metric, evaluation_folder, numRuns):
     files_in_folder = os.listdir(evaluation_folder)
     zip_files = [file for file in files_in_folder if file.endswith('.zip')]
     zip_files.sort()
     num_zip_files = len(zip_files)
     if num_zip_files == 0:
+        accuracy = os.path.join(evaluation_folder, f'{metric}.csv')
+        if os.path.exists(accuracy):
+            return
+        if os.path.exists(accuracy):
+            os.remove(accuracy)
+        
+        columns = ["traj_name", "rmse", "mean", "median", "std", "min", "max", "sse",
+                   "Number of Evaluation Points", "Number of Estimated Frames", "trajectory_length"]
+        df = pd.DataFrame(1000.0, index=range(numRuns), columns=columns)
+        df["Number of Evaluation Points"] = 0
+        df["Number of Estimated Frames"] = 0
+        df["traj_name"] = [f"{i:05d}_KeyFrameTrajectory.txt" for i in range(numRuns)]
+        df.to_csv(accuracy, index=False)
         return
+    
     chunk_size = 500
     zip_files_chunks = [zip_files[i:i + chunk_size] for i in range(0, len(zip_files), chunk_size)]
     zip_files_chunks = [' '.join(os.path.join(evaluation_folder, file) for file in chunk) for chunk in zip_files_chunks]
@@ -128,7 +141,6 @@ def evo_get_accuracy(metric, evaluation_folder):
             if existing_data is not None:
                 existing_data.to_csv(accuracy_raw, index=False)
 
-    #
     df = pd.read_csv(accuracy_raw)
     df = df.rename(columns={df.columns[0]: 'traj_name'})
 
@@ -219,6 +231,7 @@ if __name__ == "__main__":
         evaluation_folder = sys.argv[4]
         groundtruth_file = sys.argv[5]
         pseudo_groundtruth = bool(int(sys.argv[6]))
+        numRuns = int(sys.argv[7])
 
         trajectory_files = find_files_with_string(trajectories_path, "_KeyFrameTrajectory.txt")
         if function_name == "ate" or function_name == "rpe":
@@ -232,5 +245,5 @@ if __name__ == "__main__":
                 else:
                     evo_metric(function_name, groundtruth_file, trajectory_file, evaluation_folder,
                                float(max_time_difference))
-            evo_get_accuracy(function_name, evaluation_folder)
+            evo_get_accuracy(function_name, evaluation_folder, numRuns)
             compute_trajectory_lengths(evaluation_folder, function_name)
