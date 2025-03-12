@@ -17,6 +17,9 @@ class ETH_dataset(DatasetVSLAMLab):
 
         # Create sequence_nicknames
         self.sequence_nicknames = [s.replace('_', ' ') for s in self.sequence_names]
+        for i, nickname in enumerate(self.sequence_nicknames):
+            if len(nickname) > 15:
+                self.sequence_nicknames[i] = nickname[:15]
 
     def download_sequence_data(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)

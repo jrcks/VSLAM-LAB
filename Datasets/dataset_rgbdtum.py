@@ -24,6 +24,7 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
         self.sequence_nicknames = [s.replace('validation', 'v') for s in self.sequence_nicknames]
         self.sequence_nicknames = [s.replace('structure', 'st') for s in self.sequence_nicknames]
         self.sequence_nicknames = [s.replace('texture', 'tx') for s in self.sequence_nicknames]
+        self.sequence_nicknames = [s.replace('walking xyz', 'walk') for s in self.sequence_nicknames]
 
     def download_sequence_data(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
