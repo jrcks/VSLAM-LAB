@@ -22,6 +22,8 @@ from Datasets.dataset_yandiwanba import YANDIWANBA_dataset
 from Datasets.dataset_antarctica import ANTARCTICA_dataset
 from Datasets.dataset_hilti2022 import HILTI2022_dataset
 from Datasets.dataset_squidle import SQUIDLE_dataset
+from Datasets.dataset_openloris import OPENLORIS_dataset
+from Datasets.dataset_madmax import MADMAX_dataset
 
 SCRIPT_LABEL = "[dataset_utilities.py] "
 
@@ -52,6 +54,8 @@ def get_dataset(dataset_name, benchmark_path):
         "antarctica": lambda: ANTARCTICA_dataset(benchmark_path),
         "hilti2022": lambda: HILTI2022_dataset(benchmark_path),
         "squidle": lambda: SQUIDLE_dataset(benchmark_path),
+        "openloris": lambda: OPENLORIS_dataset(benchmark_path),
+        "madmax": lambda: MADMAX_dataset(benchmark_path),
     }
 
     return switcher.get(dataset_name, lambda: "Invalid case")()
