@@ -14,6 +14,7 @@ class BaselineVSLAMLab:
         self.label = f"\033[96m{baseline_name}\033[0m"
         self.settings_yaml = os.path.join(VSLAMLAB_BASELINES, baseline_folder, f'vslamlab_{baseline_name}_settings.yaml')
         self.default_parameters = default_parameters
+        self.color = 'black'
 
     def get_default_parameters(self):
         return self.default_parameters
