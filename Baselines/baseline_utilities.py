@@ -14,6 +14,7 @@ from Baselines.baseline_monogs import MONOGS_baseline
 from Baselines.baseline_colmap import COLMAP_baseline
 from Baselines.baseline_glomap import GLOMAP_baseline
 from Baselines.baseline_depthpro import DEPTHPRO_baseline
+from Baselines.baseline_mast3rslam import MAST3RSLAM_baseline
 
 
 def get_baseline(baseline_name):
@@ -30,6 +31,7 @@ def get_baseline(baseline_name):
         "colmap": lambda: COLMAP_baseline(),
         "glomap": lambda: GLOMAP_baseline(),
         "depthpro": lambda: DEPTHPRO_baseline(),
+        "mast3rslam": lambda: MAST3RSLAM_baseline()
     }
 
     return switcher.get(baseline_name, lambda: "Invalid case")()

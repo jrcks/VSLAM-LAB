@@ -29,6 +29,7 @@ Baselines/spann3r
 Baselines/ml-depth-pro
 Baselines/DroidCalib
 Baselines/DPVO
+Baselines/MASt3R-SLAM
 Baselines/*.txt*
 
 configs/exp_demo.yaml
