@@ -1,25 +1,53 @@
-import os
-import sys
+import os, shutil, sys
 import urllib.request
 import zipfile
 import py7zr
 import tarfile
 import subprocess
 
-import yaml
+import yaml, csv
 from PIL import Image
+from colorama import Fore, Style
+from path_constants import VSLAM_LAB_DIR, CONFIG_DEFAULT, VSLAMLAB_BENCHMARK
 
-from path_constants import VSLAM_LAB_DIR
+SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 class Experiment:
-    def __init__(self):
-        self.config_yaml = ""
-        self.folder = ""
-        self.num_runs = 1
-        self.parameters = []
-        self.module = ""
-        self.ablation_csv = None
+    def __init__(self, name, exp_folder, num_runs, method, parameters, config_yaml=CONFIG_DEFAULT, ablation_csv=None, overwrite=False):
+        self.name = name
+        self.folder = exp_folder
+        self.num_runs = num_runs
+        self.module = method
+        self.parameters = parameters
 
+        self.log_csv = os.path.join(self.folder, 'vslamlab_exp_log.csv')
+        self.config_yaml = os.path.join(VSLAM_LAB_DIR, 'configs', config_yaml)
+        self.ablation_csv = ablation_csv
+
+
+        if os.path.exists(self.folder):
+            if overwrite:
+                shutil.rmtree(self.folder)
+                print(f"{SCRIPT_LABEL}" + Fore.YELLOW + f"Warning: The folder '{self.folder}' already exists. Overwriting it." + Style.RESET_ALL)
+            else:
+                print(f"{SCRIPT_LABEL}" + Fore.YELLOW + f"Warning: The folder '{self.folder}' already exists. Continue execution." + Style.RESET_ALL)
+            
+        if not os.path.exists(self.folder):
+            os.makedirs(self.folder)
+        
+        if not os.path.exists(self.log_csv):
+            log_headers = ["method_name", "dataset_name", "sequence_name", "exp_it", "status", "success", "comments"]
+            with open(self.log_csv, mode="w", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerow(log_headers)
+                with open(self.config_yaml, 'r') as file:
+                    config_file_data = yaml.safe_load(file)
+                    for i in range(num_runs):
+                        for dataset_name, sequence_names in config_file_data.items():
+                            for sequence_name in sequence_names:
+                                exp_it = str(i).zfill(5)  
+                                writer.writerow([self.module, dataset_name, sequence_name, f"{exp_it}", 0, 0, ""])
+        
 
 def list_datasets():
     dataset_scripts_path = os.path.join(VSLAM_LAB_DIR, 'Datasets')
