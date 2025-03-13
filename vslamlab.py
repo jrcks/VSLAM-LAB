@@ -10,15 +10,14 @@ Module: VSLAM-LAB - vslamlab.py
 """
 
 import argparse
-import glob
 import os
-import subprocess
 import sys
 import time
 import shutil
 import re
 import yaml
 from inputimeout import inputimeout, TimeoutOccurred
+import pandas as pd
 
 from Evaluate import compare_functions
 from Datasets.get_dataset import get_dataset
@@ -36,7 +35,7 @@ from Run.run_functions import run_sequence
 from Evaluate.evaluate_functions import evaluate_sequence
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
-
+TIMEOUT_SECONDS = 10  
 
 def main():
     # Parse inputs
@@ -56,6 +55,7 @@ def main():
     parser.add_argument('--list_datasets', action='store_true', help="List available datasets.")
 
     parser.add_argument('-ablation', action='store_true', help="")
+    parser.add_argument('-overwrite', action='store_true', help="")
 
     args = parser.parse_args()
 
@@ -70,8 +70,8 @@ def main():
         shutil.copytree(os.path.join(VSLAM_LAB_DIR, "docs", "exp_demo_orbslam2"),
                         os.path.join(VSLAMLAB_EVALUATION, "exp_demo_orbslam2"))
 
-    print(f"\n{SCRIPT_LABEL}Created folder to store data: {VSLAMLAB_BENCHMARK}")
-    print(f"{SCRIPT_LABEL}Created folder to store evaluation: {VSLAMLAB_EVALUATION}")
+    #print(f"\n{SCRIPT_LABEL}Created folder to store data: {VSLAMLAB_BENCHMARK}")
+    #print(f"{SCRIPT_LABEL}Created folder to store evaluation: {VSLAMLAB_EVALUATION}")
 
     # Info commands
     if args.list_datasets:
@@ -79,7 +79,7 @@ def main():
         return
 
     # Load experiment info
-    experiments, config_files = load_experiments(args.exp_yaml)
+    experiments, config_files = load_experiments(args.exp_yaml, args.overwrite)
     check_config_integrity(config_files)
 
     # Process experiments
@@ -113,7 +113,7 @@ def check_parameter_for_relative_path(parameter_value):
     return parameter_value
 
 
-def load_experiments(exp_yaml):
+def load_experiments(exp_yaml, overwrite):
     """
     Loads experiment configurations from a YAML file and initializes Experiment objects.
 
@@ -138,20 +138,22 @@ def load_experiments(exp_yaml):
     experiments = {}
     config_files = {}
     for exp_name, settings in experiment_data.items():
-        experiment = Experiment()
-        active = settings.get('Active', True)
-        if not active:
-            continue
+        experiment = Experiment(exp_name, 
+                                os.path.join(VSLAMLAB_EVALUATION, exp_name), 
+                                settings.get('NumRuns', 1),
+                                settings.get('Module', "default"), 
+                                settings['Parameters'], 
+                                os.path.join(VSLAM_LAB_DIR, 'configs', settings.get('Config', CONFIG_DEFAULT)), 
+                                settings.get('Ablation', None),
+                                overwrite)
 
         experiments[exp_name] = experiment
-        experiments[exp_name].config_yaml = os.path.join(VSLAM_LAB_DIR, 'configs',
-                                                         settings.get('Config', CONFIG_DEFAULT))
         config_files[experiments[exp_name].config_yaml] = False
-        experiments[exp_name].folder = os.path.join(VSLAMLAB_EVALUATION, exp_name)
-        experiments[exp_name].num_runs = settings.get('NumRuns', 1)
-        experiments[exp_name].module = settings.get('Module', "default")
-        experiments[exp_name].parameters = settings['Parameters']
-        experiments[exp_name].ablation_csv = settings.get('Ablation', None)
+        #experiments[exp_name].folder = os.path.join(VSLAMLAB_EVALUATION, exp_name)
+        #experiments[exp_name].num_runs = settings.get('NumRuns', 1)
+        #experiments[exp_name].module = settings.get('Module', "default")
+        #experiments[exp_name].parameters = settings['Parameters']
+        #experiments[exp_name].ablation_csv = settings.get('Ablation', None)
 
         #if settings['Parameters']:
         #    for parameter_name in settings['Parameters']:
@@ -197,57 +199,50 @@ def run(experiments, exp_yaml, ablation=False):
     print(f"\n{SCRIPT_LABEL}Running experiments (in {exp_yaml}) ...")
     start_time = time.time()
 
-    num_executed_iterations = 0
+    completed_runs = {}
+    not_completed_runs = {}
+    num_executed_runs = 0
     duration_time_total = 0
-    duration_time_average = 0
-    remaining_iterations = 0
 
-    while True:
-        experiments_ = {}
+    all_experiments_completed = False
+    while not all_experiments_completed:
+        remaining_iterations = 0
         for [exp_name, exp] in experiments.items():
-            remaining_iterations = 0
-            baseline = get_baseline(exp.module)
-            with open(exp.config_yaml, 'r') as file:
-                config_file_data = yaml.safe_load(file)
-                for dataset_name, sequence_names in config_file_data.items():
-                    dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
-                    for sequence_name in sequence_names:
-                        sequence_folder = os.path.join(exp.folder, dataset_name.upper(), sequence_name)
-                        num_system_output_files = 0
-                        if os.path.exists(sequence_folder):
-                            search_pattern = os.path.join(sequence_folder, f'*system_output_*')
-                            num_system_output_files = len(glob.glob(search_pattern))
+            exp_log = pd.read_csv(exp.log_csv)
+            completed_runs[exp_name] = (exp_log["STATUS"] == "completed").sum()  
+            not_completed_runs[exp_name] = (exp_log["STATUS"] != "completed").sum() 
+            remaining_iterations += not_completed_runs[exp_name]
 
-                        remaining_iterations_seq = exp.num_runs - num_system_output_files
-                        remaining_iterations += remaining_iterations_seq
-                        if num_system_output_files < exp.num_runs:
-                            exp_it = num_system_output_files
-                            duration_time = run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation)
-                            duration_time_total += duration_time
-                            num_executed_iterations += 1
-                            remaining_iterations -= 1
-                            command =  "pixi run -e default clean_swap"
-                            subprocess.run(command, shell=True)
-                            #duration_time_average = duration_time_total / num_executed_iterations
-                            #remaining_time += (remaining_iterations_seq - 1) * duration_time_average
+            if not_completed_runs[exp_name] == 0:
+                continue
+                
+            first_not_finished_experiment = exp_log[exp_log["STATUS"] != "completed"].index.min()
+            row = exp_log.loc[first_not_finished_experiment]
+            baseline = get_baseline(row['method_name'])
+            dataset = get_dataset(row['dataset_name'], VSLAMLAB_BENCHMARK)    
 
-            if remaining_iterations > 0:
-                experiments_[exp_name] = exp
+            results = run_sequence(row['exp_it'], exp, baseline, dataset, row['sequence_name'], ablation)
 
-        if len(experiments_) == 0:
-            break
+            duration_time = results['duration_time']
+            duration_time_total += duration_time
+            num_executed_runs += 1
+            remaining_iterations -= 1
 
-        experiments = experiments_
-
-        duration_time_average = duration_time_total / num_executed_iterations
-        remaining_time = remaining_iterations * duration_time_average
-        if remaining_time > 1:
-            print(f"\n{SCRIPT_LABEL}: Experiment report")
-            print(f"{ws(4)}\033[93mNumber of executed iterations: {num_executed_iterations} / {num_executed_iterations + remaining_iterations} \033[0m")
-            print(f"{ws(4)}\033[93mNumber of remaining iterations: {remaining_iterations}\033[0m")
-            print(f"{ws(4)}\033[93mTotal time consumed: {show_time(duration_time_total)}\033[0m")
-            print(f"{ws(4)}\033[93mAverage time per iteration: {show_time(duration_time_average)}\033[0m")
-            print(f"{ws(4)}\033[93mRemaining time until completion: {show_time(remaining_time)}\033[0m")
+            exp_log["STATUS"] = exp_log["STATUS"].astype(str)
+            exp_log["SUCCESS"] = exp_log["SUCCESS"].astype(str)
+            exp_log["COMMENTS"] = exp_log["COMMENTS"].astype(str)
+            exp_log.loc[first_not_finished_experiment, "STATUS"] = "completed"
+            exp_log.loc[first_not_finished_experiment, "SUCCESS"] = results['success']
+            exp_log.loc[first_not_finished_experiment, "COMMENTS"] = results['comments']
+            exp_log.loc[first_not_finished_experiment, "TIME"] = duration_time
+            exp_log.to_csv(exp.log_csv, index=False)
+                
+        all_experiments_completed = exp_log['STATUS'].eq("completed").all()
+        print(f"\n{SCRIPT_LABEL}: Experiment report: {exp_yaml}")
+        print(f"{ws(4)}\033[93mNumber of executed iterations: {num_executed_runs} / {num_executed_runs + remaining_iterations} \033[0m")
+        print(f"{ws(4)}\033[93mAverage time per iteration: {show_time(duration_time_total / num_executed_runs)}\033[0m")
+        print(f"{ws(4)}\033[93mTotal time consumed: {show_time(duration_time_total)}\033[0m")
+        print(f"{ws(4)}\033[93mRemaining time until completion: {show_time(remaining_iterations * duration_time_total / num_executed_runs)}\033[0m")
 
     run_time = (time.time() - start_time)
     print(f"\033[93m[Experiment runtime: {show_time(run_time)}]\033[0m")

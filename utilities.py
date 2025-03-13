@@ -8,7 +8,7 @@ import subprocess
 import yaml, csv
 from PIL import Image
 from colorama import Fore, Style
-from path_constants import VSLAM_LAB_DIR, CONFIG_DEFAULT, VSLAMLAB_BENCHMARK
+from path_constants import VSLAM_LAB_DIR, CONFIG_DEFAULT
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -36,7 +36,7 @@ class Experiment:
             os.makedirs(self.folder)
         
         if not os.path.exists(self.log_csv):
-            log_headers = ["method_name", "dataset_name", "sequence_name", "exp_it", "status", "success", "comments"]
+            log_headers = ["method_name", "dataset_name", "sequence_name", "exp_it", "STATUS", "SUCCESS", "TIME", "MEMORY", "COMMENTS"]
             with open(self.log_csv, mode="w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow(log_headers)
@@ -46,7 +46,7 @@ class Experiment:
                         for dataset_name, sequence_names in config_file_data.items():
                             for sequence_name in sequence_names:
                                 exp_it = str(i).zfill(5)  
-                                writer.writerow([self.module, dataset_name, sequence_name, f"{exp_it}", 0, 0, ""])
+                                writer.writerow([self.module, dataset_name, sequence_name, f"{exp_it}", "", "",0, 0, ""])
         
 
 def list_datasets():
@@ -338,6 +338,13 @@ def show_time(time_s):
         return f"{(time_s / 60):.2f} minutes"
     return f"{(time_s / 3600):.2f} hours"
 
+def print_msg(script_label, msg, flag="info"):
+    if flag == "info":
+        print(f"{script_label}{Fore.CYAN} {msg} {Style.RESET_ALL}")
+    elif flag == "warning":
+        print(f"{script_label}{Fore.YELLOW} {msg} {Style.RESET_ALL}")
+    elif flag == "error":
+        print(f"{script_label}{Fore.RED} {msg} {Style.RESET_ALL}")
 
 if __name__ == "__main__":
 

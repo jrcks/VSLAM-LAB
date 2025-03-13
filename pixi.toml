@@ -74,7 +74,6 @@ google-api-python-client="*"
 google-auth-oauthlib="*"
 huggingface_hub="*"
 py7zr="*"
-ray-all="*"
 
 # evo begin
 [feature.evo.dependencies]
