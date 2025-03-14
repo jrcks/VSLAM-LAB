@@ -6,7 +6,8 @@ channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
 [tasks]
-vslamlab = {cmd = "pixi run -e vslamlab python vslamlab.py"}
+vslamlab = {cmd = "pixi run -e vslamlab python vslamlab_run.py"}
+evaluate = {cmd = "pixi run -e evo python vslamlab_eval.py"}
 set-benchmark-path  = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_BENCHMARK_path"}
 set-evaluation-path = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_EVALUATION_path"}
 demo = {cmd = "pixi run --frozen -e vslamlab python demo.py"}
@@ -80,6 +81,9 @@ py7zr="*"
 python="=3.12"
 py7zr="*"
 tqdm="*"
+inputimeout="*"
+scikit-learn="*"
+matplotlib="*"
 
 [feature.evo.pypi-dependencies]
 evo = "*"

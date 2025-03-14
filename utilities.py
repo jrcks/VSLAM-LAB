@@ -36,7 +36,7 @@ class Experiment:
             os.makedirs(self.folder)
         
         if not os.path.exists(self.log_csv):
-            log_headers = ["method_name", "dataset_name", "sequence_name", "exp_it", "STATUS", "SUCCESS", "TIME", "MEMORY", "COMMENTS"]
+            log_headers = ["method_name", "dataset_name", "sequence_name", "exp_it", "STATUS", "SUCCESS", "TIME", "MEMORY", "COMMENTS", "EVALUATION"]
             with open(self.log_csv, mode="w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow(log_headers)
@@ -46,7 +46,7 @@ class Experiment:
                         for dataset_name, sequence_names in config_file_data.items():
                             for sequence_name in sequence_names:
                                 exp_it = str(i).zfill(5)  
-                                writer.writerow([self.module, dataset_name, sequence_name, f"{exp_it}", "", "",0, 0, ""])
+                                writer.writerow([self.module, dataset_name, sequence_name, f"{exp_it}", "", "",0.0, 0.0, "", "none"])
         
 
 def list_datasets():
@@ -340,7 +340,7 @@ def show_time(time_s):
 
 def print_msg(script_label, msg, flag="info"):
     if flag == "info":
-        print(f"{script_label}{Fore.CYAN} {msg} {Style.RESET_ALL}")
+        print(f"{script_label}{msg}")
     elif flag == "warning":
         print(f"{script_label}{Fore.YELLOW} {msg} {Style.RESET_ALL}")
     elif flag == "error":

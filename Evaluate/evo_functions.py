@@ -10,11 +10,6 @@ import pandas as pd
 import numpy as np
 from utilities import find_files_with_string
 from path_constants import ABLATION_PARAMETERS_CSV
-import re
-
-
-#from sklearn.covariance import EllipticEnvelope
-#from Evaluate.metrics import recall_ate
 
 def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max_time_difference=0.1, index="none"):
     accuracy_csv = os.path.join(evaluation_folder, f"{metric}.csv")
@@ -96,79 +91,35 @@ def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max
     df.to_csv(gt_tum, index=False, sep=' ', lineterminator='\n')
 
 
-def evo_get_accuracy(metric, evaluation_folder, numRuns):
-    files_in_folder = os.listdir(evaluation_folder)
-    zip_files = [file for file in files_in_folder if file.endswith('.zip')]
+def evo_get_accuracy(zip_files, accuracy_csv):
+    ZIP_CHUNK_SIZE = 500
     zip_files.sort()
-    num_zip_files = len(zip_files)
-    if num_zip_files == 0:
-        accuracy = os.path.join(evaluation_folder, f'{metric}.csv')
-        if os.path.exists(accuracy):
-            return
-        if os.path.exists(accuracy):
-            os.remove(accuracy)
-        
-        columns = ["traj_name", "rmse", "mean", "median", "std", "min", "max", "sse",
-                   "Number of Evaluation Points", "Number of Estimated Frames", "trajectory_length"]
-        df = pd.DataFrame(1000.0, index=range(numRuns), columns=columns)
-        df["Number of Evaluation Points"] = 0
-        df["Number of Estimated Frames"] = 0
-        df["traj_name"] = [f"{i:05d}_KeyFrameTrajectory.txt" for i in range(numRuns)]
-        df.to_csv(accuracy, index=False)
-        return
-    
-    chunk_size = 500
-    zip_files_chunks = [zip_files[i:i + chunk_size] for i in range(0, len(zip_files), chunk_size)]
-    zip_files_chunks = [' '.join(os.path.join(evaluation_folder, file) for file in chunk) for chunk in zip_files_chunks]
+    zip_files_chunks = [zip_files[i:i + ZIP_CHUNK_SIZE] for i in range(0, len(zip_files), ZIP_CHUNK_SIZE)]
+    zip_files_chunks = [' '.join(file for file in chunk) for chunk in zip_files_chunks]
 
-    accuracy_raw = os.path.join(evaluation_folder, f'{metric}_raw.csv')
     for zip_file_chunk in zip_files_chunks:
-        if os.path.exists(accuracy_raw):
-            existing_data = pd.read_csv(accuracy_raw)
-            os.remove(accuracy_raw)
+        if os.path.exists(accuracy_csv):
+            existing_data = pd.read_csv(accuracy_csv)
+            os.remove(accuracy_csv)
         else:
             existing_data = None
 
-        command = (f"pixi run -e evo evo_res {zip_file_chunk} --save_table {accuracy_raw}")
-        subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        command = (f"pixi run -e evo evo_res {zip_file_chunk} --save_table {accuracy_csv}")
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        _, _ = process.communicate()
 
-        if os.path.exists(accuracy_raw):
-            new_data = pd.read_csv(accuracy_raw)
+        if os.path.exists(accuracy_csv):
+            new_data = pd.read_csv(accuracy_csv)
+            new_data.columns.values[0] = "traj_name"
             if existing_data is not None:
-                combined_data = pd.concat([existing_data, new_data], ignore_index=True)
-                combined_data.to_csv(accuracy_raw, index=False)
+                new_data = pd.concat([existing_data, new_data], ignore_index=True)
+            new_data.to_csv(accuracy_csv, index=False)
         else:
             if existing_data is not None:
-                existing_data.to_csv(accuracy_raw, index=False)
+                existing_data.to_csv(accuracy_csv, index=False)
 
-    df = pd.read_csv(accuracy_raw)
-    df = df.rename(columns={df.columns[0]: 'traj_name'})
-
-    # Number of Evaluation Points and number of Estimated Frames
-    keyframe_traj_files = [f for f in os.listdir(evaluation_folder) if '_KeyFrameTrajectory.tum' in f]
-    keyframe_traj_files.sort()
-    for keyframe_traj_file in keyframe_traj_files:
-        with open(os.path.join(evaluation_folder, keyframe_traj_file), 'r') as file:
-            traj_name = keyframe_traj_file.replace('.tum', '.txt')
-            num_evaluation_points = sum(1 for line in file) - 1
-            df.loc[df['traj_name'] == traj_name, 'Number of Evaluation Points'] = num_evaluation_points
-
-            traj_name_0 = re.sub(r"_(\d{2})_", "_", traj_name)
-            keyframe_traj_file_not_aligned = os.path.join(evaluation_folder, '..', traj_name_0)
-        with open(keyframe_traj_file_not_aligned, 'r') as file:
-            num_estimated_frames = sum(1 for line in file)
-            df.loc[df['traj_name'] == traj_name, 'Number of Estimated Frames'] = num_estimated_frames
-
-    accuracy = os.path.join(evaluation_folder, f'{metric}.csv')
-    if os.path.exists(accuracy):
-        os.remove(accuracy)
-    df.to_csv(accuracy, index=False)
-
-    # Remove zip files
-    for filename in os.listdir(evaluation_folder):
-        if filename.endswith('.zip'):
-            file_path = os.path.join(evaluation_folder, filename)
-            os.remove(file_path)
+    for zip_file in zip_files:
+      os.remove(zip_file)
 
 
 def find_groundtruth_txt(trajectories_path, trajectory_file, parameter):

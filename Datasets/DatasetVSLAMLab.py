@@ -45,7 +45,7 @@ class DatasetVSLAMLab:
         # Check if sequence is already available
         sequence_availability = self.check_sequence_availability(sequence_name)
         if sequence_availability == "available":
-            print(f"\n{SCRIPT_LABEL}Sequence {self.dataset_color}{sequence_name}\033[92m is already downloaded.\033[0m")
+            print(f"{SCRIPT_LABEL}Sequence {self.dataset_color}{sequence_name}:\033[92m downloaded\033[0m")
             return
         if sequence_availability == "corrupted":
             print(f"{ws(8)}Some files in sequence {sequence_name} are corrupted.")

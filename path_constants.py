@@ -17,6 +17,7 @@ RGB_BASE_FOLDER = 'rgb'
 
 ABLATION_PARAMETERS_CSV = 'log_ablation_parameters.csv'
 
+TRAJECTORY_FILE_NAME = '_KeyFrameTrajectory'
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 def set_VSLAMLAB_path(new_path, file_path, target_line_start):
