@@ -32,10 +32,13 @@ from PIL import Image
 from matplotlib.patches import Patch
 from sklearn.decomposition import PCA
 
-from path_constants import VSLAM_LAB_EVALUATION_FOLDER
+from path_constants import VSLAM_LAB_EVALUATION_FOLDER, VSLAMLAB_BENCHMARK
 from utilities import list_image_files_in_folder
 from Baselines.baseline_utilities import get_baseline
+from Datasets.get_dataset import get_dataset
+
 import matplotlib.ticker as ticker
+from matplotlib.transforms import ScaledTranslation
 
 random.seed(6)
 colors_all = mcolors.CSS4_COLORS
@@ -183,290 +186,130 @@ def plot_trajectories(dataset_sequences, exp_names,
     plt.show(block=False)
 
 
-def boxplot_exp_seq(values, dataset_sequences, exp_names, dataset_nicknames, metric_name, comparison_path):
-    """
-    ------------ Description:
-    This function generates a series of box plots for different experiments and sequences within multiple datasets.
-    Each dataset's sequences are plotted in a row, with columns representing different metrics or views.
 
-    ------------ Parameters:
-    values : dict
-        values[dataset_name][sequence_name][exp_name] = pandas.DataFrame()
-    dataset_sequences : dict
-        dataset_sequences[dataset_name] = list{sequence_names}
-    exp_names : list
-        exp_names = list{exp_names}
-    dataset_nicknames : dict
-        dataset_nicknames[dataset_name] = list{sequence_nicknames}
-    metric_name : string
-        metric_name = "accuracy"
-    """
+def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, experiments, shared_scale = False):
 
-    num_experiments = len(exp_names)
-    num_datasets = len(dataset_sequences)
+    def set_format(tick):
+        if tick == 0:
+            return f"0"
+        return f"{tick:.1e}"
 
-    # Figure dimensions
-    width_per_series = 0.05
-    num_rows = num_datasets
-    num_cols = 5
-    xSize = 12
-    ySize = num_rows * 2
-
-    fig, axs = plt.subplots(num_rows, num_cols, figsize=(xSize, ySize))
-    axs = axs.flatten()
-
-    # Create legend handles
-    legend_handles = []
-    for i_exp, exp_name in enumerate(exp_names):
-        legend_handles.append(Patch(color=colors[i_exp], label=exp_names[i_exp]), )
-
-    # Plot
-    for i_dataset, (dataset_name, sequence_names) in enumerate(dataset_sequences.items()):
-        y_max_limit_dataset = 0
-        y_min_limit_dataset = -1
-        for i_exp, exp_name in enumerate(exp_names):
-            
-
-            boxprops = dict(color=colors[i_exp])
-            medianprops = dict(color=colors[i_exp])
-            whiskerprops = dict(color=colors[i_exp])
-            capprops = dict(color=colors[i_exp])
-            flierprops = dict(marker='o', color=colors[i_exp], alpha=1.0)
-
-            for i_seq, sequence_name in enumerate(sequence_names):
-                positions = [(i_seq + 1) * (width_per_series * 1.2) + i_exp * (width_per_series * 1.2) * len(sequence_names)]
-                boxplot_accuracy = axs[num_cols * i_dataset].boxplot(
-                    values[dataset_name][sequence_name][exp_name]['rmse'],
-                    positions=positions, widths=width_per_series,
-                    patch_artist=False,
-                    boxprops=boxprops, medianprops=medianprops,
-                    whiskerprops=whiskerprops,
-                    capprops=capprops, flierprops=flierprops)
-
-                medians = [item.get_ydata()[0] for item in boxplot_accuracy['medians']]
-                whiskers = np.concatenate([whisker.get_ydata() for whisker in boxplot_accuracy['whiskers']])
-                flier_counts = []
-                for flier in boxplot_accuracy['fliers']:
-                    flier_counts.append(len(flier.get_ydata()))
-
-                boxplot_accuracy_zoom = axs[num_cols * i_dataset].boxplot(
-                    values[dataset_name][sequence_name][exp_name]['rmse'],
-                    positions=positions, widths=width_per_series,
-                    patch_artist=False,
-                    boxprops=boxprops, medianprops=medianprops,
-                    whiskerprops=whiskerprops,
-                    capprops=capprops, flierprops=flierprops)
-
-                boxplot_num_eval_pts = axs[num_cols * i_dataset + 2].boxplot(
-                    values[dataset_name][sequence_name][exp_name]['Number of Evaluation Points'],
-                    positions=positions, widths=width_per_series,
-                    patch_artist=False,
-                    boxprops=boxprops, medianprops=medianprops,
-                    whiskerprops=whiskerprops,
-                    capprops=capprops, flierprops=flierprops)
-
-                boxplot_num_eval_pts = axs[num_cols * i_dataset + 3].boxplot(
-                    values[dataset_name][sequence_name][exp_name]['Number of Estimated Frames'],
-                    positions=positions, widths=width_per_series,
-                    patch_artist=False,
-                    boxprops=boxprops, medianprops=medianprops,
-                    whiskerprops=whiskerprops,
-                    capprops=capprops, flierprops=flierprops)
-
-                bar_diagram_out_of_dist = axs[num_cols * i_dataset + 1].bar(positions, flier_counts, width_per_series,
-                                                                            color=colors[i_exp])
-                bar_diagram_num_runs = axs[num_cols * i_dataset + 4].bar(positions,
-                                                                         len(values[dataset_name][sequence_name][
-                                                                                 exp_name]['rmse']),
-                                                                         width_per_series, color=colors[i_exp])
-
-                max_whisker_ = np.max(whiskers)
-                median_ = np.median(medians)
-                min_whisker_ = np.min(whiskers)
-
-                y_max_limit_dataset_ = (2.0 * max_whisker_ - median_)
-                if y_max_limit_dataset_ > y_max_limit_dataset:
-                    y_max_limit_dataset = y_max_limit_dataset_
-
-                y_min_limit_dataset_ = (2.0 * min_whisker_ - median_)
-                if (y_min_limit_dataset_ < y_min_limit_dataset) or (y_min_limit_dataset < 0):
-                    y_min_limit_dataset = y_min_limit_dataset_
-
-        label_positions = [
-            (i + 1) * (width_per_series * 1.2) + ((num_experiments - 1) / 2.0) * (width_per_series * 1.2) * len(
-                sequence_names)
-            for i in range(len(sequence_names))]
-        for i in range(0, num_cols):
-            axs[num_cols * i_dataset + i].grid(True, linestyle='--', linewidth=0.5, color='gray')
-            axs[num_cols * i_dataset + i].set_xticks(label_positions, dataset_nicknames[dataset_name], rotation=0)
-
-        axs[num_cols * i_dataset].set_ylim(y_min_limit_dataset, y_max_limit_dataset)
-
-        if i_dataset == 0:
-            axs[0].set_title('Accuracy')
-            axs[1].set_title('Out-of-distribution')
-            axs[2].set_title('# Evaluation Points')
-            axs[3].set_title('# Estimated Frames')
-            axs[4].set_title('# Runs')
-
-    i = 0
-    for dataset_name, sequence_names in dataset_sequences.items():
-        y_pos = 0.89 - (i * ((0.95 - 0.1) / num_datasets))
-        fig.text(0.015, y_pos, dataset_name, va='center', ha='center', rotation='vertical', fontsize=12)
-        i = i + 1
-
-    fig.legend(handles=legend_handles, loc='lower center', ncol=len(legend_handles))
-    plt.tight_layout()
-    plt.subplots_adjust(left=0.075, top=0.95, bottom=0.1)
-
-    plot_name = os.path.join(comparison_path, f"{metric_name}_boxplot_detailed.eps")
-    plt.savefig(plot_name, format='eps')
-    plt.show(block=False)
-
-    # Figure dimensions
-    num_rows = math.ceil(num_datasets / 5)
-    xSize = 12
-    ySize = num_rows * 2
-
-    fig, axs_global = plt.subplots(num_rows, 5, figsize=(xSize, ySize))
-    axs_global = axs_global.flatten()
-    i_dataset = 0
-    for dataset_name, sequence_names in dataset_sequences.items():
-        copy_axes_properties(axs[i_dataset * num_cols], axs_global[i_dataset])
-        axs_global[i_dataset].grid(True, linestyle='--', linewidth=0.5, color='gray')
-        axs_global[i_dataset].set_title(dataset_name)
-        i_dataset = i_dataset + 1
-
-    fig.legend(handles=legend_handles, loc='lower center', ncol=len(legend_handles))
-    plt.tight_layout()
-    plt.subplots_adjust(bottom=0.2)
-    plot_name = os.path.join(comparison_path, f"{metric_name}_boxplot_global.eps")
-    plt.savefig(plot_name, format='eps')
-    plt.show(block=False)
-
-
-def boxplot_exp_seq2(values, dataset_sequences, exp_names, dataset_nicknames, metric_name, comparison_path, experiments):
-    """
-    ------------ Description:
-    This function generates a series of box plots for different experiments and sequences within multiple datasets.
-    Each dataset's sequences are plotted in a row, with columns representing different metrics or views.
-
-    ------------ Parameters:
-    values : dict
-        values[dataset_name][sequence_name][exp_name] = pandas.DataFrame()
-    dataset_sequences : dict
-        dataset_sequences[dataset_name] = list{sequence_names}
-    exp_names : list
-        exp_names = list{exp_names}
-    dataset_nicknames : dict
-        dataset_nicknames[dataset_name] = list{sequence_nicknames}
-    metric_name : string
-        metric_name = "accuracy"
-    """
+    # Get number of sequences
     num_sequences = 0
-    for i_dataset, (dataset_name, sequence_names) in enumerate(dataset_sequences.items()):
-        for i_seq, sequence_name in enumerate(sequence_names):
-            num_sequences = num_sequences + 1
-    num_experiments = len(exp_names)
-    num_datasets = len(dataset_sequences)
+    splts = {}
+    for dataset_name, sequence_names in dataset_sequences.items():
+        dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
+        for sequence_name in sequence_names:
+            splts[sequence_name]= {}
+            splts[sequence_name]['id']= num_sequences
+            splts[sequence_name]['dataset_name']= dataset_name
+            splts[sequence_name]['nickname']= dataset.get_sequence_nickname(sequence_name)
+            num_sequences += 1
+
+    exp_names = list(experiments.keys())
 
     # Figure dimensions
-    num_rows = math.ceil(num_sequences / 5)
-    xSize = 12
-    ySize = num_rows * 2
-
-    fig, axs = plt.subplots(num_rows, 5, figsize=(xSize, ySize))
+    NUM_COLS = 5
+    NUM_ROWS = math.ceil(num_sequences / NUM_COLS)
+    XSIZE, YSIZE = 12, 2 * NUM_ROWS + 0.5
+    WIDTH_PER_SERIES = min(XSIZE / len(exp_names), 0.4)
+    FONT_SIZE = 15
+    fig, axs = plt.subplots(NUM_ROWS, NUM_COLS, figsize=(XSIZE, YSIZE))
     axs = axs.flatten()
-
-    width_per_series = 0.2
-    #num_rows = 1
-    num_cols = num_sequences
-    #xSize = 12
-    #ySize = num_rows * 2
-
-    #fig, axs = plt.subplots(num_rows, num_cols, figsize=(xSize, ySize))
-    #axs = axs.flatten()
 
     # Create legend handles
     legend_handles = []
+    colors = {}
     for i_exp, exp_name in enumerate(exp_names):
-        legend_handles.append(Patch(color=colors[i_exp], label=exp_names[i_exp]), )
+        baseline = get_baseline(experiments[exp_name].module)   
+        colors[exp_name] = baseline.color
+        legend_handles.append(Patch(color=colors[exp_name], label=exp_names[i_exp]))
+        
+    # Plot boxplots
+    whisker_min = {}
+    whisker_max = {}
+    for sequence_name, splt in splts.items():
+        whisker_min_seq, whisker_max_seq = float('inf'), float('-inf')
+        for i_exp, exp_name in enumerate(exp_names):
+            boxprops = medianprops = whiskerprops = capprops = dict(color=colors[exp_name])
+            flierprops = dict(marker='o', color=colors[exp_name], alpha=1.0)
+            positions = [i_exp * WIDTH_PER_SERIES]   
+            boxplot_accuracy = axs[splt['id']].boxplot(
+                values[splt['dataset_name']][sequence_name][exp_name][metric_name],
+                positions=positions, widths=WIDTH_PER_SERIES,
+                patch_artist=False,
+                boxprops=boxprops, medianprops=medianprops,
+                whiskerprops=whiskerprops,
+                capprops=capprops, flierprops=flierprops)
+            whisker_values = [line.get_ydata()[1] for line in boxplot_accuracy['whiskers']]
+            whisker_min_seq = min(whisker_min_seq, min(whisker_values))
+            whisker_max_seq = max(whisker_max_seq, max(whisker_values))
 
-    i_traj = 0
-    y_max_values = []
-    for i_dataset, (dataset_name, sequence_names) in enumerate(dataset_sequences.items()):
-        for i_seq, sequence_name in enumerate(sequence_names):
-            whisker_min = float('inf')
-            whisker_max = float('-inf')
-            for i_exp, exp_name in enumerate(exp_names):
-                baseline = get_baseline(experiments[exp_name].module)   
-                boxprops = dict(color=baseline.color)
-                medianprops = dict(color=baseline.color)
-                whiskerprops = dict(color=baseline.color)
-                capprops = dict(color=baseline.color)
-                flierprops = dict(marker='o', color=baseline.color, alpha=1.0)
+        width = 0.1 * (whisker_max_seq - whisker_min_seq)
+        whisker_max[sequence_name] = whisker_max_seq + width
+        whisker_min[sequence_name] = whisker_min_seq - width
 
-                positions = [i_exp * width_per_series]     
+    # Adjust plot properties for paper
+    max_value, min_value = max(whisker_max.values()), min(whisker_min.values())
+    
+    if shared_scale:
+        whisker_max = {key: max_value for key in whisker_max}
+        whisker_min = {key: 0 for key in whisker_min}
 
-                if all(value == 1000 for value in values[dataset_name][sequence_name][exp_name]['rmse']):
-                    continue
-               
-                boxplot_accuracy = axs[i_traj].boxplot(
-                    values[dataset_name][sequence_name][exp_name]['rmse'],
-                    positions=positions, widths=width_per_series,
-                    patch_artist=False,
-                    boxprops=boxprops, medianprops=medianprops,
-                    whiskerprops=whiskerprops,
-                    capprops=capprops, flierprops=flierprops)
-            
-                whisker_values = [line.get_ydata()[1] for line in boxplot_accuracy['whiskers']]
-                whisker_min = min(whisker_min, min(whisker_values))
-                whisker_max = max(whisker_max, max(whisker_values))
+    for sequence_name, splt in splts.items():
+        whisker_max_seq = whisker_max[sequence_name]
+        whisker_min_seq = whisker_min[sequence_name]
+       
+        yticks = [whisker_min_seq, whisker_max_seq]
+        axs[splt['id']].set_yticklabels([set_format(tick) for tick in yticks])
+        axs[splt['id']].grid(True, which='both', linestyle='--', linewidth=0.5, alpha=0.7)
+        axs[splt['id']].set_xticklabels([])
+        axs[splt['id']].set_ylim(yticks)
+        axs[splt['id']].tick_params(axis='y', labelsize=FONT_SIZE) 
+        axs[splt['id']].yaxis.set_minor_locator(ticker.MultipleLocator((whisker_max_seq - whisker_min_seq) / 4))
+        if not shared_scale:    
+            axs[splt['id']].set_yticks(yticks)
+            tick_labels = axs[splt['id']].get_yticklabels()
+            if whisker_max_seq == max_value:
+                tick_labels[1].set_color("#CD3232")  
+            if whisker_min_seq == min_value:
+                tick_labels[0].set_color("#32CD32")      
+            tick_labels[0].set_transform(tick_labels[0].get_transform() + ScaledTranslation(0.9, -0.15, fig.dpi_scale_trans))
+            tick_labels[1].set_transform(tick_labels[1].get_transform() + ScaledTranslation(0.9, +0.15, fig.dpi_scale_trans))
 
-            width = 0.1*(whisker_max - whisker_min)
-            whisker_max = whisker_max + width
-
-            def set_format(tick):
-                if tick == 0:
-                    return f"0"
-                return f"{tick:.1e}"
-            
-            y_max_values.append(whisker_max)
-            i_traj = i_traj + 1
-
-    i_traj = 0
-    for i_dataset, (dataset_name, sequence_names) in enumerate(dataset_sequences.items()):
-        for i_seq, sequence_name in enumerate(sequence_names):
-            whisker_max = max(y_max_values)
-            axs[i_traj].set_ylim(0,whisker_max)
-            yticks = [0, whisker_max]
-            axs[i_traj].set_yticks(yticks)
-            if i_traj == 0:
-                axs[i_traj].set_yticklabels([set_format(tick) for tick in yticks])
+        else:
+            if splt['id'] == 0:
+                axs[splt['id']].set_yticks(yticks)
+                axs[splt['id']].tick_params(axis="y", rotation=90)
             else:
-                axs[i_traj].set_yticklabels([])
+                axs[splt['id']].set_yticks([])   
 
-            axs[i_traj].set_xticklabels([])
-
-            axs[i_traj].tick_params(axis='both', which='minor', labelbottom=False, labelleft=False)
-            axs[i_traj].tick_params(axis='both', labelsize=20) 
-
-            axs[i_traj].yaxis.set_minor_locator(ticker.MultipleLocator(whisker_max / 4))
-            axs[i_traj].grid(True, which='both', linestyle='--', linewidth=0.5, alpha=0.7)
-            axs[i_traj].spines['top'].set_visible(False)   # Remove top border
-            axs[i_traj].spines['right'].set_visible(False) # Remove right border
-            axs[i_traj].tick_params(axis="y", pad=0, rotation=90) 
-
-            i_traj = i_traj + 1
-
-    plot_name = os.path.join(comparison_path, f"{metric_name}_boxplot_detailed.pdf")
     plt.tight_layout()
+    plot_name = os.path.join(comparison_path, f"{metric_name}_boxplot_paper.pdf")
+    if shared_scale:
+        plot_name = plot_name.replace(".pdf", "_shared_scale.pdf")
     plt.savefig(plot_name, format='pdf')
 
-    fig.legend(handles=legend_handles, loc='lower center', ncol=len(legend_handles))
-    plt.subplots_adjust(left=0.075, top=0.95, bottom=0.1)
-    plt.show(block=False)
+    # Adjust plot properties for display
+    for sequence_name, splt in splts.items():
+        if shared_scale:
+            axs[splt['id']].set_title(splt['nickname'], fontsize=FONT_SIZE,  fontweight='bold')
+        else:
+            axs[splt['id']].set_title(splt['nickname'], fontsize=FONT_SIZE, fontweight='bold', pad=30)
 
+    fig.legend(handles=legend_handles, loc='lower center', ncol=len(legend_handles), fontsize=FONT_SIZE)
+
+    if shared_scale:
+        plt.tight_layout(rect=[0, 0.15, 1, 0.95])
+    else:
+        fig.set_size_inches(XSIZE, 2*YSIZE)
+        plt.tight_layout(rect=[0, 0.10, 1, 0.95])
+
+    plot_name = os.path.join(comparison_path, f"{metric_name}_boxplot.pdf")
+    if shared_scale:
+        plot_name = plot_name.replace(".pdf", "_shared_scale.pdf")
+    plt.savefig(plot_name, format='pdf')
+    plt.show(block=False)
 
 def radar_seq(values, dataset_sequences, exp_names, dataset_nicknames, metric_name, comparison_path, experiments):
     """
