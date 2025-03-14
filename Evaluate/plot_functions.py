@@ -251,7 +251,7 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
 
     # Adjust plot properties for paper
     max_value, min_value = max(whisker_max.values()), min(whisker_min.values())
-    
+
     if shared_scale:
         whisker_max = {key: max_value for key in whisker_max}
         whisker_min = {key: 0 for key in whisker_min}
@@ -261,7 +261,7 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
         whisker_min_seq = whisker_min[sequence_name]
        
         yticks = [whisker_min_seq, whisker_max_seq]
-        axs[splt['id']].set_yticklabels([set_format(tick) for tick in yticks])
+
         axs[splt['id']].grid(True, which='both', linestyle='--', linewidth=0.5, alpha=0.7)
         axs[splt['id']].set_xticklabels([])
         axs[splt['id']].set_ylim(yticks)
@@ -276,14 +276,17 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
                 tick_labels[0].set_color("#32CD32")      
             tick_labels[0].set_transform(tick_labels[0].get_transform() + ScaledTranslation(0.9, -0.15, fig.dpi_scale_trans))
             tick_labels[1].set_transform(tick_labels[1].get_transform() + ScaledTranslation(0.9, +0.15, fig.dpi_scale_trans))
+            axs[splt['id']].set_yticklabels([set_format(tick) for tick in yticks])
 
         else:
             if splt['id'] == 0:
                 axs[splt['id']].set_yticks(yticks)
                 axs[splt['id']].tick_params(axis="y", rotation=90)
+                axs[splt['id']].set_yticklabels([set_format(tick) for tick in yticks])
             else:
                 axs[splt['id']].set_yticks([])   
 
+        
     plt.tight_layout()
     plot_name = os.path.join(comparison_path, f"{metric_name}_boxplot_paper.pdf")
     if shared_scale:
@@ -309,6 +312,10 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
     if shared_scale:
         plot_name = plot_name.replace(".pdf", "_shared_scale.pdf")
     plt.savefig(plot_name, format='pdf')
+    if shared_scale:
+        fig.canvas.manager.set_window_title("Accuracy (shared scale)")
+    else:
+        fig.canvas.manager.set_window_title("Accuracy")
     plt.show(block=False)
 
 def radar_seq(values, dataset_sequences, exp_names, dataset_nicknames, metric_name, comparison_path, experiments):
@@ -513,62 +520,6 @@ def plot_cum_error(values, dataset_sequences, exp_names, dataset_nicknames, metr
     plt.subplots_adjust(top=0.9, bottom=0.25)  # Adjust the top and bottom to make space for the legend
     plt.show(block=False)
 
-
-# def create_and_show_canvas(dataset_sequences, VSLAMLAB_BENCHMARK, comparison_path):
-#     image_paths = []
-
-#     for dataset_name, sequence_names in dataset_sequences.items():
-#         for sequence_name in sequence_names:
-#             image_files = list_image_files_in_folder(
-#                 os.path.join(VSLAMLAB_BENCHMARK, dataset_name.upper(), sequence_name, 'rgb'))
-#             image_paths.append(
-#                 os.path.join(VSLAMLAB_BENCHMARK, dataset_name.upper(), sequence_name, 'rgb', image_files[0]))
-
-#     m = 5
-#     n = math.ceil(len(image_paths) / m)
-
-#     canvas_width = m * 640
-#     canvas_height = n * 480
-
-#     # Load the images
-#     images = [Image.open(path) for path in image_paths]
-
-#     # Calculate target size for each image to fit the canvas
-#     img_width = canvas_width // m
-#     img_height = canvas_height // n
-#     target_size = (img_width, img_height)
-
-#     # Resize all images to the target size
-#     resized_images = []
-#     for img in images:
-#         resized_images.append(img.resize(target_size, Image.LANCZOS))
-#     images = resized_images
-
-#     # Create a blank canvas with a white background
-#     canvas = Image.new('RGB', (canvas_width, canvas_height), 'white')
-
-#     # Paste each image into the correct position
-#     for i in range(n):
-#         for j in range(m):
-#             index = i * m + j
-#             if index < len(images):
-#                 img = images[index]
-#                 x_offset = j * img_width
-#                 y_offset = i * img_height
-#                 canvas.paste(img, (x_offset, y_offset))
-
-#     # Save the canvas
-#     plot_name = os.path.join(comparison_path, 'canvas_sequences.png')
-#     canvas.save(plot_name)
-
-#     # Show the canvas
-#     plt.figure(figsize=(12.8, 6.4))  # Convert pixels to inches for display
-#     plt.imshow(canvas)
-#     plt.axis('off')  # Hide the axis
-#     plt.show(block=False)
-
-
-
 def create_and_show_canvas(dataset_sequences, VSLAMLAB_BENCHMARK, comparison_path, padding=10):
     image_paths = []
 
@@ -613,3 +564,127 @@ def create_and_show_canvas(dataset_sequences, VSLAMLAB_BENCHMARK, comparison_pat
     plt.imshow(canvas)
     plt.axis('off')  # Hide the axis
     plt.show(block=False)
+
+def num_tracked_frames(values, dataset_sequences, figures_path, experiments, shared_scale = False):
+   # Get number of sequences
+    num_sequences = 0
+    splts = {}
+    for dataset_name, sequence_names in dataset_sequences.items():
+        dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
+        for sequence_name in sequence_names:
+            splts[sequence_name]= {}
+            splts[sequence_name]['id']= num_sequences
+            splts[sequence_name]['dataset_name']= dataset_name
+            splts[sequence_name]['nickname']= dataset.get_sequence_nickname(sequence_name)
+            num_sequences += 1
+
+    exp_names = list(experiments.keys())
+
+    # Figure dimensions
+    NUM_COLS = 5
+    NUM_ROWS = math.ceil(num_sequences / NUM_COLS)
+    XSIZE, YSIZE = 12, 2 * NUM_ROWS + 0.5
+    WIDTH_PER_SERIES = min(XSIZE / len(exp_names), 1.0)/3
+    FONT_SIZE = 15
+    fig, axs = plt.subplots(NUM_ROWS, NUM_COLS, figsize=(XSIZE, YSIZE))
+    axs = axs.flatten()
+
+    # Create legend handles
+    legend_handles = []
+    colors = {}
+    for i_exp, exp_name in enumerate(exp_names):
+        baseline = get_baseline(experiments[exp_name].module)   
+        colors[exp_name] = baseline.color
+        legend_handles.append(Patch(color=colors[exp_name], label=exp_names[i_exp]))
+
+    # Plot boxplots        
+    max_rgb = {}      
+    for sequence_name, splt in splts.items():
+        for i_exp, exp_name in enumerate(exp_names):
+            num_frames = values[splt['dataset_name']][sequence_name][exp_name]['num_frames']
+            max_rgb[sequence_name] = max(num_frames)
+            break
+
+    for sequence_name, splt in splts.items():
+        for i_exp, exp_name in enumerate(exp_names):
+            num_frames = values[splt['dataset_name']][sequence_name][exp_name]['num_frames'] 
+            num_tracked_frames = values[splt['dataset_name']][sequence_name][exp_name]['num_tracked_frames'] 
+            num_evaluated_frames = values[splt['dataset_name']][sequence_name][exp_name]['num_evaluated_frames']          
+            if shared_scale:
+                num_frames /= max_rgb[sequence_name]
+                num_tracked_frames /= max_rgb[sequence_name]
+                num_evaluated_frames /= max_rgb[sequence_name]
+
+            median_num_frames = np.median(num_frames)
+            median_num_tracked_frames = np.median(num_tracked_frames)
+            median_num_evaluated_frames = np.median(num_evaluated_frames)
+
+            positions = np.array([3 * i_exp, 3 * i_exp + 1, 3 * i_exp + 2]) * WIDTH_PER_SERIES
+            axs[splt['id']].bar(
+            positions, 
+            [median_num_frames, median_num_tracked_frames, median_num_evaluated_frames], 
+            color=colors[exp_name], alpha=0.3, width=WIDTH_PER_SERIES*0.9)
+            
+            metrics = [num_frames, num_tracked_frames, num_evaluated_frames]
+            boxprops = medianprops = whiskerprops = capprops = dict(color=colors[exp_name])
+            flierprops = dict(marker='o', color=colors[exp_name], alpha=1.0)    
+            for i, metric in enumerate(metrics):
+                positions = [(3 * i_exp + i) * WIDTH_PER_SERIES]
+                boxplot_accuracy = axs[splt['id']].boxplot(
+                    metrics[i],
+                    positions=positions, widths=WIDTH_PER_SERIES,
+                    patch_artist=False,
+                    boxprops=boxprops, medianprops=medianprops,
+                    whiskerprops=whiskerprops,
+                    capprops=capprops, flierprops=flierprops)
+        
+        if shared_scale:
+            yticks = [0, 1]
+        else:
+            yticks = [0, max_rgb[sequence_name]]
+        axs[splt['id']].grid(True, which='both', linestyle='--', linewidth=0.5, alpha=0.7)
+        axs[splt['id']].set_xticklabels([])
+        axs[splt['id']].set_ylim(yticks)
+        axs[splt['id']].tick_params(axis='y', labelsize=FONT_SIZE) 
+        axs[splt['id']].yaxis.set_minor_locator(ticker.MultipleLocator(max_rgb[sequence_name] / 4))
+        axs[splt['id']].set_yticks(yticks)
+        if not shared_scale:    
+            axs[splt['id']].set_yticks(yticks)
+            tick_labels = axs[splt['id']].get_yticklabels() 
+            tick_labels[0].set_transform(tick_labels[0].get_transform() + ScaledTranslation(0.2, -0.15, fig.dpi_scale_trans))
+            tick_labels[1].set_transform(tick_labels[1].get_transform() + ScaledTranslation(0.5, +0.15, fig.dpi_scale_trans))
+        else:
+            if splt['id'] == 0:
+                axs[splt['id']].set_yticks(yticks)
+            else:
+                axs[splt['id']].set_yticks([])   
+
+    plt.tight_layout()
+    plot_name = os.path.join(figures_path, f"num_frames_boxplot_paper.pdf")
+    if shared_scale:
+        plot_name = plot_name.replace(".pdf", "_shared_scale.pdf")
+    plt.savefig(plot_name, format='pdf')
+
+    # Adjust plot properties for display
+    for sequence_name, splt in splts.items():
+        if shared_scale:
+            axs[splt['id']].set_title(splt['nickname'], fontsize=FONT_SIZE,  fontweight='bold')
+        else:
+            axs[splt['id']].set_title(splt['nickname'], fontsize=FONT_SIZE, fontweight='bold', pad=30)
+
+    fig.legend(handles=legend_handles, loc='lower center', ncol=len(legend_handles), fontsize=FONT_SIZE)
+    
+    if shared_scale:
+        plt.tight_layout(rect=[0, 0.15, 1, 0.95])
+    else:
+        fig.set_size_inches(XSIZE, 2*YSIZE)
+        plt.tight_layout(rect=[0, 0.10, 1, 0.95])
+
+    plot_name = os.path.join(figures_path, f"num_frames_boxplot.pdf")
+    if shared_scale:
+        plot_name = plot_name.replace(".pdf", "_shared_scale.pdf")
+    plt.savefig(plot_name, format='pdf')
+
+    fig.canvas.manager.set_window_title("Number of Frames")
+    plt.show(block=False)
+

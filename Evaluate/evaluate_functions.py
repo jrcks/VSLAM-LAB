@@ -47,13 +47,40 @@ def evaluate_sequence(exp, dataset, sequence_name, overwrite=False):
 
     evo_get_accuracy(zip_files, accuracy_csv)
 
+    # Final Checks
     accuracy = pd.read_csv(accuracy_csv)
     for evaluated_run in evaluated_runs:
-        exists = (accuracy["traj_name"] == f"{exp_it}{TRAJECTORY_FILE_NAME}.txt").any()
+        trajectory_file = f"{evaluated_run}{TRAJECTORY_FILE_NAME}.txt"
+        exists = (accuracy["traj_name"] == trajectory_file).any()
         if exists:
             exp_log.loc[(exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name),"EVALUATION"] = METRIC
+
+            # Find number of frames in the sequence
+            rgb_exp_txt = os.path.join(trajectories_path, f"rgb_exp.txt")
+            with open(rgb_exp_txt, "r") as file:
+                num_frames = sum(1 for _ in file)
+            accuracy.loc[accuracy["traj_name"] == trajectory_file,"num_frames"] = num_frames
+
+            # Find number of tracked frames
+            trajectory_file_txt = os.path.join(trajectories_path, trajectory_file)
+            if not os.path.exists(trajectory_file_txt):
+                exp_log.loc[(exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name),"EVALUATION"] = 'failed'
+                continue
+            with open(trajectory_file_txt, "r") as file:
+                num_tracked_frames = sum(1 for _ in file)
+            accuracy.loc[accuracy["traj_name"] == trajectory_file,"num_tracked_frames"] = num_tracked_frames    
+
+            # Find number of evaluated frames
+            trajectory_file_tum = os.path.join(trajectories_path,VSLAM_LAB_EVALUATION_FOLDER, trajectory_file.replace(".txt", ".tum"))
+            if not os.path.exists(trajectory_file_tum):
+                exp_log.loc[(exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name),"EVALUATION"] = 'failed'
+                continue
+            with open(trajectory_file_tum, "r") as file:
+                num_evaluated_frames = sum(1 for _ in file) - 1
+            accuracy.loc[accuracy["traj_name"] == trajectory_file,"num_evaluated_frames"] = num_evaluated_frames    
         else:
             exp_log.loc[(exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name),"EVALUATION"] = 'failed'
 
     exp_log.to_csv(exp.log_csv, index=False)
+    accuracy.to_csv(accuracy_csv, index=False)
 
