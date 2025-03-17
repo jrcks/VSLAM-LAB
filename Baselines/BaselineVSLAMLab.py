@@ -1,11 +1,14 @@
+import os, yaml
+import signal
 import subprocess
-
-from utilities import ws
-import os
+from utilities import ws, print_msg
 from path_constants import VSLAMLAB_BASELINES
+import psutil
+import threading
+import time
+import queue
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
-
 
 class BaselineVSLAMLab:
 
@@ -13,8 +16,9 @@ class BaselineVSLAMLab:
         self.baseline_name = baseline_name
         self.baseline_path = os.path.join(VSLAMLAB_BASELINES, baseline_folder)
         self.label = f"\033[96m{baseline_name}\033[0m"
-        self.settings_yaml = os.path.join(VSLAMLAB_BASELINES, baseline_folder, f'{baseline_name}_settings.yaml')
+        self.settings_yaml = os.path.join(VSLAMLAB_BASELINES, baseline_folder, f'vslamlab_{baseline_name}_settings.yaml')
         self.default_parameters = default_parameters
+        self.color = 'black'
 
     def get_default_parameters(self):
         return self.default_parameters
@@ -57,12 +61,76 @@ class BaselineVSLAMLab:
             f"Path:\033[92m {self.baseline_path}\033[0m" if is_installed else f"Path:\033[91m {self.baseline_path}\033[0m")
         print(f'Default parameters: {self.get_default_parameters()}')
 
-    def execute(self, command, exp_it, exp_folder):
+    def kill_process(self, process):
+        os.killpg(os.getpgid(process.pid), signal.SIGTERM)  
+        try:
+            process.wait(timeout=5) 
+        except subprocess.TimeoutExpired:
+            os.killpg(os.getpgid(process.pid), signal.SIGKILL) 
+        print_msg(SCRIPT_LABEL, "Process killed.",'error')
+
+    def monitor_memory(self, process, interval, comment_queue, success_flag):
+        MAX_SWAP_PERC = 0.80
+        MAX_RAM_PERC= 0.95
+        swap_max = psutil.swap_memory().total / (1024**3)
+        ram_0, ram_max = psutil.virtual_memory().used / (1024**3), psutil.virtual_memory().total / (1024**3)
+
+        while process.poll() is None: 
+            try:
+                swap, ram =  psutil.swap_memory(), psutil.virtual_memory()
+                swap_used, ram_used = swap.used / (1024**3), ram.used / (1024**3)
+                ram_inc = ram_used - ram_0
+                swap_perc, ram_perc = swap_used / swap_max, ram_used / ram_max
+
+                if ram_perc > MAX_RAM_PERC:
+                    print_msg(SCRIPT_LABEL, f"Memory threshold exceeded  {ram_used:0.1f} GB / {ram_max:0.1f} GB > {100 * MAX_RAM_PERC:0.2f} %",'error')
+                    success_flag[0] = False
+                    self.kill_process(process)
+                    comment_queue.put(f"Memory threshold exceeded  {ram_used:0.1f} GB / {ram_max:0.1f} GB > {100 * MAX_RAM_PERC:0.2f} %. Process killed.")  
+                    break
+
+                if swap_perc > MAX_SWAP_PERC:
+                    print_msg(SCRIPT_LABEL, f"Filling swap memory  {swap_used:0.1f} GB / {swap_max:0.1f} GB > {100 * MAX_SWAP_PERC:0.2f}",'error')
+                    success_flag[0] = False
+                    self.kill_process(process)
+                    comment_queue.put(f"Filling swap memory  {swap_used:0.1f} GB / {swap_max:0.1f} GB > {100 * MAX_SWAP_PERC:0.2f} %. Process killed.")  
+                    break
+                    #print(f"\n{SCRIPT_LABEL} {Fore.RED} Cleaning swap memory... {Style.RESET_ALL}")
+                    #subprocess.run("pixi run --frozen -e default clean_swap", shell=True)
+
+                time.sleep(interval)
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                break  
+
+    def execute(self, command, exp_it, exp_folder, timeout_seconds=1*60*60):
         log_file_path = os.path.join(exp_folder, "system_output_" + str(exp_it).zfill(5) + ".txt")
+        comments = ""
+        comment_queue = queue.Queue()
+        success_flag = [True] 
         with open(log_file_path, 'w') as log_file:
             print(f"{ws(8)}log file: {log_file_path}")
-            subprocess.run(command, stdout=log_file, stderr=log_file, shell=True)
+            process = subprocess.Popen(command, shell=True, stdout=log_file, stderr=log_file, text=True, preexec_fn=os.setsid)
+            memory_thread = threading.Thread(target=self.monitor_memory, args=(process, 10, comment_queue, success_flag))
+            memory_thread.start()
 
+            try:
+                _, _ = process.communicate(timeout=timeout_seconds)
+            except subprocess.TimeoutExpired:
+                print_msg(SCRIPT_LABEL, f"Process took too long > {timeout_seconds} seconds",'error')
+                comments = f"Process took too long > {timeout_seconds} seconds. Process killed."
+                success_flag[0] = False
+                self.kill_process(process)
+            
+            memory_thread.join()
+            while not comment_queue.empty():
+                comments += comment_queue.get() + "\n"
+            
+        return {
+            "success": success_flag[0],
+            "comments": comments  
+        }
+
+    
     def build_execute_command(self, sequence_path, exp_folder, exp_it, parameters):
         exec_command = [f"sequence_path:{sequence_path}", f"exp_folder:{exp_folder}", f"exp_id:{exp_it}"]
 
@@ -119,5 +187,14 @@ class BaselineVSLAMLab:
         vslamlab_command = f"pixi run --frozen -e {self.baseline_name} execute " + ' '.join(vslamlab_command)
         return vslamlab_command
 
-    def modify_yaml_parameter(self, settings_ablation_yaml, section_name, parameter_name, value):
-        return
+    def modify_yaml_parameter(self, settings_ablation_yaml, section_name, parameter_name, new_value):
+        with open(settings_ablation_yaml, 'r') as file:
+            data = yaml.safe_load(file)
+
+        if section_name in data and parameter_name in data[section_name]:
+            data[section_name][parameter_name] = new_value
+        else:
+            print(f"    Parameter '{parameter_name}' or section '{section_name}' not found in the YAML file.")
+
+        with open(settings_ablation_yaml, 'w') as file:
+            yaml.safe_dump(data, file)

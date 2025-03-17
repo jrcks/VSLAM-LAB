@@ -5,7 +5,6 @@ import pandas as pd
 import yaml
 
 from Evaluate import plot_functions
-from Evaluate.plot_functions import create_and_show_canvas
 from Datasets.get_dataset import get_dataset
 from path_constants import VSLAM_LAB_EVALUATION_FOLDER
 from utilities import check_yaml_file_integrity
@@ -28,15 +27,19 @@ def full_comparison(experiments, VSLAMLAB_BENCHMARK, COMPARISONS_YAML_DEFAULT, c
     # Comparisons switch
     def switch_comparison(comparison_):
         switcher = {
-            'accuracy_boxplot': lambda: plot_functions.boxplot_exp_seq(accuracies, dataset_sequences, exp_names,
-                                                                       dataset_nicknames, 'accuracy', figures_path),
+            'accuracy_boxplot': lambda: plot_functions.boxplot_exp_seq(accuracies, dataset_sequences,
+                                                                       'rmse', figures_path, experiments),
+            'accuracy_boxplot_shared_scale': lambda: plot_functions.boxplot_exp_seq(accuracies, dataset_sequences,
+                                                                       'rmse', figures_path, experiments, shared_scale=True),
             'cumulated_error': lambda: plot_functions.plot_cum_error(accuracies, dataset_sequences, exp_names,
-                                                                     dataset_nicknames, 'accuracy', figures_path),
+                                                                     dataset_nicknames, 'rmse', figures_path, experiments),
             'accuracy_radar': lambda: plot_functions.radar_seq(accuracies, dataset_sequences, exp_names,
-                                                               dataset_nicknames, 'accuracy', figures_path),
+                                                               dataset_nicknames, 'rmse', figures_path, experiments),
             'trajectories': lambda: plot_functions.plot_trajectories(dataset_sequences, exp_names, dataset_nicknames,
                                                                      experiments, accuracies, figures_path),
-            'image_canvas': lambda: create_and_show_canvas(dataset_sequences, VSLAMLAB_BENCHMARK, figures_path)
+            'image_canvas': lambda: plot_functions.create_and_show_canvas(dataset_sequences, VSLAMLAB_BENCHMARK, figures_path),
+            'num_tracked_frames': lambda: plot_functions.num_tracked_frames(accuracies, dataset_sequences, figures_path, experiments)
+
         }
 
         func = switcher.get(comparison_, lambda: "Invalid case")

@@ -6,11 +6,14 @@ channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
 [tasks]
-vslamlab = {cmd = "pixi run -e vslamlab python vslamlab.py"}
+vslamlab = {cmd = "pixi run -e vslamlab python vslamlab_run.py"}
+evaluate = {cmd = "pixi run -e evo python vslamlab_eval.py"}
 set-benchmark-path  = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_BENCHMARK_path"}
 set-evaluation-path = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_EVALUATION_path"}
 demo = {cmd = "pixi run --frozen -e vslamlab python demo.py"}
 baseline-info = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py baseline_info"}
+print_datasets = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py print_datasets"}
+print_baselines = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py print_baselines"}
 
 get-benchmark-path = {cmd = "VSLAMLAB_BENCHMARK=$(python3 -c 'from path_constants import VSLAMLAB_BENCHMARK; print(VSLAMLAB_BENCHMARK)')"}
 
@@ -20,11 +23,16 @@ deactivate_env = {cmd = "pixi run -e vslamlab python utilities.py deactivate_env
 activate_env = {cmd = "pixi run -e vslamlab python utilities.py activate_env"}
 
 clean_experiment = {cmd = "pixi run -e vslamlab python Evaluate/clean_experiment.py"}
+clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
 
 # environments begin
 [environments]
 vslamlab = {features = ["vslamlab"], no-default-feature = true}
+
 droidslam = {features = ["droidslam"], no-default-feature = true}
+dpvo = {features = ["dpvo"], no-default-feature = true}
+mast3rslam = {features = ["mast3rslam"], no-default-feature = true}
+
 colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
 glomap = {features = ["glomap"], no-default-feature = true, solve-group = "colmap"}
 monogs = {features = ["monogs"], no-default-feature = true}
@@ -72,9 +80,12 @@ py7zr="*"
 
 # evo begin
 [feature.evo.dependencies]
-python="3.12"
+python="=3.12"
 py7zr="*"
 tqdm="*"
+inputimeout="*"
+scikit-learn="*"
+matplotlib="*"
 
 [feature.evo.pypi-dependencies]
 evo = "*"
@@ -99,23 +110,19 @@ platforms = ["linux-64"]
 cuda = "12.0"
 
 [feature.droidslam.tasks]
-git-clone = {cmd = "git-clone.sh princeton-vl DROID-SLAM Baselines"}
-copy-files = {cmd = "cp Baselines/extra-files/DROID-SLAM/*droidslam* Baselines/DROID-SLAM"}
-download-weights = {cmd = "python droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
-install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["copy-files", "download-weights"]}
-execute_mono = {cmd = 'python droidslam_vslamlab_mono.py',  cwd = 'Baselines/DROID-SLAM'}
-execute_rgbd = {cmd = 'python droidslam_vslamlab_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
-
-[feature.droidslam.pypi-options]
-no-build-isolation = ["torch-scatter"]
+git-clone = {cmd = "git-clone.sh VSLAM-LAB DROID-SLAM Baselines"}
+download-weights = {cmd = "python vslamlab_droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
+install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["download-weights"]}
+execute_mono = {cmd = 'python vslamlab_droidslam_mono.py',  cwd = 'Baselines/DROID-SLAM'}
+execute_rgbd = {cmd = 'python vslamlab_droidslam_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
 
 [feature.droidslam.dependencies]
 pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
-cuda = "12.0.0"
+cuda = "=12.0.0"
 pip = ">=24.2,<25"
 python="3.11.*"
 compilers = ">=1.7.0,<1.8.0"
-make="4.2.1"
+make="=4.2.1"
 cmake = ">=3.30.3,<4"
 tqdm = ">=4.66.5,<5"
 open3d = ">=0.18.0,<0.19"
@@ -125,10 +132,106 @@ suitesparse = ">=7.8.2,<8"
 matplotlib = ">=3.9.2,<4"
 pyyaml = ">=6.0.2,<7"
 huggingface_hub="*"
-
-[feature.droidslam.pypi-dependencies]
-torch-scatter = {version = ">=2.1.2,<3"}
+torch-scatter =">=2.1.1,<2.2"
 # droidslam end
+
+########################################################################################################################
+########################################################################################################################
+# dpvo begin
+[feature.dpvo]
+channels = ["pyg", "pytorch", "nvidia/label/cuda-12.1.0", "conda-forge", "main", "r", "msys2"]
+
+platforms = ["linux-64"]
+
+[feature.dpvo.system-requirements]
+cuda = "12.0"
+
+[feature.dpvo.tasks]
+git-clone = {cmd = "git-clone.sh VSLAM-LAB DPVO Baselines"}
+download-models-and-data = {cmd = "./download_models_and_data.sh", cwd = "Baselines/DPVO"}
+build_pangolin = {cmd = "mkdir -p build && cd build && cmake .. && make -j12", cwd = "Baselines/DPVO/Pangolin"}
+install_DPViewer = {cmd = "pip install .", cwd = "Baselines/DPVO/DPViewer"}
+install = {cmd = "pip install .", cwd = "Baselines/DPVO", depends-on = ["download-models-and-data", "build_pangolin", "install_DPViewer"]}
+execute = {cmd = 'python vslamlab_dpvo_mono.py' ,cwd = 'Baselines/DPVO'}
+
+[feature.dpvo.dependencies]
+libnvjitlink = "=12.1.105"
+pip = "*"
+cuda = "12.1.*"
+cuda-toolkit = "12.1.*"
+python = "*"
+pytorch = "2.3.1.*"
+pytorch-scatter = "2.1.2.*"
+pytorch-cuda = "12.1.*"
+torchvision = "0.18.*"
+numba = "*"
+
+compilers="=1.6.0"
+libxkbcommon="*"
+xorg-xorgproto="*"
+
+mesa-libegl-devel-cos7-x86_64 ="*"
+mesa-libgl-devel-cos7-x86_64 ="*"
+mesa-dri-drivers-cos7-x86_64 ="*"
+libglvnd-egl-cos7-x86_64 ="*"
+libglvnd-devel-cos7-x86_64 ="*"
+libselinux-cos7-x86_64 ="*"
+libxdamage-cos7-x86_64 ="*"
+libxxf86vm-cos7-x86_64 ="*"
+libxfixes-cos7-x86_64 ="*"
+libxext-cos7-x86_64 ="*"
+libxau-cos7-x86_64 ="*"
+libxcb-cos7-x86_64 ="*"
+
+glew = "*"
+wayland = "*"
+eigen = "*"
+pkg-config = "*"
+
+[feature.dpvo.pypi-dependencies]
+tensorboard = "*"
+tqdm = "*"
+einops = "*"
+pypose = "*"
+kornia = "*"
+numpy = "*"
+plyfile = "*"
+evo = "*"
+opencv-python = "*"
+yacs = "*"
+# dpvo end
+
+########################################################################################################################
+########################################################################################################################
+# mast3rslam begin
+[feature.mast3rslam]
+#channels = ["nvidia/label/cuda-12.4.0","https://fast.prefix.dev/conda-forge", "pytorch"]
+#channels = ["nvidia","https://fast.prefix.dev/conda-forge", "pytorch"]
+channels = ["https://fast.prefix.dev/conda-forge", "pytorch"]
+platforms = ["linux-64"]
+
+[feature.mast3rslam.system-requirements]
+cuda = "12.0"
+
+[feature.mast3rslam.tasks]
+git-clone = {cmd = "git-clone.sh VSLAM-LAB MASt3R-SLAM Baselines"}
+download-weights = {cmd = "./vslamlab_mast3rslam_download_weights.sh", cwd = "Baselines/MASt3R-SLAM"}
+install = {cmd = "pip install -e thirdparty/mast3r && pip install -e thirdparty/in3d && pip install --no-build-isolation -e ." , cwd = "Baselines/MASt3R-SLAM", depends-on = ["download-weights"]}
+install_1 = {cmd = "pip install -e thirdparty/mast3r" , cwd = "Baselines/MASt3R-SLAM"}
+install_2 = {cmd = "pip install -e thirdparty/in3d" , cwd = "Baselines/MASt3R-SLAM"}
+install_3 = {cmd = "pip install --no-build-isolation -e ." , cwd = "Baselines/MASt3R-SLAM"}
+
+execute = {cmd = 'python vslamlab_mast3rslam_mono.py',  cwd = 'Baselines/MASt3R-SLAM'}
+
+[feature.mast3rslam.dependencies]
+cuda = ">=12.4.0"
+pip = "*"
+python="3.11.*"
+pytorch = {build = "py3.11_cuda12.4_cudnn9.1.0_0", channel = "pytorch"}      
+pytorch-cuda = {build = "hc786d27_7", channel = "pytorch"}
+torchvision = {build = "py311_cu124", channel = "pytorch"} 
+torchaudio = {build = "py311_cu124", channel = "pytorch"}     
+# mast3rslam end
 
 ########################################################################################################################
 ########################################################################################################################
@@ -155,11 +258,11 @@ no-build-isolation = ["torch-scatter"]
 
 [feature.droidcalib.dependencies]
 pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
-cuda = "12.0.0"
+cuda = "=12.0.0"
 pip = ">=24.2,<25"
 python="3.11.*"
 compilers = ">=1.7.0,<1.8.0"
-make="4.2.1"
+make="=4.2.1"
 cmake = ">=3.30.3,<4"
 tqdm = ">=4.66.5,<5"
 open3d = ">=0.18.0,<0.19"
@@ -227,7 +330,7 @@ libboost-devel = "*"
 suitesparse = ">=5.10.1,<5.11"
 eigen = ">=3.4.0,<3.5"
 freeimage = ">=3.18.0,<3.19"
-glog = "0.6.0"
+glog = "=0.6.0"
 gflags = ">=2.2.2,<2.3"
 glew = ">=2.1.0,<2.2"
 cgal-cpp = ">=6.0.1,<6.1"
@@ -295,7 +398,7 @@ libboost-devel = "*"
 suitesparse = ">=5.10.1,<5.11"
 eigen = ">=3.4.0,<3.5"
 freeimage = ">=3.18.0,<3.19"
-glog = "0.6.0"
+glog = "=0.6.0"
 gflags = ">=2.2.2,<2.3"
 glew = ">=2.1.0,<2.2"
 cgal-cpp = ">=6.0.1,<6.1"
@@ -344,8 +447,8 @@ check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
 
 [feature.monogs.dependencies]
 python = ">=3.8.19,<3.9"
-cuda = "12.4"
-pytorch = {version="2.4.0", build="py3.8_cuda12.4*", channel="pytorch"}
+cuda = "12.4.*"
+pytorch = {version="=2.4.0", build="py3.8_cuda12.4*", channel="pytorch"}
 pip = ">=24.3.1,<24.4"
 torchvision = {version="0.19.*", channel="pytorch"}
 torchaudio = {version="2.4.*", channel="pytorch"}
@@ -410,7 +513,7 @@ pkg-config = ">=0.29.2 ,<0.30"
 opencv = ">=4.10.0 ,<5"
 eigen = ">=3.4.0 ,<3.5.0"
 yaml-cpp = ">=0.8.0,<0.9"
-pangolin = {version="2024.07.03", build="h3c9d71d_0", channel="fontan"}
+pangolin = {version="=2024.07.03", build="h3c9d71d_0", channel="fontan"}
 # orbslam2 end
 
 ########################################################################################################################
@@ -425,9 +528,9 @@ git-clone = "git-clone.sh naver dust3r Baselines"
 execute = {cmd = 'python Baselines/extra-files/dust3r/dust3r_execute.py'}
 
 [feature.dust3r.dependencies]
-cmake = "3.14.0"
-python = "3.11.0"
-pytorch-cuda = "12.4,<13"
+cmake = "=3.14.0"
+python = "=3.11.0"
+pytorch-cuda = "12.4.*,<13"
 huggingface_hub = ">=0.26.2,<0.27"
 gradio = ">=3.24.1,<4"
 matplotlib = ">=3.9.1,<4"

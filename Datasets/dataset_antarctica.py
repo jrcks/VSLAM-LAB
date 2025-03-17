@@ -1,11 +1,10 @@
-import os
-import yaml
-import shutil
-import subprocess
-
+import os, yaml, shutil
+import numpy as np
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
-from PIL import Image
+from Datasets.dataset_utilities import undistort_rgb_rad_tan, resize_rgb_images
 
+
+SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 class ANTARCTICA_dataset(DatasetVSLAMLab):
     def __init__(self, benchmark_path):
@@ -23,18 +22,18 @@ class ANTARCTICA_dataset(DatasetVSLAMLab):
         self.sequence_nicknames = [s.replace('_', ' ') for s in self.sequence_names]
 
     def download_sequence_data(self, sequence_name):
-        return
+        
         # # Variables
         # sequence_path_0 = os.path.join(self.dataset_folder_raw, sequence_name)
-        # sequence_path = os.path.join(self.dataset_path, sequence_name)
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
         # rgb_path = os.path.join(sequence_path, 'rgb')
         #
         # if not os.path.exists(os.path.normpath(sequence_path_0)):
         #     print(f'The dataset root cannot be found, please correct the root filepath or place the images in the directory: {sequence_path_0}')
         #     exit(0)
         #
-        # if not os.path.exists(rgb_path):
-        #     os.makedirs(rgb_path)
+        if not os.path.exists(sequence_path):
+             os.makedirs(sequence_path)
         #
         # for file in os.listdir(sequence_path_0):
         #     if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff')):
@@ -51,68 +50,50 @@ class ANTARCTICA_dataset(DatasetVSLAMLab):
         #             resized_img.save(os.path.join(rgb_path, file))
 
     def create_rgb_folder(self, sequence_name):
-        return
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        rgb_path = os.path.join(sequence_path, 'rgb')
+        source_rgb_path  = os.path.join(self.dataset_path,'ROI_01','Q3_2024-01-11_P1', sequence_name)
+        if os.path.exists(rgb_path):
+            return
+
+        os.makedirs(rgb_path, exist_ok=True)       
+        for file_name in os.listdir(source_rgb_path):
+            if file_name.lower().endswith('.jpg'):
+                source_file = os.path.join(source_rgb_path, file_name)
+                destination_file = os.path.join(rgb_path, file_name)
+                shutil.copy2(source_file, destination_file)
+    
 
     def create_rgb_txt(self, sequence_name):
-        return
-        # sequence_path = os.path.join(self.dataset_path, sequence_name)
-        # rgb_path = os.path.join(sequence_path, 'rgb')
-        # rgb_txt = os.path.join(sequence_path, 'rgb.txt')
-        #
-        # frame_duration = 1.0 / self.fps
-        #
-        # rgb_files = [f for f in os.listdir(rgb_path) if os.path.isfile(os.path.join(rgb_path, f))]
-        # rgb_files.sort()
-        # with open(rgb_txt, 'w') as file:
-        #     for iRGB, filename in enumerate(rgb_files, start=0):
-        #         ts = iRGB * frame_duration
-        #         file.write(f"{ts:.5f} rgb/{filename}\n")
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        rgb_path = os.path.join(sequence_path, 'rgb')
+        rgb_txt = os.path.join(sequence_path, 'rgb.txt')
+        
+        frame_duration = 1.0 / self.rgb_hz
+        
+        rgb_files = [f for f in os.listdir(rgb_path) 
+             if os.path.isfile(os.path.join(rgb_path, f)) and f.lower().endswith('.jpg')]
+
+        rgb_files.sort()
+        with open(rgb_txt, 'w') as file:
+            for iRGB, filename in enumerate(rgb_files, start=0):
+                ts = iRGB * frame_duration
+                file.write(f"{ts:.5f} rgb/{filename}\n")
 
     def create_calibration_yaml(self, sequence_name):
-        return
-        # # Create a calibration file with the UNKNOWN camera model
-        # camera_model = "UNKNOWN"
-        # fx, fy, cx, cy = 0.0, 0.0, 0.0, 0.0
-        # k1, k2, p1, p2, k3 = 0.0, 0.0, 0.0, 0.0, 0.0
-        #
-        # self.write_calibration_yaml(camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name)
-        #
-        # # Run glomap to compute calibration parameters
-        # sequence_path = os.path.join(self.dataset_path, sequence_name)
-        # output_path = sequence_path
-        # log_file_path = os.path.join(sequence_path, 'calibration_log_file.txt')
-        # it = 0
-        #
-        # exec_command = [f"sequence_path:{sequence_path}", f"exp_folder:{output_path}", f"exp_id:{it}", "verbose:0"]
-        # command_str = ' '.join(exec_command)
-        #
-        # ## NB: for this command to work correctly, it relies on building colmap and glomap
-        # ##     the line in pixi.toml should exist:
-        # # 329: execute = {cmd = "pixi run -e colmap ./VSLAM-Baselines/glomap/glomap_reconstruction.sh", depends-on = ["build"]}
-        # full_command = f"pixi run -e glomap execute " + command_str
-        #
-        # print('     Estimating calibration using glomap...')
-        # print(f'         log file: {log_file_path}')
-        #
-        # with open(log_file_path, 'w') as log_file:
-        #     subprocess.run(full_command, stdout=log_file, stderr=log_file, shell=True)
-        #
-        # # Use glomap calibration to rewrite the calibration file
-        # glomap_calib = os.path.join(sequence_path, 'colmap_00000', 'cameras.txt')
-        #
-        # with open(glomap_calib, 'r') as file:
-        #     lines = file.read().strip().splitlines()
-        #
-        # camera_params = lines[-1].split()
-        # camera_model = "OPENCV"
-        # fx = float(camera_params[4])
-        # fy = float(camera_params[4])
-        # cx = float(camera_params[5])
-        # cy = float(camera_params[6])
-        #
-        # k1, k2, p1, p2, k3 = 0.0, 0.0, 0.0, 0.0, 0.0
-        #
-        # self.write_calibration_yaml(camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name)
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        rgb_txt = os.path.join(sequence_path, 'rgb.txt')
+        fx, fy, cx, cy, k1, k2, p1, p2, k3 = (
+            8154.29, 8154.29, 4076.2906, 2787.575 , -0.0331103, 0.0312571, -0.00133488, 0.00277011, -0.109366)
+        
+        camera_matrix = np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1]])
+        distortion_coeffs = np.array([k1, k2, p1, p2, k3])
+        
+        fx, fy, cx, cy = resize_rgb_images(rgb_txt, sequence_path, 640, 480, camera_matrix)
+        camera_matrix = np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1]])
+        fx, fy, cx, cy = undistort_rgb_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coeffs)
+
+        self.write_calibration_yaml('OPENCV', fx, fy, cx, cy, 0.0, 0.0, 0.0, 0.0, 0.0, sequence_name)
 
     def create_groundtruth_txt(self, sequence_name):
         return

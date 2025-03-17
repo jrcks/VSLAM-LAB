@@ -1,0 +1,10 @@
+replica:
+  - 'office0'
+nuim:
+  - 'living_room_traj0_frei_png'
+scannetplusplus:
+  - '56a0ec536c'
+rgbdtum:
+  - 'rgbd_dataset_freiburg3_structure_notexture_far'
+tartanair:
+  - 'ME001'

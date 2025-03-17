@@ -1,37 +1,29 @@
-import os
-import sys
+import os, sys, yaml, re
 import urllib.request
 import zipfile
 import py7zr
 import tarfile
-import subprocess
-
-import yaml
+import subprocess 
 from PIL import Image
+from colorama import Fore, Style
 
 from path_constants import VSLAM_LAB_DIR
 
-class Experiment:
-    def __init__(self):
-        self.config_yaml = ""
-        self.folder = ""
-        self.num_runs = 1
-        self.parameters = []
-        self.module = ""
-        self.ablation_csv = None
+SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
+def check_parameter_for_relative_path(parameter_value):
+    if "VSLAM-LAB" in parameter_value:
+        if ":" in parameter_value:
+            return re.sub(r'(?<=:)[^:]*VSLAM-LAB', VSLAM_LAB_DIR, str(parameter_value))
+        return re.sub(r'^.*VSLAM-LAB', VSLAM_LAB_DIR, str(parameter_value))
+    return parameter_value
 
-def list_datasets():
-    dataset_scripts_path = os.path.join(VSLAM_LAB_DIR, 'Datasets')
-    dataset_scripts = []
-    for filename in os.listdir(dataset_scripts_path):
-        if 'dataset_' in filename and filename.endswith('.yaml'):
-            dataset_scripts.append(filename)
-
-    dataset_scripts = [item.replace('dataset_', '').replace('.yaml', '') for item in dataset_scripts]
-
-    return dataset_scripts
-
+def filter_inputs(args):
+    if not args.download and not args.run and not args.evaluate and not args.compare:
+        args.download = True
+        args.run = True
+        args.evaluate = True
+        args.compare = True
 
 def ws(n):
     white_spaces = ""
@@ -310,6 +302,13 @@ def show_time(time_s):
         return f"{(time_s / 60):.2f} minutes"
     return f"{(time_s / 3600):.2f} hours"
 
+def print_msg(script_label, msg, flag="info"):
+    if flag == "info":
+        print(f"{script_label}{msg}")
+    elif flag == "warning":
+        print(f"{script_label}{Fore.YELLOW} {msg} {Style.RESET_ALL}")
+    elif flag == "error":
+        print(f"{script_label}{Fore.RED} {msg} {Style.RESET_ALL}")
 
 if __name__ == "__main__":
 

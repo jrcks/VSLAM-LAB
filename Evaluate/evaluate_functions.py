@@ -1,44 +1,86 @@
 import subprocess
-import os
+import os, shutil
+import pandas as pd
+from tqdm import tqdm
 
-from Evaluate.evo_functions import evo_get_accuracy
-from path_constants import VSLAM_LAB_EVALUATION_FOLDER
+from Evaluate.evo_functions import evo_metric, evo_get_accuracy
+from path_constants import VSLAM_LAB_EVALUATION_FOLDER, TRAJECTORY_FILE_NAME
+from utilities import print_msg
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
-def evaluate_sequence(exp, dataset, sequence_name, ablation=False):
+def evaluate_sequence(exp, dataset, sequence_name, overwrite=False):
+    command =  "pixi run -e evo evo_config set save_traj_in_zip true"
+    subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+    METRIC = 'ate'
+    
     trajectories_path = os.path.join(exp.folder, dataset.dataset_folder, sequence_name)
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)
     groundtruth_file = os.path.join(sequence_path, 'groundtruth.txt')
-
-    # Groundtruth evaluation
     evaluation_folder = os.path.join(trajectories_path, VSLAM_LAB_EVALUATION_FOLDER)
-    pseudo_groundtruth = 0
+    accuracy_csv = os.path.join(evaluation_folder, f'{METRIC}.csv')
+
+    exp_log = pd.read_csv(exp.log_csv)
+    if overwrite:
+        if os.path.exists(evaluation_folder):
+            shutil.rmtree(evaluation_folder)        
+        exp_log.loc[exp_log["sequence_name"] == sequence_name, "EVALUATION"] = "none"
+
     os.makedirs(evaluation_folder, exist_ok=True)
 
-    print(f"\n{SCRIPT_LABEL}Evaluating '{evaluation_folder}' in {dataset.dataset_color}{sequence_name}\033[0m:")
+    evaluated_runs = []
+    for _, row in exp_log.iterrows():
+        if row["SUCCESS"] and (row["EVALUATION"] == "none") and (row["sequence_name"] == sequence_name):
+            exp_it = str(row["exp_it"]).zfill(5) 
+            evaluated_runs.append(exp_it)
 
-    print(f"\n{SCRIPT_LABEL}ATE evaluation: {groundtruth_file}")
-    command = (f"pixi run -e evo python Evaluate/evo_functions.py ate {1.0 / dataset.rgb_hz} {trajectories_path} {evaluation_folder} {groundtruth_file} {pseudo_groundtruth}")
-    subprocess.run(command, shell=True)
+    print_msg(SCRIPT_LABEL, f"Evaluating '{evaluation_folder.replace(sequence_name, f"{dataset.dataset_color}{sequence_name}\033[0m")}'")
+    if len(evaluated_runs) == 0:
+        return
+    
+    zip_files = []
+    for exp_it in tqdm(evaluated_runs):
+        trajectory_file = os.path.join(trajectories_path, f"{exp_it}{TRAJECTORY_FILE_NAME}.txt")
+        evo_metric('ate', groundtruth_file, trajectory_file, evaluation_folder, 1.0 / dataset.rgb_hz)
+        zip_files.append(os.path.join(evaluation_folder, f"{exp_it}{TRAJECTORY_FILE_NAME}.zip"))
 
-    #print(f"\n{SCRIPT_LABEL}RPE comparison: {groundtruth_file}")
-    #command = (f"pixi run -e evo python Evaluate/evo_functions.py rpe {1.0 / dataset.rgb_hz} {trajectories_path} {evaluation_folder} {groundtruth_file} {pseudo_groundtruth}")
-    #subprocess.run(command, shell=True)
+    evo_get_accuracy(zip_files, accuracy_csv)
 
-    # Pseudo evaluation
-    # if ablation:
-    #     evaluation_folder = os.path.join(trajectories_path, f"{VSLAM_LAB_EVALUATION_FOLDER}_pseudo")
-    #     pseudo_groundtruth = 1
-    #     os.makedirs(evaluation_folder, exist_ok=True)
-    #
-    #     print(f"\n{SCRIPT_LABEL}Evaluating '{evaluation_folder}' in {dataset.dataset_color}{sequence_name}\033[0m:")
-    #
-    #     print(f"\n{SCRIPT_LABEL}ATE pseudo evaluation")
-    #     command = (f"pixi run -e evo python Evaluate/evo_functions.py ate {1.0 / dataset.rgb_hz} {trajectories_path} {evaluation_folder} {groundtruth_file} {pseudo_groundtruth} {exp.parameters['ablation_param'][0]}")
-    #     subprocess.run(command, shell=True)
+    # Final Checks
+    accuracy = pd.read_csv(accuracy_csv)
+    for evaluated_run in evaluated_runs:
+        trajectory_file = f"{evaluated_run}{TRAJECTORY_FILE_NAME}.txt"
+        exists = (accuracy["traj_name"] == trajectory_file).any()
+        if exists:
+            exp_log.loc[(exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name),"EVALUATION"] = METRIC
 
-        #print(f"\n{SCRIPT_LABEL}RPE pseudo comparison")
-        #command = (f"pixi run -e evo python Evaluate/evo_functions.py rpe {1.0 / dataset.rgb_hz} {trajectories_path} {evaluation_folder} {groundtruth_file} {pseudo_groundtruth} {exp.parameters['ablation_param'][0]}")
-        #subprocess.run(command, shell=True)
+            # Find number of frames in the sequence
+            rgb_exp_txt = os.path.join(trajectories_path, f"rgb_exp.txt")
+            with open(rgb_exp_txt, "r") as file:
+                num_frames = sum(1 for _ in file)
+            accuracy.loc[accuracy["traj_name"] == trajectory_file,"num_frames"] = num_frames
+
+            # Find number of tracked frames
+            trajectory_file_txt = os.path.join(trajectories_path, trajectory_file)
+            if not os.path.exists(trajectory_file_txt):
+                exp_log.loc[(exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name),"EVALUATION"] = 'failed'
+                continue
+            with open(trajectory_file_txt, "r") as file:
+                num_tracked_frames = sum(1 for _ in file)
+            accuracy.loc[accuracy["traj_name"] == trajectory_file,"num_tracked_frames"] = num_tracked_frames    
+
+            # Find number of evaluated frames
+            trajectory_file_tum = os.path.join(trajectories_path,VSLAM_LAB_EVALUATION_FOLDER, trajectory_file.replace(".txt", ".tum"))
+            if not os.path.exists(trajectory_file_tum):
+                exp_log.loc[(exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name),"EVALUATION"] = 'failed'
+                continue
+            with open(trajectory_file_tum, "r") as file:
+                num_evaluated_frames = sum(1 for _ in file) - 1
+            accuracy.loc[accuracy["traj_name"] == trajectory_file,"num_evaluated_frames"] = num_evaluated_frames    
+        else:
+            exp_log.loc[(exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name),"EVALUATION"] = 'failed'
+
+    exp_log.to_csv(exp.log_csv, index=False)
+    accuracy.to_csv(accuracy_csv, index=False)
 

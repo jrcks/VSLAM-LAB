@@ -7,10 +7,12 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
         baseline_name = 'droidslam'
         baseline_folder = 'DROID-SLAM'
         default_parameters = {'verbose': 1, 'upsample': 0, 'mode': 'mono'}
+        
 
         # Initialize the baseline
         super().__init__(baseline_name, baseline_folder, default_parameters)
-
+        self.color = 'green'
+        
     def build_execute_command(self, exp_it, exp, dataset, sequence_name):
         vslamlab_command = super().build_execute_command_python(exp_it, exp, dataset, sequence_name)
 
@@ -30,4 +32,4 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
 
     def info_print(self):
         super().info_print()
-        print(f"Default executable: Baselines/DROID-SLAM/droidslam_vslamlab.py")
+        print(f"Default executable: Baselines/DROID-SLAM/droidslam_vslamlab_mono.py")
