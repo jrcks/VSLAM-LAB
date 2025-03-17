@@ -1,12 +1,14 @@
-# openloris:
+#openloris:
 #   - cafe1-1
   # - cafe1-2
-  # - market1-1
+  #- market1-1
   # - market1-2
   # - market1-3
+# tartanair:
+#   - 'ME001'
 
-madmax:
-  - A-0
+# madmax:
+#   - A-0
 
 #hilti2022:
   #- exp04_construction_upper_level
@@ -35,13 +37,13 @@ madmax:
 #  - 'room0'
 #  - 'room1'
 #  - 'room2'
-#rgbdtum:
-#  - 'rgbd_dataset_freiburg3_structure_texture_far'
+rgbdtum:
+  - 'rgbd_dataset_freiburg3_structure_texture_far'
   #- 'rgbd_dataset_freiburg1_xyz'
 #  - 'rgbd_dataset_freiburg3_long_office_household'
 
-#eth:
-#  - 'table_3'
+eth:
+  - 'table_3'
 #kitti:
 #  - '04'
 #euroc:
