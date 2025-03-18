@@ -1,10 +1,11 @@
-import os, yaml
+import os, yaml, shutil
 import pandas as pd
 import numpy as np
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
 from utilities import downloadFile, decompressFile
 from Datasets.dataset_utilities import undistort_rgb_rad_tan, undistort_depth_rad_tan
+from path_constants import VSLAMLAB_BENCHMARK_WEIGHT
 
 class RGBDTUM_dataset(DatasetVSLAMLab):
     def __init__(self, benchmark_path):
@@ -110,7 +111,8 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
             camera_matrix = np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1]])
             distortion_coeffs = np.array([k1, k2, p1, p2, k3])
             fx, fy, cx, cy = undistort_rgb_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coeffs)
-            undistort_depth_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coeffs)
+            if VSLAMLAB_BENCHMARK_WEIGHT != 'light':
+                undistort_depth_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coeffs)
 
         self.write_calibration_yaml('PINHOLE', fx, fy, cx, cy, 0.0, 0.0, 0.0, 0.0, 0.0, sequence_name)
 
@@ -138,4 +140,9 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
 
     def remove_unused_files(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
-        os.remove(os.path.join(sequence_path, 'accelerometer.txt'))
+        if VSLAMLAB_BENCHMARK_WEIGHT == 'light':
+            shutil.rmtree(os.path.join(sequence_path, 'depth'))
+            os.remove(os.path.join(sequence_path, 'depth.txt'))
+            os.remove(os.path.join(sequence_path, 'accelerometer.txt'))
+            os.remove(os.path.join(sequence_path, 'rgb_original.txt'))
+            os.remove(os.path.join(self.dataset_path, '*.tgz*'))
