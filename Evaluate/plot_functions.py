@@ -245,7 +245,7 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
             whisker_min_seq = min(whisker_min_seq, min(whisker_values))
             whisker_max_seq = max(whisker_max_seq, max(whisker_values))
 
-        width = 0.1 * (whisker_max_seq - whisker_min_seq)
+        width = max(0.1 * (whisker_max_seq - whisker_min_seq), 1e-6)
         whisker_max[sequence_name] = whisker_max_seq + width
         whisker_min[sequence_name] = whisker_min_seq - width
 
