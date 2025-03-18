@@ -148,6 +148,7 @@ We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6
 
 | Baselines                                                                   | System |     Sensors      |                                   License                                   |    Label     |
 |:----------------------------------------------------------------------------|:------:|:----------------:|:---------------------------------------------------------------------------:|:------------:|
+| [**MASt3R-SLAM**](https://github.com/rmurai0610/MASt3R-SLAM)                | VSLAM  |       mono       |    [CC BY-NC-SA 4.0](https://github.com/rmurai0610/MASt3R-SLAM/blob/main/LICENSE.md)    | `mast3rslam`  |
 | [**DROID-SLAM**](https://github.com/princeton-vl/DROID-SLAM)                | VSLAM  |       mono       |    [BSD-3](https://github.com/princeton-vl/DROID-SLAM/blob/main/LICENSE)    | `droidslam`  |
 | [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)                       |  SfM   |       mono       |         [BSD-3](https://github.com/colmap/glomap/blob/main/LICENSE)         |   `glomap`   |
 | [**MonoGS**](https://github.com/muskie82/MonoGS)                            | VSLAM  | mono/RGBD/Stereo |     [License](https://github.com/muskie82/MonoGS?tab=License-1-ov-file)     |   `monogs`   | 
