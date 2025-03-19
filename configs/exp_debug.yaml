@@ -1,14 +1,14 @@
 exp_test_rgbdtum_droidslam:
-  Config: config_rgbdtum.yaml
+  Config: config_easy.yaml
   NumRuns: 1
   Parameters: {verbose: 0}
   Module: droidslam
 
-# exp_test_rgbdtum_orbslam2:
-#   Config: config_rgbdtum.yaml
-#   NumRuns: 1
-#   Parameters: {verbose: 0}
-#   Module: orbslam2
+exp_test_rgbdtum_orbslam2:
+  Config: config_easy.yaml
+  NumRuns: 1
+  Parameters: {verbose: 0}
+  Module: orbslam2
 
 # exp_config_easy_det_dpvo:
 #   Config: config_easy.yaml

@@ -7,8 +7,7 @@ import yaml
 from Evaluate import plot_functions
 from Datasets.get_dataset import get_dataset
 from path_constants import VSLAM_LAB_EVALUATION_FOLDER
-from utilities import check_yaml_file_integrity
-from utilities import find_common_sequences
+from utilities import check_yaml_file_integrity, find_common_sequences, read_csv
 
 SCRIPT_LABEL = "[compare_functions.py] "
 VSLAM_LAB_ACCURACY_CSV = 'ate.csv'
@@ -126,7 +125,6 @@ def get_accuracies(experiments, dataset_sequences):
             for exp_name, exp in experiments.items():
                 accuracy_csv_file = os.path.join(exp.folder, dataset_name.upper(), sequence_name,
                                                  os.path.join(VSLAM_LAB_EVALUATION_FOLDER, VSLAM_LAB_ACCURACY_CSV))
-                accuracy = pd.read_csv(accuracy_csv_file)
-                accuracies[dataset_name][sequence_name][exp_name] = accuracy
+                accuracies[dataset_name][sequence_name][exp_name] = read_csv(accuracy_csv_file)
 
     return accuracies

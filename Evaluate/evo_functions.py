@@ -8,88 +8,74 @@ import subprocess
 import zipfile
 import pandas as pd
 import numpy as np
-from utilities import find_files_with_string
-from path_constants import ABLATION_PARAMETERS_CSV
+from utilities import find_files_with_string, read_trajectory_txt, save_trajectory_txt
+from path_constants import ABLATION_PARAMETERS_CSV, TRAJECTORY_FILE_NAME
 
-def evo_metric(metric, groundtruth_file, trajectory_file, evaluation_folder, max_time_difference=0.1, index="none"):
-    accuracy_csv = os.path.join(evaluation_folder, f"{metric}.csv")
-    traj_file_name = os.path.basename(trajectory_file).replace(".txt", "")
-
-    trajectory = pd.read_csv(trajectory_file, delimiter=' ', header=None)
-    trajectory_sorted = trajectory.sort_values(by=trajectory.columns[0])
-
-    #last_column = trajectory_sorted.iloc[:, -1]
-    #trajectory_sorted = trajectory_sorted.iloc[:, :-1]
-    #trajectory_sorted.insert(4, 'last_column', last_column)
-    if index != "none":
-        traj_file_name = traj_file_name.replace("KeyFrameTrajectory", f"{index:02d}_KeyFrameTrajectory")
-        trajectory_file = os.path.join(evaluation_folder, f"{traj_file_name}.txt")
-
-    trajectory_sorted.to_csv(trajectory_file, header=None, index=False, sep=' ', lineterminator='\n')
-
-    # Check if evaluation already exists
-    if os.path.exists(accuracy_csv):
-        accuracy_file = pd.read_csv(accuracy_csv)
-        if os.path.basename(trajectory_file) in accuracy_file['traj_name'].values:
-            return
-
+def evo_metric(metric, groundtruth_txt, trajectory_txt, evaluation_folder, max_time_difference=0.1):
+    # Paths
+    traj_file_name = os.path.basename(trajectory_txt).replace(".txt", "")
     traj_zip = os.path.join(evaluation_folder, f"{traj_file_name}.zip")
     traj_tum = os.path.join(evaluation_folder, f"{traj_file_name}.tum")
-    gt_tum = traj_tum.replace("KeyFrameTrajectory", "gt")
+    gt_tum = traj_tum.replace(TRAJECTORY_FILE_NAME, "gt")
 
-    if os.path.exists(traj_zip):
-        return
+    # Read trajectory.txt
+    trajectory = read_trajectory_txt(trajectory_txt)
+    if trajectory is None:
+        return [False, f"Trajectory .txt is empty: {trajectory_txt}"]
+    
+    # Sort trajectory by timestamp
+    trajectory_sorted = trajectory.sort_values(by=trajectory.columns[0])
+    if not trajectory_sorted.equals(trajectory):
+        save_trajectory_txt(trajectory_sorted, trajectory_txt)
 
     # Evaluate
     if metric == 'ate':
-        command = (f"evo_ape tum {groundtruth_file} {trajectory_file} -va -as "
+        command = (f"evo_ape tum {groundtruth_txt} {trajectory_txt} -va -as "
                    f"--t_max_diff {max_time_difference} --save_results {traj_zip}")
     if metric == 'rpe':
-        command = f"evo_rpe tum {groundtruth_file} {trajectory_file} --all_pairs --delta 5 -va -as --save_results {traj_zip}"
+        command = f"evo_rpe tum {groundtruth_txt} {trajectory_txt} --all_pairs --delta 5 -va -as --save_results {traj_zip}"
 
-    subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, preexec_fn=os.setsid)
+    _, _ = process.communicate()
 
     if not os.path.exists(traj_zip):
-        return
+        return [False, f"Zip file not created: {traj_zip}"]
 
     # Write aligned trajectory
-    if os.path.exists(traj_tum):
-        return
-
     with zipfile.ZipFile(traj_zip, 'r') as zip_ref:
         for file_name in zip_ref.namelist():
-            if file_name.endswith(trajectory_file + '.tum'):
+            if file_name.endswith(trajectory_txt + '.tum'):
                 with zip_ref.open(file_name) as source_file:
-                    destination_file_path = os.path.join(evaluation_folder,
-                                                         os.path.basename(file_name).replace(".txt", ""))
-                    with open(destination_file_path, 'wb') as target_file:
+                    aligned_trajectory_txt = os.path.join(evaluation_folder,
+                        os.path.basename(file_name).replace(".txt", ""))
+                    with open(aligned_trajectory_txt, 'wb') as target_file:
                         target_file.write(source_file.read())
                 break
 
-    df = pd.read_csv(destination_file_path, delimiter=' ', header=None)
-    df.columns = ['ts', 'tx', 'ty', 'tz', 'qx', 'qy', 'qz', 'qw']
-    df = df.sort_values(by='ts')
-    #df.to_csv(destination_file_path, header=None, index=False, sep=' ', lineterminator='\n')
-    df.to_csv(destination_file_path, index=False, sep=' ', lineterminator='\n')
+    aligned_trajectory = read_trajectory_txt(aligned_trajectory_txt)
+    if aligned_trajectory is None:
+        return [False, f"Aligned trajectory file is empty: {aligned_trajectory_txt}"]
+    aligned_trajectory.columns = ['ts', 'tx', 'ty', 'tz', 'qx', 'qy', 'qz', 'qw']
+    aligned_trajectory = aligned_trajectory.sort_values(by='ts')
+    save_trajectory_txt(aligned_trajectory_txt, aligned_trajectory, header=True)
 
     # Write aligned gt
-    if os.path.exists(gt_tum):
-        return
-
     with zipfile.ZipFile(traj_zip, 'r') as zip_ref:
         for file_name in zip_ref.namelist():
-            if file_name.endswith(groundtruth_file + '.tum'):
+            if file_name.endswith(groundtruth_txt + '.tum'):
                 with zip_ref.open(file_name) as source_file:
                     with open(gt_tum, 'wb') as target_file:
                         target_file.write(source_file.read())
                 break
+    
+    aligned_gt = read_trajectory_txt(gt_tum)
+    if aligned_gt is None:
+        return [False, f"Aligned gt file is empty: {gt_tum}"]
+    aligned_gt.columns = ['ts', 'tx', 'ty', 'tz', 'qx', 'qy', 'qz', 'qw']
+    aligned_gt = aligned_gt.sort_values(by='ts')
+    save_trajectory_txt(gt_tum, aligned_gt, header=True)
 
-    df = pd.read_csv(gt_tum, delimiter=' ', header=None)
-    df.columns = ['ts', 'tx', 'ty', 'tz', 'qx', 'qy', 'qz', 'qw']
-    df = df.sort_values(by='ts')
-    #df.to_csv(gt_tum, header=None, index=False, sep=' ', lineterminator='\n')
-    df.to_csv(gt_tum, index=False, sep=' ', lineterminator='\n')
-
+    return [True, "Success"]
 
 def evo_get_accuracy(zip_files, accuracy_csv):
     ZIP_CHUNK_SIZE = 500

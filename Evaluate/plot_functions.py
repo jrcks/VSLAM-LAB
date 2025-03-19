@@ -93,12 +93,17 @@ def plot_trajectories(dataset_sequences, exp_names,
     for i_dataset, (dataset_name, sequence_names) in enumerate(dataset_sequences.items()):
         for i_sequence, sequence_name in enumerate(sequence_names):
             #x_max , y_max = 0, 0
+            aligment_with_gt = False
             for i_exp, exp_name in enumerate(exp_names):
                 vslam_lab_evaluation_folder_seq = os.path.join(experiments[exp_name].folder, dataset_name.upper(),
                                                                sequence_name, VSLAM_LAB_EVALUATION_FOLDER)
 
-                if i_exp == 0:
-                    idx = accuracies[dataset_name][sequence_name][exp_name]['rmse'].idxmin()
+                if accuracies[dataset_name][sequence_name][exp_name].empty:
+                    continue
+
+                if not aligment_with_gt:                   
+                    accu = accuracies[dataset_name][sequence_name][exp_name]['rmse'] / accuracies[dataset_name][sequence_name][exp_name]['num_tracked_frames']
+                    idx = accu.idxmin()
                     gt_file = os.path.join(vslam_lab_evaluation_folder_seq, f'{idx:05d}_gt.tum')
                     there_is_gt = False
                     if os.path.exists(gt_file):
@@ -118,14 +123,11 @@ def plot_trajectories(dataset_sequences, exp_names,
                         y_shift = 0
                         x_max = 1
                         y_max = 1
-                    
+                    aligment_with_gt = True
+
                 search_pattern = os.path.join(vslam_lab_evaluation_folder_seq, '*_KeyFrameTrajectory.tum*')
                 files = glob.glob(search_pattern)
-                if there_is_gt:
-                    idx = accuracies[dataset_name][sequence_name][exp_name]['rmse'].idxmin()
-                else:
-                    idx = 0
-
+        
                 aligned_traj = pd.read_csv(files[idx], delimiter=' ')
                 pca_df = pd.DataFrame(aligned_traj, columns=['tx', 'ty', 'tz'])
                 if len(files) == 0:
@@ -139,6 +141,7 @@ def plot_trajectories(dataset_sequences, exp_names,
                 baseline = get_baseline(experiments[exp_name].module)
                 axs[i_traj].plot(traj_transformed[:, 0]-x_shift, traj_transformed[:, 1]-y_shift,
                                     label=exp_name, marker='.', linestyle='-', color=baseline.color)
+
             x_ticks = [round(x_max, 1)]
             y_ticks = [0,round(y_max, 1)]
             axs[i_traj].set_xticks(x_ticks)
@@ -204,6 +207,7 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
             splts[sequence_name]['id']= num_sequences
             splts[sequence_name]['dataset_name']= dataset_name
             splts[sequence_name]['nickname']= dataset.get_sequence_nickname(sequence_name)
+            splts[sequence_name]['success']= True
             num_sequences += 1
 
     exp_names = list(experiments.keys())
@@ -231,11 +235,15 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
     for sequence_name, splt in splts.items():
         whisker_min_seq, whisker_max_seq = float('inf'), float('-inf')
         for i_exp, exp_name in enumerate(exp_names):
+
+            values_seq_exp = values[splt['dataset_name']][sequence_name][exp_name]
+            if values_seq_exp.empty:
+                continue
             boxprops = medianprops = whiskerprops = capprops = dict(color=colors[exp_name])
             flierprops = dict(marker='o', color=colors[exp_name], alpha=1.0)
             positions = [i_exp * WIDTH_PER_SERIES]   
             boxplot_accuracy = axs[splt['id']].boxplot(
-                values[splt['dataset_name']][sequence_name][exp_name][metric_name],
+                values_seq_exp[metric_name],
                 positions=positions, widths=WIDTH_PER_SERIES,
                 patch_artist=False,
                 boxprops=boxprops, medianprops=medianprops,
@@ -246,8 +254,13 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
             whisker_max_seq = max(whisker_max_seq, max(whisker_values))
 
         width = max(0.1 * (whisker_max_seq - whisker_min_seq), 1e-6)
-        whisker_max[sequence_name] = whisker_max_seq + width
-        whisker_min[sequence_name] = whisker_min_seq - width
+        if np.isinf(whisker_max_seq) or np.isinf(whisker_min_seq):
+            splts[sequence_name]['success']= False
+            whisker_max[sequence_name] = np.nan
+            whisker_min[sequence_name] = np.nan
+        else:
+            whisker_max[sequence_name] = whisker_max_seq + width
+            whisker_min[sequence_name] = whisker_min_seq - width
 
     # Adjust plot properties for paper
     max_value, min_value = max(whisker_max.values()), min(whisker_min.values())
@@ -257,6 +270,12 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
         whisker_min = {key: 0 for key in whisker_min}
 
     for sequence_name, splt in splts.items():
+        if splt['success'] == False:
+            axs[splt['id']].grid(True, which='both', linestyle='--', linewidth=0.5, alpha=0.7)
+            axs[splt['id']].set_xticklabels([])
+            axs[splt['id']].set_yticklabels([])
+            continue
+
         whisker_max_seq = whisker_max[sequence_name]
         whisker_min_seq = whisker_min[sequence_name]
        
@@ -356,18 +375,20 @@ def radar_seq(values, dataset_sequences, exp_names, dataset_nicknames, metric_na
             values_sequence[sequence_name] = pd.Series([])
 
             for exp_name in exp_names:
-                medians[dataset_name][sequence_name][exp_name] = np.median(
-                    values[dataset_name][sequence_name][exp_name]['rmse'])
+                values_dataset_sequence_exp = values[dataset_name][sequence_name][exp_name].copy()
+                if values_dataset_sequence_exp.empty:
+                    values_dataset_sequence_exp['rmse'] = pd.notna
+
+                medians[dataset_name][sequence_name][exp_name] = np.median(values_dataset_sequence_exp['rmse'])    
+                
                 if values_sequence[sequence_name].empty:
-                    values_sequence[sequence_name] = values[dataset_name][sequence_name][exp_name][
-                        'rmse']
+                    values_sequence[sequence_name] = values_dataset_sequence_exp['rmse']
                 else:
                     values_sequence[sequence_name] = pd.concat([values_sequence[sequence_name],
-                                                                values[dataset_name][sequence_name][exp_name][
-                                                                    'rmse']],
+                                                                values_dataset_sequence_exp['rmse']],
                                                                ignore_index=True)
 
-            median_sequence[sequence_name] = np.median(values_sequence[sequence_name])
+            median_sequence[sequence_name] = np.min(values_sequence[sequence_name])
 
     num_vars = len(all_sequence_names)
     iExp = 0
@@ -565,16 +586,16 @@ def create_and_show_canvas(dataset_sequences, VSLAMLAB_BENCHMARK, comparison_pat
     plt.axis('off')  # Hide the axis
     plt.show(block=False)
 
-def num_tracked_frames(values, dataset_sequences, figures_path, experiments, shared_scale = False):
-   # Get number of sequences
+def num_tracked_frames(values, dataset_sequences, figures_path, experiments, shared_scale=False):
+    # Get number of sequences
     num_sequences = 0
     splts = {}
     for dataset_name, sequence_names in dataset_sequences.items():
         dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
         for sequence_name in sequence_names:
-            splts[sequence_name]= {}
-            splts[sequence_name]['id']= num_sequences
-            splts[sequence_name]['dataset_name']= dataset_name
+            splts[sequence_name] = {}
+            splts[sequence_name]['id'] = num_sequences
+            splts[sequence_name]['dataset_name'] = dataset_name
             splts[sequence_name]['nickname']= dataset.get_sequence_nickname(sequence_name)
             num_sequences += 1
 
@@ -601,15 +622,23 @@ def num_tracked_frames(values, dataset_sequences, figures_path, experiments, sha
     max_rgb = {}      
     for sequence_name, splt in splts.items():
         for i_exp, exp_name in enumerate(exp_names):
-            num_frames = values[splt['dataset_name']][sequence_name][exp_name]['num_frames']
-            max_rgb[sequence_name] = max(num_frames)
-            break
+            values_seq_exp = values[splt['dataset_name']][sequence_name][exp_name]
+            if values_seq_exp.empty:
+                max_rgb[sequence_name] = 1
+            else:
+                num_frames = values[splt['dataset_name']][sequence_name][exp_name]['num_frames']
+                max_rgb[sequence_name] = max(num_frames)
 
     for sequence_name, splt in splts.items():
         for i_exp, exp_name in enumerate(exp_names):
-            num_frames = values[splt['dataset_name']][sequence_name][exp_name]['num_frames'] 
-            num_tracked_frames = values[splt['dataset_name']][sequence_name][exp_name]['num_tracked_frames'] 
-            num_evaluated_frames = values[splt['dataset_name']][sequence_name][exp_name]['num_evaluated_frames']          
+            values_seq_exp = values[splt['dataset_name']][sequence_name][exp_name]    
+            if values_seq_exp.empty:
+                continue
+
+            num_frames = values_seq_exp['num_frames'] 
+            num_tracked_frames = values_seq_exp['num_tracked_frames'] 
+            num_evaluated_frames = values_seq_exp['num_evaluated_frames']   
+         
             if shared_scale:
                 num_frames /= max_rgb[sequence_name]
                 num_tracked_frames /= max_rgb[sequence_name]

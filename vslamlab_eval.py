@@ -1,12 +1,11 @@
 import os, shutil, yaml, argparse
 
 from Evaluate import compare_functions
-from utilities import filter_inputs, print_msg
+from utilities import filter_inputs, print_msg, read_csv
 from Datasets.get_dataset import get_dataset
 from Evaluate.evaluate_functions import evaluate_sequence
-from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION
-from path_constants import COMPARISONS_YAML_DEFAULT, EXP_YAML_DEFAULT
 from vslamlab_utilities import load_experiments, check_config_integrity
+from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, COMPARISONS_YAML_DEFAULT, EXP_YAML_DEFAULT
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -52,6 +51,9 @@ def compare(experiments, exp_yaml):
 def evaluate(experiments, overwrite):
     print_msg(f"\n{SCRIPT_LABEL}", f"Evaluating (in {VSLAMLAB_EVALUATION}) ...")
     for [_, exp] in experiments.items():
+        exp_log = read_csv(exp.log_csv)
+        if(not exp_log['EVALUATION'].str.contains('none').any()) and not overwrite:
+            continue
         with open(exp.config_yaml, 'r') as file:
             config_file_data = yaml.safe_load(file)
             for dataset_name, sequence_names in config_file_data.items():

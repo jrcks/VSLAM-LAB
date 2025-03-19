@@ -6,6 +6,7 @@ import tarfile
 import subprocess 
 from PIL import Image
 from colorama import Fore, Style
+import pandas as pd
 
 from path_constants import VSLAM_LAB_DIR
 
@@ -302,13 +303,39 @@ def show_time(time_s):
         return f"{(time_s / 60):.2f} minutes"
     return f"{(time_s / 3600):.2f} hours"
 
-def print_msg(script_label, msg, flag="info"):
+def format_msg(script_label, msg, flag="info"):
     if flag == "info":
-        print(f"{script_label}{msg}")
+        return f"{script_label}{msg}"
     elif flag == "warning":
-        print(f"{script_label}{Fore.YELLOW} {msg} {Style.RESET_ALL}")
+        return f"{script_label}{Fore.YELLOW} {msg} {Style.RESET_ALL}"
     elif flag == "error":
-        print(f"{script_label}{Fore.RED} {msg} {Style.RESET_ALL}")
+        return f"{script_label}{Fore.RED} {msg} {Style.RESET_ALL}"
+
+def print_msg(script_label, msg, flag="info"):
+    print(format_msg(script_label, msg, flag))
+    
+def read_trajectory_txt(txt_file, delimiter=' ', header=None):
+    try:
+        trajectory = pd.read_csv(txt_file, delimiter=delimiter, header=header)
+        if trajectory.empty:
+            trajectory = None
+    except pd.errors.EmptyDataError:
+        trajectory = None
+    return trajectory
+
+def save_trajectory_txt(trajectory_txt, trajectory, header=None, index=False, sep=' ', lineterminator='\n'):
+    trajectory.to_csv(trajectory_txt, header=header, index=index, sep=sep, lineterminator=lineterminator)
+
+def read_csv(csv_file):
+    if not os.path.exists(csv_file):
+        return pd.DataFrame()
+    try:
+        csv_data = pd.read_csv(csv_file)
+        if csv_data.empty:
+            return pd.DataFrame()
+    except pd.errors.EmptyDataError:
+        return pd.DataFrame()
+    return csv_data
 
 if __name__ == "__main__":
 
@@ -319,3 +346,5 @@ if __name__ == "__main__":
             deactivate_env(sys.argv[2])
         if function_name == "activate_env":
             activate_env(sys.argv[2])
+
+
