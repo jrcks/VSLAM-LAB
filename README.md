@@ -1,10 +1,16 @@
 <p align="center">
 
 <h1 align="center">
+  <span style="font-size: 2em; font-weight: bold;">VSLAM-LAB</span>
+  <img src="docs/logo.png" alt="VSLAM-LAB Logo" width="75" 
+       style="vertical-align: middle; position: relative; top: -25px; margin-left: 10px;">
+</h1>
+
+<!-- <h1 align="center">
   <img src="docs/logo.png" alt="VSLAM-LAB Logo" width="42" 
        style="vertical-align: middle; position: relative; top: -10px; margin-right: 10px;">
   <span style="font-size: 2em; font-weight: bold;">VSLAM-LAB</span>
-</p>
+</p> -->
 
   <h3 align="center"> A Comprehensive Framework for Visual SLAM Baselines and Datasets</h3> 
   </h1>
