@@ -17,8 +17,8 @@ class MAST3RSLAM_baseline(BaselineVSLAMLab):
         return vslamlab_command
 
     def is_installed(self):
-        return True
+        return os.path.isfile(os.path.join(self.baseline_path, 'mast3r_slam_backends.cpython-311-x86_64-linux-gnu.so'))
 
     def info_print(self):
         super().info_print()
-        print(f"Default executable: Baselines/DROID-SLAM/droidslam_vslamlab_mono.py")
+        print(f"Default executable: Baselines/MASt3R-SLAM/vslamlab_mast3rslam_mono.py")
