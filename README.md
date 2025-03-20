@@ -2,7 +2,7 @@
 
 <h1 align="center">
   <span style="font-size: 2em; font-weight: bold;">VSLAM-LAB</span>
-  <img src="docs/logo.png" alt="VSLAM-LAB Logo" width="50" 
+  <img src="docs/logo.png" alt="VSLAM-LAB Logo" width="10" 
        style="vertical-align: middle; position: relative; top: -15px; margin-left: 10px;">
 </h1>
 
