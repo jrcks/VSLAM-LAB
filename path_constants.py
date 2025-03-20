@@ -21,8 +21,14 @@ TRAJECTORY_FILE_NAME = 'KeyFrameTrajectory'
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 VSLAMLAB_BENCHMARK_WEIGHT = 'light'
-VSLAMLAB_VERBOSITY = 'minimal'
+VSLAMLAB_VERBOSITY = 'LOW'
 
+VerbosityManager = {
+    "HIGH": 3,
+    "MEDIUM": 2,
+    "LOW": 1,
+    "NONE": 0
+}
 
 def set_VSLAMLAB_path(new_path, file_path, target_line_start):
     new_line = f"{target_line_start} \"{new_path}\""

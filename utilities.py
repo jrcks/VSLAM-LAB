@@ -8,7 +8,7 @@ from PIL import Image
 from colorama import Fore, Style
 import pandas as pd
 
-from path_constants import VSLAM_LAB_DIR
+from path_constants import VSLAM_LAB_DIR, VSLAMLAB_VERBOSITY, VerbosityManager
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -20,8 +20,7 @@ def check_parameter_for_relative_path(parameter_value):
     return parameter_value
 
 def filter_inputs(args):
-    if not args.download and not args.run and not args.evaluate and not args.compare:
-        args.download = True
+    if  not args.run and not args.evaluate and not args.compare:
         args.run = True
         args.evaluate = True
         args.compare = True
@@ -311,8 +310,9 @@ def format_msg(script_label, msg, flag="info"):
     elif flag == "error":
         return f"{script_label}{Fore.RED} {msg} {Style.RESET_ALL}"
 
-def print_msg(script_label, msg, flag="info"):
-    print(format_msg(script_label, msg, flag))
+def print_msg(script_label, msg, flag="info", verb='NONE'):
+    if VerbosityManager[verb] <= VerbosityManager[VSLAMLAB_VERBOSITY]:
+        print(format_msg(script_label, msg, flag))
     
 def read_trajectory_txt(txt_file, delimiter=' ', header=None):
     try:

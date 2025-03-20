@@ -45,7 +45,7 @@ class DatasetVSLAMLab:
         # Check if sequence is already available
         sequence_availability = self.check_sequence_availability(sequence_name)
         if sequence_availability == "available":
-            print(f"{SCRIPT_LABEL}Sequence {self.dataset_color}{sequence_name}:\033[92m downloaded\033[0m")
+            #print(f"{SCRIPT_LABEL}Sequence {self.dataset_color}{sequence_name}:\033[92m downloaded\033[0m")
             return
         if sequence_availability == "corrupted":
             print(f"{ws(8)}Some files in sequence {sequence_name} are corrupted.")
@@ -87,11 +87,8 @@ class DatasetVSLAMLab:
     def remove_unused_files(self, sequence_name):
         return
 
-    def get_download_issues(self, sequence_name):
+    def get_download_issues(self):
         return {}
-
-    def solve_download_issue(self, download_issue):
-        return
 
     def get_calibration_yaml(self, camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
