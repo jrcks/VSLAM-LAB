@@ -123,22 +123,15 @@ class REPLICA_dataset(DatasetVSLAMLab):
     def remove_unused_files(self, sequence_name):
         return
 
-    def get_download_issues(self, sequence_name):
-        issues = {'Complete dataset': f"The \'{self.dataset_name}\' dataset does not permit downloading individual sequences."}
-
+    def get_download_issues(self):
+        issues = []
+        issue = {}
+        issue['name'] = 'Complete dataset'
+        issue['description'] = f"The \'{self.dataset_name}\' dataset does not permit downloading individual sequences."
+        issue['solution'] = 'Downloading the full dataset (12 GB)'
+        issue['mode'] = '\033[92mautomatic download\033[0m'
+        issues.append(issue)
         return issues
-
-    def solve_download_issue(self, download_issue):
-        if download_issue[0] == 'Complete dataset':
-            print(f"{ws(4)}[{self.dataset_name}][{download_issue[0]}]: {download_issue[1]} ")
-            message = f"{ws(8)}Would you like to continue downloading the full dataset (12 GB) (Y/n): "
-            try:
-                user_input = inputimeout(prompt=message, timeout=10).strip().upper()
-            except TimeoutOccurred:
-                user_input = 'Y'
-                print(f"{ws(8)}No input detected. Defaulting to 'Y'.")
-            if user_input != 'Y':
-                exit()
 
     def download_process(self, _):
         for sequence_name in self.sequence_names:
