@@ -58,8 +58,11 @@ def run(experiments, exp_yaml, ablation=False):
     num_executed_runs = 0
     duration_time_total = 0
 
-    all_experiments_completed = False
-    while not all_experiments_completed:
+    all_experiments_completed = {exp_name: False for exp_name in experiments}
+    while True:
+        if all(all_experiments_completed.values()):
+            break
+
         remaining_iterations = 0
         for [exp_name, exp] in experiments.items():
             exp_log = pd.read_csv(exp.log_csv)
@@ -93,7 +96,11 @@ def run(experiments, exp_yaml, ablation=False):
             exp_log.loc[first_not_finished_experiment, "TIME"] = duration_time
             exp_log.to_csv(exp.log_csv, index=False)
                 
-        all_experiments_completed = exp_log['STATUS'].eq("completed").all()
+            all_experiments_completed[exp_name] = exp_log['STATUS'].eq("completed").all()
+
+        if all_experiments_completed:
+            print(exp_log['STATUS'])
+
         if(duration_time_total > 1):
             print(f"\n{SCRIPT_LABEL}: Experiment report: {exp_yaml}")
             print(f"{ws(4)}\033[93mNumber of executed iterations: {num_executed_runs} / {num_executed_runs + remaining_iterations} \033[0m")
