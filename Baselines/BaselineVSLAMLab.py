@@ -102,7 +102,7 @@ class BaselineVSLAMLab:
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 break  
 
-    def execute(self, command, exp_it, exp_folder, timeout_seconds=1*60*60):
+    def execute(self, command, exp_it, exp_folder, timeout_seconds=1*60*10):
         log_file_path = os.path.join(exp_folder, "system_output_" + str(exp_it).zfill(5) + ".txt")
         comments = ""
         comment_queue = queue.Queue()

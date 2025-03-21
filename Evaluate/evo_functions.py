@@ -25,8 +25,9 @@ def evo_metric(metric, groundtruth_txt, trajectory_txt, evaluation_folder, max_t
     
     # Sort trajectory by timestamp
     trajectory_sorted = trajectory.sort_values(by=trajectory.columns[0])
+    
     if not trajectory_sorted.equals(trajectory):
-        save_trajectory_txt(trajectory_sorted, trajectory_txt)
+        save_trajectory_txt(trajectory_txt, trajectory_sorted)
 
     # Evaluate
     if metric == 'ate':

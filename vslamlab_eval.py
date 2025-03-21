@@ -27,7 +27,7 @@ def main():
     args = parser.parse_args()
 
     # Load experiment info
-    experiments, _ = check_experiments(args.exp_yaml, overwrite=False)
+    experiments = check_experiments(args.exp_yaml, overwrite=False)
 
     # Process experiments
     filter_inputs(args)
