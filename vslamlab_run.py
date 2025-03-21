@@ -98,9 +98,6 @@ def run(experiments, exp_yaml, ablation=False):
                 
             all_experiments_completed[exp_name] = exp_log['STATUS'].eq("completed").all()
 
-        if all_experiments_completed:
-            print(exp_log['STATUS'])
-
         if(duration_time_total > 1):
             print(f"\n{SCRIPT_LABEL}: Experiment report: {exp_yaml}")
             print(f"{ws(4)}\033[93mNumber of executed iterations: {num_executed_runs} / {num_executed_runs + remaining_iterations} \033[0m")
