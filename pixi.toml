@@ -6,8 +6,9 @@ channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
 [tasks]
-vslamlab = {cmd = "pixi run -e vslamlab python vslamlab_run.py"}
-evaluate = {cmd = "pixi run -e evo python vslamlab_eval.py"}
+vslamlab = {cmd = "pixi run -e vslamlab python vslamlab_run.py $ARGUMENT $OVEWRITE && pixi run -e evo python vslamlab_eval.py $ARGUMENT $OVEWRITE", env = { ARGUMENT = "--exp_yaml exp_debug.yaml"}}
+evaluate = {cmd = "pixi run -e evo python vslamlab_eval.py $ARGUMENT", env = { ARGUMENT = "--exp_yaml exp_debug.yaml"}}
+
 set-benchmark-path  = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_BENCHMARK_path"}
 set-evaluation-path = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_EVALUATION_path"}
 demo = {cmd = "pixi run --frozen -e vslamlab python demo.py"}
@@ -149,9 +150,10 @@ cuda = "12.0"
 [feature.dpvo.tasks]
 git-clone = {cmd = "git-clone.sh VSLAM-LAB DPVO Baselines"}
 download-models-and-data = {cmd = "./download_models_and_data.sh", cwd = "Baselines/DPVO"}
+get_eigen = {cmd = "wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip && unzip eigen-3.4.0.zip -d thirdparty", cwd = "Baselines/DPVO"}
 build_pangolin = {cmd = "mkdir -p build && cd build && cmake .. && make -j12", cwd = "Baselines/DPVO/Pangolin"}
 install_DPViewer = {cmd = "pip install .", cwd = "Baselines/DPVO/DPViewer"}
-install = {cmd = "pip install .", cwd = "Baselines/DPVO", depends-on = ["download-models-and-data", "build_pangolin", "install_DPViewer"]}
+install = {cmd = "pip install .", cwd = "Baselines/DPVO", depends-on = ["download-models-and-data", "get_eigen", "build_pangolin", "install_DPViewer"]}
 execute = {cmd = 'python vslamlab_dpvo_mono.py' ,cwd = 'Baselines/DPVO'}
 
 [feature.dpvo.dependencies]
@@ -183,9 +185,11 @@ libxext-cos7-x86_64 ="*"
 libxau-cos7-x86_64 ="*"
 libxcb-cos7-x86_64 ="*"
 
+#libgl-devel = "*" ????????????????????????????????
+
 glew = "*"
 wayland = "*"
-eigen = "*"
+#eigen = "*"
 pkg-config = "*"
 
 [feature.dpvo.pypi-dependencies]

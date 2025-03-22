@@ -36,7 +36,7 @@ def evo_metric(metric, groundtruth_txt, trajectory_txt, evaluation_folder, max_t
     if metric == 'rpe':
         command = f"evo_rpe tum {groundtruth_txt} {trajectory_txt} --all_pairs --delta 5 -va -as --save_results {traj_zip}"
 
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, preexec_fn=os.setsid)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     _, _ = process.communicate()
 
     if not os.path.exists(traj_zip):

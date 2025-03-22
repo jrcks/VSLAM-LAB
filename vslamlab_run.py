@@ -8,7 +8,7 @@ from Datasets.get_dataset import get_dataset
 from utilities import ws, show_time, filter_inputs
 from Baselines.baseline_utilities import get_baseline
 from vslamlab_utilities import check_experiments
-from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, EXP_YAML_DEFAULT
+from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, EXP_YAML_DEFAULT, VSLAM_LAB_DIR
 import subprocess
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
@@ -30,6 +30,7 @@ def main():
     parser.add_argument('-overwrite', action='store_true', help="")
 
     args = parser.parse_args()
+    args.exp_yaml = os.path.join(VSLAM_LAB_DIR, 'configs', args.exp_yaml)
 
     if not os.path.exists(VSLAMLAB_EVALUATION):
         os.makedirs(VSLAMLAB_EVALUATION, exist_ok=True)
@@ -43,11 +44,11 @@ def main():
     if args.run:
         run(experiments, args.exp_yaml, ablation=args.ablation)
 
-    if args.evaluate:
-        evaluate(experiments, overwrite=args.overwrite)
+    # if args.evaluate:
+    #     evaluate(experiments, overwrite=args.overwrite)
 
-    if args.compare:
-        compare(experiments, args.exp_yaml)
+    # if args.compare:
+    #     compare(experiments, args.exp_yaml)
 
 def run(experiments, exp_yaml, ablation=False):
     print(f"\n{SCRIPT_LABEL}Running experiments (in {exp_yaml}) ...")
@@ -79,8 +80,8 @@ def run(experiments, exp_yaml, ablation=False):
             baseline = get_baseline(row['method_name'])
             dataset = get_dataset(row['dataset_name'], VSLAMLAB_BENCHMARK)    
 
-            process = subprocess.Popen("pixi run --frozen -e default clean_swap", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            _, _ = process.communicate()
+            #process = subprocess.Popen("pixi run --frozen -e default clean_swap", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            #_, _ = process.communicate()
             results = run_sequence(row['exp_it'], exp, baseline, dataset, row['sequence_name'], ablation)
 
             duration_time = results['duration_time']

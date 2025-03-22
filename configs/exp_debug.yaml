@@ -1,26 +1,32 @@
-exp_test_rgbdtum_droidslam:
-  Config: config_easy.yaml
-  NumRuns: 1
-  Parameters: {verbose: 0}
-  Module: droidslam
+# exp_test_graph:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 1}
+#   Module: orbslam2
 
-exp_test_rgbdtum_orbslam2:
-  Config: config_easy.yaml
-  NumRuns: 10
-  Parameters: {verbose: 0}
-  Module: orbslam2
-
-exp_test_rgbdtum_mast3rslam:
-  Config: config_easy.yaml
-  NumRuns: 1
-  Parameters: {verbose: 0}
-  Module: mast3rslam
-
-# exp_test_rgbdtum_dpvo:
-#   Config: config_rgbdtum.yaml
+# exp_test_rgbdtum_droidslam:
+#   Config: config_easy.yaml
 #   NumRuns: 1
 #   Parameters: {verbose: 0}
-#   Module: dpvo
+#   Module: droidslam
+
+# exp_test_rgbdtum_orbslam2:
+#   Config: config_easy.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: orbslam2
+
+# exp_test_rgbdtum_mast3rslam:
+#   Config: config_easy.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: mast3rslam
+
+exp_test_rgbdtum_dpvo:
+  Config: config_rgbdtum.yaml
+  NumRuns: 10
+  Parameters: {verbose: 0}
+  Module: dpvo
 
 # exp_config_easy_det_orbslam2:
 #   Config: config_easy.yaml

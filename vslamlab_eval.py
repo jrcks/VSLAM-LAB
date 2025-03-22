@@ -5,7 +5,7 @@ from utilities import filter_inputs, print_msg, read_csv
 from Datasets.get_dataset import get_dataset
 from Evaluate.evaluate_functions import evaluate_sequence
 from vslamlab_utilities import check_experiments
-from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, COMPARISONS_YAML_DEFAULT, EXP_YAML_DEFAULT
+from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, COMPARISONS_YAML_DEFAULT, EXP_YAML_DEFAULT, VSLAM_LAB_DIR
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -25,6 +25,7 @@ def main():
     parser.add_argument('-overwrite', action='store_true', help="")
 
     args = parser.parse_args()
+    args.exp_yaml = os.path.join(VSLAM_LAB_DIR, 'configs', args.exp_yaml)
 
     # Load experiment info
     experiments = check_experiments(args.exp_yaml, overwrite=False)
