@@ -1,12 +1,14 @@
 import os, yaml
 import signal
 import subprocess
-from utilities import ws, print_msg
-from path_constants import VSLAMLAB_BASELINES
 import psutil
 import threading
 import time
 import queue
+
+from utilities import ws, print_msg
+from path_constants import VSLAMLAB_BASELINES, TRAJECTORY_FILE_NAME
+
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -124,7 +126,10 @@ class BaselineVSLAMLab:
             memory_thread.join()
             while not comment_queue.empty():
                 comments += comment_queue.get() + "\n"
-            
+
+        if not os.path.exists(os.path.join(exp_folder, str(exp_it).zfill(5) + f"_{TRAJECTORY_FILE_NAME}.txt" )):
+            success_flag[0] = False
+
         return {
             "success": success_flag[0],
             "comments": comments  

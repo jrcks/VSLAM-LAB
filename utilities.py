@@ -319,7 +319,7 @@ def read_trajectory_txt(txt_file, delimiter=' ', header=None):
         trajectory = pd.read_csv(txt_file, delimiter=delimiter, header=header)
         if trajectory.empty:
             trajectory = None
-    except pd.errors.EmptyDataError:
+    except (pd.errors.EmptyDataError, FileNotFoundError):
         trajectory = None
     return trajectory
 
@@ -333,7 +333,7 @@ def read_csv(csv_file):
         csv_data = pd.read_csv(csv_file)
         if csv_data.empty:
             return pd.DataFrame()
-    except pd.errors.EmptyDataError:
+    except (pd.errors.EmptyDataError, FileNotFoundError):
         return pd.DataFrame()
     return csv_data
 

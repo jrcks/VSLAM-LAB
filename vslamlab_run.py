@@ -71,6 +71,7 @@ def run(experiments, exp_yaml, ablation=False):
             remaining_iterations += not_completed_runs[exp_name]
 
             if not_completed_runs[exp_name] == 0:
+                all_experiments_completed[exp_name] = True
                 continue
                 
             first_not_finished_experiment = exp_log[exp_log["STATUS"] != "completed"].index.min()
