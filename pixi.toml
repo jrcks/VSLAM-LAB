@@ -29,29 +29,25 @@ clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
 # environments begin
 [environments]
 vslamlab = {features = ["vslamlab"], no-default-feature = true}
+evo = {features = ["evo"], no-default-feature = true}
 
 droidslam = {features = ["droidslam"], no-default-feature = true}
 dpvo = {features = ["dpvo"], no-default-feature = true}
 mast3rslam = {features = ["mast3rslam"], no-default-feature = true}
-
 colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
 glomap = {features = ["glomap"], no-default-feature = true, solve-group = "colmap"}
-monogs = {features = ["monogs"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
-dust3r = {features = ["dust3r"], no-default-feature = true}
-#spann3r = {features = ["spann3r"], no-default-feature = true}
-droidcalib = {features = ["droidcalib"], no-default-feature = true}
-
-evo = {features = ["evo"], no-default-feature = true}
-
-dso = {features = ["dso"], no-default-feature = true}
-anyfeature = {features = ["anyfeature"], no-default-feature = true}
 monodataset = {features = ["monodataset"], no-default-feature = true}
 
-depthpro = {features = ["depthpro"], no-default-feature = true}
+#monogs = {features = ["monogs"], no-default-feature = true}
+#dust3r = {features = ["dust3r"], no-default-feature = true}
+#spann3r = {features = ["spann3r"], no-default-feature = true}
+#droidcalib = {features = ["droidcalib"], no-default-feature = true}
+#dso = {features = ["dso"], no-default-feature = true}
+#anyfeature = {features = ["anyfeature"], no-default-feature = true}
+#depthpro = {features = ["depthpro"], no-default-feature = true}
 #depthanything = {features = ["depthanything"], no-default-feature = true}
-
-ros-env = {features = ["ros-env"], no-default-feature = true}
+#ros-env = {features = ["ros-env"], no-default-feature = true}
 # r2d2 = {features = ["r2d2"], no-default-feature = true}
 # staticfusion = {features = ["staticfusion"], no-default-feature = true}
 # kalibr = {features = ["kalibr"], no-default-feature = true}
@@ -239,47 +235,47 @@ torchaudio = {build = "py311_cu124", channel = "pytorch"}
 
 ########################################################################################################################
 ########################################################################################################################
-# droidcalib begin
-[feature.droidcalib]
-channels = ["nvidia/label/cuda-12.0.0","https://fast.prefix.dev/conda-forge"]
-platforms = ["linux-64"]
+# # droidcalib begin
+# [feature.droidcalib]
+# channels = ["nvidia/label/cuda-12.0.0","https://fast.prefix.dev/conda-forge"]
+# platforms = ["linux-64"]
 
-[feature.droidcalib.system-requirements]
-cuda = "12.0"
+# [feature.droidcalib.system-requirements]
+# cuda = "12.0"
 
-[feature.droidcalib.tasks]
-git-clone = {cmd = "git-clone.sh boschresearch DroidCalib Baselines"}
-install = {cmd = "python setup.py install", cwd = "Baselines/DroidCalib"}
-execute = {cmd = "python demo.py --imagedir=/media/fontan/data/VSLAM-LAB-Benchmark/LIZARDISLAND/LIRS_FEB1/rgb --opt_intr --camera_model=mei --visualize" , cwd = "Baselines/DroidCalib"}
-#copy-files = {cmd = "cp Baselines/extra-files/DROID-SLAM/*droidslam* Baselines/DROID-SLAM"}
-#download-weights = {cmd = "python droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
-#install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["copy-files", "download-weights"]}
-#execute_mono = {cmd = 'python droidslam_vslamlab_mono.py',  cwd = 'Baselines/DROID-SLAM'}
-#execute_rgbd = {cmd = 'python droidslam_vslamlab_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
+# [feature.droidcalib.tasks]
+# git-clone = {cmd = "git-clone.sh boschresearch DroidCalib Baselines"}
+# install = {cmd = "python setup.py install", cwd = "Baselines/DroidCalib"}
+# execute = {cmd = "python demo.py --imagedir=/media/fontan/data/VSLAM-LAB-Benchmark/LIZARDISLAND/LIRS_FEB1/rgb --opt_intr --camera_model=mei --visualize" , cwd = "Baselines/DroidCalib"}
+# #copy-files = {cmd = "cp Baselines/extra-files/DROID-SLAM/*droidslam* Baselines/DROID-SLAM"}
+# #download-weights = {cmd = "python droidslam_download_weights.py", cwd = "Baselines/DROID-SLAM"}
+# #install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["copy-files", "download-weights"]}
+# #execute_mono = {cmd = 'python droidslam_vslamlab_mono.py',  cwd = 'Baselines/DROID-SLAM'}
+# #execute_rgbd = {cmd = 'python droidslam_vslamlab_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
 
-[feature.droidcalib.pypi-options]
-no-build-isolation = ["torch-scatter"]
+# [feature.droidcalib.pypi-options]
+# no-build-isolation = ["torch-scatter"]
 
-[feature.droidcalib.dependencies]
-pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
-cuda = "=12.0.0"
-pip = ">=24.2,<25"
-python="3.11.*"
-compilers = ">=1.7.0,<1.8.0"
-make="=4.2.1"
-cmake = ">=3.30.3,<4"
-tqdm = ">=4.66.5,<5"
-open3d = ">=0.18.0,<0.19"
-scipy = ">=1.14.1,<2"
-opencv = ">=4.10.0,<5"
-suitesparse = ">=7.8.2,<8"
-matplotlib = ">=3.9.2,<4"
-pyyaml = ">=6.0.2,<7"
-huggingface_hub="*"
+# [feature.droidcalib.dependencies]
+# pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
+# cuda = "=12.0.0"
+# pip = ">=24.2,<25"
+# python="3.11.*"
+# compilers = ">=1.7.0,<1.8.0"
+# make="=4.2.1"
+# cmake = ">=3.30.3,<4"
+# tqdm = ">=4.66.5,<5"
+# open3d = ">=0.18.0,<0.19"
+# scipy = ">=1.14.1,<2"
+# opencv = ">=4.10.0,<5"
+# suitesparse = ">=7.8.2,<8"
+# matplotlib = ">=3.9.2,<4"
+# pyyaml = ">=6.0.2,<7"
+# huggingface_hub="*"
 
-[feature.droidcalib.pypi-dependencies]
-torch-scatter = {version = ">=2.1.2,<3"}
-# droidcalib end
+# [feature.droidcalib.pypi-dependencies]
+# torch-scatter = {version = ">=2.1.2,<3"}
+# # droidcalib end
 
 ########################################################################################################################
 ########################################################################################################################
@@ -435,45 +431,45 @@ rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
 
 ########################################################################################################################
 ########################################################################################################################
-# monogs begin
-[feature.monogs]
-channels = ["https://fast.prefix.dev/conda-forge", "nvidia", "pytorch"]
-platforms = ["linux-64"]
+# # monogs begin
+# [feature.monogs]
+# channels = ["https://fast.prefix.dev/conda-forge", "nvidia", "pytorch"]
+# platforms = ["linux-64"]
 
-[feature.monogs.system-requirements]
-cuda = "12.4"
+# [feature.monogs.system-requirements]
+# cuda = "12.4"
 
-[feature.monogs.tasks]
-git-clone = "git-clone.sh alejandrofontan MonoGS_VSLAMLAB Baselines"
-install = {cmd = "pip install submodules/simple-knn submodules/diff-gaussian-rasterization", cwd = "Baselines/MonoGS_VSLAMLAB"}
-execute = {cmd = 'python slam.py', cwd = "Baselines/MonoGS_VSLAMLAB"}
-check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
+# [feature.monogs.tasks]
+# git-clone = "git-clone.sh alejandrofontan MonoGS_VSLAMLAB Baselines"
+# install = {cmd = "pip install submodules/simple-knn submodules/diff-gaussian-rasterization", cwd = "Baselines/MonoGS_VSLAMLAB"}
+# execute = {cmd = 'python slam.py', cwd = "Baselines/MonoGS_VSLAMLAB"}
+# check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
 
-[feature.monogs.dependencies]
-python = ">=3.8.19,<3.9"
-cuda = "12.4.*"
-pytorch = {version="=2.4.0", build="py3.8_cuda12.4*", channel="pytorch"}
-pip = ">=24.3.1,<24.4"
-torchvision = {version="0.19.*", channel="pytorch"}
-torchaudio = {version="2.4.*", channel="pytorch"}
-plyfile = ">=0.8.1,<0.9"
+# [feature.monogs.dependencies]
+# python = ">=3.8.19,<3.9"
+# cuda = "12.4.*"
+# pytorch = {version="=2.4.0", build="py3.8_cuda12.4*", channel="pytorch"}
+# pip = ">=24.3.1,<24.4"
+# torchvision = {version="0.19.*", channel="pytorch"}
+# torchaudio = {version="2.4.*", channel="pytorch"}
+# plyfile = ">=0.8.1,<0.9"
 
-[feature.monogs.pypi-dependencies]
-opencv-python = "==4.8.1.78"
-munch = ">=4.0.0,<4.1"
-trimesh = ">=4.5.3,<4.6"
-evo="==1.11.0"
-wandb = ">=0.18.7 ,<0.19"
-open3d="==0.17.0"
-torchmetrics = ">=1.5.2 ,<1.6"
-imgviz = ">=1.7.5  ,<1.8"
-PyOpenGL = ">=3.1.7 ,<3.2"
-glfw = ">=2.8.0 ,<2.9"
-PyGLM = ">=2.7.3 ,<2.8"
-lpips = ">=0.1.4 ,<0.2"
-rich = ">=13.9.4 ,<13.10"
-ruff = ">=0.8.0 ,<0.9"
-# monogs end
+# [feature.monogs.pypi-dependencies]
+# opencv-python = "==4.8.1.78"
+# munch = ">=4.0.0,<4.1"
+# trimesh = ">=4.5.3,<4.6"
+# evo="==1.11.0"
+# wandb = ">=0.18.7 ,<0.19"
+# open3d="==0.17.0"
+# torchmetrics = ">=1.5.2 ,<1.6"
+# imgviz = ">=1.7.5  ,<1.8"
+# PyOpenGL = ">=3.1.7 ,<3.2"
+# glfw = ">=2.8.0 ,<2.9"
+# PyGLM = ">=2.7.3 ,<2.8"
+# lpips = ">=0.1.4 ,<0.2"
+# rich = ">=13.9.4 ,<13.10"
+# ruff = ">=0.8.0 ,<0.9"
+# # monogs end
 
 ########################################################################################################################
 ########################################################################################################################
@@ -522,35 +518,35 @@ pangolin = {version="=2024.07.03", build="h3c9d71d_0", channel="fontan"}
 
 ########################################################################################################################
 ########################################################################################################################
-# dust3r begin
-[feature.dust3r]
-channels = ["https://fast.prefix.dev/conda-forge", "pytorch"]
-platforms = ["linux-64"]
+# # dust3r begin
+# [feature.dust3r]
+# channels = ["https://fast.prefix.dev/conda-forge", "pytorch"]
+# platforms = ["linux-64"]
 
-[feature.dust3r.tasks]
-git-clone = "git-clone.sh naver dust3r Baselines"
-execute = {cmd = 'python Baselines/extra-files/dust3r/dust3r_execute.py'}
+# [feature.dust3r.tasks]
+# git-clone = "git-clone.sh naver dust3r Baselines"
+# execute = {cmd = 'python Baselines/extra-files/dust3r/dust3r_execute.py'}
 
-[feature.dust3r.dependencies]
-cmake = "=3.14.0"
-python = "=3.11.0"
-pytorch-cuda = "12.4.*,<13"
-huggingface_hub = ">=0.26.2,<0.27"
-gradio = ">=3.24.1,<4"
-matplotlib = ">=3.9.1,<4"
-tqdm = ">=4.67.1,<5"
-opencv = ">=4.7.0,<5"
-scipy = ">=1.14.1,<2"
-einops = ">=0.8.0,<0.9"
-trimesh = ">=4.5.2,<4.6"
-tensorboard = ">=2.18.0,<3"
-pyglet = ">=1.5.27,<2"
-safetensors = ">=0.4.5,<0.5"
+# [feature.dust3r.dependencies]
+# cmake = "=3.14.0"
+# python = "=3.11.0"
+# pytorch-cuda = "12.4.*,<13"
+# huggingface_hub = ">=0.26.2,<0.27"
+# gradio = ">=3.24.1,<4"
+# matplotlib = ">=3.9.1,<4"
+# tqdm = ">=4.67.1,<5"
+# opencv = ">=4.7.0,<5"
+# scipy = ">=1.14.1,<2"
+# einops = ">=0.8.0,<0.9"
+# trimesh = ">=4.5.2,<4.6"
+# tensorboard = ">=2.18.0,<3"
+# pyglet = ">=1.5.27,<2"
+# safetensors = ">=0.4.5,<0.5"
 
-[feature.dust3r.pypi-dependencies]
-torchvision = {version = ">=0.20.1,<0.21"}
-roma = {version = ">=1.5.1,<2"}
-# dust3r end
+# [feature.dust3r.pypi-dependencies]
+# torchvision = {version = ">=0.20.1,<0.21"}
+# roma = {version = ">=1.5.1,<2"}
+# # dust3r end
 
 ########################################################################################################################
 ########################################################################################################################
@@ -576,27 +572,27 @@ roma = {version = ">=1.5.1,<2"}
 
 ########################################################################################################################
 ########################################################################################################################
-# depthpro begin
-[feature.depthpro]
-channels = ["nvidia/label/cuda-12.0.0","https://fast.prefix.dev/conda-forge"]
-platforms = ["linux-64"]
+# # depthpro begin
+# [feature.depthpro]
+# channels = ["nvidia/label/cuda-12.0.0","https://fast.prefix.dev/conda-forge"]
+# platforms = ["linux-64"]
 
-[feature.depthpro.system-requirements]
-cuda = "12.0"
+# [feature.depthpro.system-requirements]
+# cuda = "12.0"
 
-[feature.depthpro.tasks]
-git-clone = {cmd = "git-clone.sh apple ml-depth-pro Baselines"}
-install = {cmd = "pip install -e . && ./get_pretrained_models.sh", cwd = "Baselines/ml-depth-pro"}
-execute = {cmd = 'python ../extra-files/depth_estimation/depthpro_vslamlab.py', cwd = "Baselines/ml-depth-pro"}
+# [feature.depthpro.tasks]
+# git-clone = {cmd = "git-clone.sh apple ml-depth-pro Baselines"}
+# install = {cmd = "pip install -e . && ./get_pretrained_models.sh", cwd = "Baselines/ml-depth-pro"}
+# execute = {cmd = 'python ../extra-files/depth_estimation/depthpro_vslamlab.py', cwd = "Baselines/ml-depth-pro"}
 
-[feature.depthpro.dependencies]
-python = ">3.9,<3.10"
-pip="*"
-scikit-learn = "*"
+# [feature.depthpro.dependencies]
+# python = ">3.9,<3.10"
+# pip="*"
+# scikit-learn = "*"
 
-[feature.depthpro.pypi-dependencies]
-opencv-python= "*"
-# depthpro end
+# [feature.depthpro.pypi-dependencies]
+# opencv-python= "*"
+# # depthpro end
 
 ########################################################################################################################
 ########################################################################################################################
@@ -631,98 +627,98 @@ opencv-python= "*"
 
 ########################################################################################################################
 ########################################################################################################################
-# anyfeature begin
-[feature.anyfeature]
-channels = ["fontan", "https://fast.prefix.dev/conda-forge", "huggingface"]
-platforms = ["linux-64"]
+# # anyfeature begin
+# [feature.anyfeature]
+# channels = ["fontan", "https://fast.prefix.dev/conda-forge", "huggingface"]
+# platforms = ["linux-64"]
 
-[feature.anyfeature.tasks]
-git-clone = "git-clone.sh alejandrofontan AnyFeature-VSLAM Baselines"
-build = {cmd = "./Baselines/AnyFeature-VSLAM/build.sh", depends-on = ["git-clone"]}
-execute = {cmd = './Baselines/AnyFeature-VSLAM/bin/mono', depends-on = ["build"]}
+# [feature.anyfeature.tasks]
+# git-clone = "git-clone.sh alejandrofontan AnyFeature-VSLAM Baselines"
+# build = {cmd = "./Baselines/AnyFeature-VSLAM/build.sh", depends-on = ["git-clone"]}
+# execute = {cmd = './Baselines/AnyFeature-VSLAM/bin/mono', depends-on = ["build"]}
 
-[feature.anyfeature.dependencies]
-cxx-compiler="*"
-c-compiler="*"
-ninja="*"
-cmake="*"
-pkg-config="*"
-libglvnd-egl-cos7-x86_64 ="*"
-libglvnd-devel-cos7-x86_64 ="*"
-mesa-libegl-devel-cos7-x86_64 ="*"
-mesa-libgl-devel-cos7-x86_64 ="*"
-mesa-dri-drivers-cos7-x86_64 ="*"
-libselinux-cos7-x86_64 ="*"
-libxdamage-cos7-x86_64 ="*"
-libxxf86vm-cos7-x86_64 ="*"
-libxfixes-cos7-x86_64 ="*"
-libxext-cos7-x86_64 ="*"
-libxau-cos7-x86_64 ="*"
-libxcb-cos7-x86_64 ="*"
-xorg-libxext ="*"
-xorg-libx11 ="*"
-xorg-libxfixes="*"
-eigen ="*"
-yaml-cpp="*"
-pandas="*"
-opencv="*"
-pangolin="*"
-g2o="*"
-brisk="*"
-akaze="*"
-siftgpu="*"
-datasets="*"
-# anyfeature end
+# [feature.anyfeature.dependencies]
+# cxx-compiler="*"
+# c-compiler="*"
+# ninja="*"
+# cmake="*"
+# pkg-config="*"
+# libglvnd-egl-cos7-x86_64 ="*"
+# libglvnd-devel-cos7-x86_64 ="*"
+# mesa-libegl-devel-cos7-x86_64 ="*"
+# mesa-libgl-devel-cos7-x86_64 ="*"
+# mesa-dri-drivers-cos7-x86_64 ="*"
+# libselinux-cos7-x86_64 ="*"
+# libxdamage-cos7-x86_64 ="*"
+# libxxf86vm-cos7-x86_64 ="*"
+# libxfixes-cos7-x86_64 ="*"
+# libxext-cos7-x86_64 ="*"
+# libxau-cos7-x86_64 ="*"
+# libxcb-cos7-x86_64 ="*"
+# xorg-libxext ="*"
+# xorg-libx11 ="*"
+# xorg-libxfixes="*"
+# eigen ="*"
+# yaml-cpp="*"
+# pandas="*"
+# opencv="*"
+# pangolin="*"
+# g2o="*"
+# brisk="*"
+# akaze="*"
+# siftgpu="*"
+# datasets="*"
+# # anyfeature end
 
-# dso begin
-[feature.dso]
-channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
-platforms = ["linux-64"]
+# # dso begin
+# [feature.dso]
+# channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
+# platforms = ["linux-64"]
 
-[feature.dso.tasks]
-git-clone = "git-clone.sh alejandrofontan dso Baselines"
-build = {cmd = "./Baselines/dso/build.sh", depends-on = ["git-clone"]}
-execute = {cmd = './Baselines/dso/bin/mono', depends-on = ["build"]}
+# [feature.dso.tasks]
+# git-clone = "git-clone.sh alejandrofontan dso Baselines"
+# build = {cmd = "./Baselines/dso/build.sh", depends-on = ["git-clone"]}
+# execute = {cmd = './Baselines/dso/bin/mono', depends-on = ["build"]}
 
-[feature.dso.dependencies]
-cxx-compiler="*"
-c-compiler="*"
-ninja="*"
-cmake="*"
-pkg-config="*"
-libglvnd-egl-cos7-x86_64 ="*"
-libglvnd-devel-cos7-x86_64 ="*"
-mesa-libegl-devel-cos7-x86_64 ="*"
-mesa-libgl-devel-cos7-x86_64 ="*"
-mesa-dri-drivers-cos7-x86_64 ="*"
-libselinux-cos7-x86_64 ="*"
-libxdamage-cos7-x86_64 ="*"
-libxxf86vm-cos7-x86_64 ="*"
-libxfixes-cos7-x86_64 ="*"
-libxext-cos7-x86_64 ="*"
-libxau-cos7-x86_64 ="*"
-libxcb-cos7-x86_64 ="*"
-xorg-libxext ="*"
-xorg-libx11 ="*"
-xorg-libxfixes="*"
-opencv="*"
-eigen ="*"
-boost="*"
-pangolin="*"
-# dso end
+# [feature.dso.dependencies]
+# cxx-compiler="*"
+# c-compiler="*"
+# ninja="*"
+# cmake="*"
+# pkg-config="*"
+# libglvnd-egl-cos7-x86_64 ="*"
+# libglvnd-devel-cos7-x86_64 ="*"
+# mesa-libegl-devel-cos7-x86_64 ="*"
+# mesa-libgl-devel-cos7-x86_64 ="*"
+# mesa-dri-drivers-cos7-x86_64 ="*"
+# libselinux-cos7-x86_64 ="*"
+# libxdamage-cos7-x86_64 ="*"
+# libxxf86vm-cos7-x86_64 ="*"
+# libxfixes-cos7-x86_64 ="*"
+# libxext-cos7-x86_64 ="*"
+# libxau-cos7-x86_64 ="*"
+# libxcb-cos7-x86_64 ="*"
+# xorg-libxext ="*"
+# xorg-libx11 ="*"
+# xorg-libxfixes="*"
+# opencv="*"
+# eigen ="*"
+# boost="*"
+# pangolin="*"
+# # dso end
 
-## ros begin
-[feature.ros-env]
-channels = ["https://fast.prefix.dev/conda-forge", "robostack-staging"]
-platforms = ["linux-64"]
+# ## ros begin
+# [feature.ros-env]
+# channels = ["https://fast.prefix.dev/conda-forge", "robostack-staging"]
+# platforms = ["linux-64"]
 
-[feature.ros-env.dependencies]
-ros-noetic-desktop="*"
-tqdm="*"
+# [feature.ros-env.dependencies]
+# ros-noetic-desktop="*"
+# tqdm="*"
 
-[feature.ros-env.tasks]
-extract-rosbag-frames = "python Datasets/extra-files/extract_rosbag_frames.py"
-## ros end
+# [feature.ros-env.tasks]
+# extract-rosbag-frames = "python Datasets/extra-files/extract_rosbag_frames.py"
+# ## ros end
 
 # monodataset begin
 [feature.monodataset]
