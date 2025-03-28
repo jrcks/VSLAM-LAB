@@ -1,12 +1,2 @@
-rgbdtum:
-  - 'rgbd_dataset_freiburg1_xyz'
 eth:
-  - 'table_3'
-#7scenes:
-#  - 'chess_seq-01'
-#euroc:
-#  - 'MH_01_easy'
-#monotum:
-#  - 'sequence_01'
-
-
+- table_3

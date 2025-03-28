@@ -11,7 +11,7 @@ evaluate = {cmd = "pixi run -e vslamlab python vslamlab_eval.py $ARGUMENT", env 
 
 set-benchmark-path  = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_BENCHMARK_path"}
 set-evaluation-path = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_EVALUATION_path"}
-demo = {cmd = "pixi run --frozen -e vslamlab python demo.py"}
+demo = {cmd = "pixi run --frozen -e vslamlab python vslamlab_demo.py"}
 baseline-info = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py baseline_info"}
 print_datasets = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py print_datasets"}
 print_baselines = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py print_baselines"}

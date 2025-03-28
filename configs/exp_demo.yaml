@@ -1,29 +1,8 @@
-demo_droidslam:
-  Config: config_demo.yaml
-  NumRuns: 1
-  Parameters: {verbose: 1}
+demo:
+  Config: /home/alejandro/VSLAM-LAB/configs/config_demo.yaml
   Module: droidslam
-
-demo_orbslam2:
-  Config: config_demo.yaml
   NumRuns: 1
-  Parameters: {verbose: 0}
-  Module: orbslam2
-
-#demo_glomap:
-#  Config: config_demo.yaml
-#  NumRuns: 1
-#  Parameters: {verbose: 1}
-#  Module: glomap
-#
-#demo_monogs:
-#  Config: config_demo.yaml
-#  NumRuns: 1
-#  Parameters: {verbose: 1}
-#  Module: monogs
-#
-#demo_dust3r:
-#  Config: config_demo.yaml
-#  NumRuns: 1
-#  Parameters: {verbose: 0}
-#  Module: dust3r
+  Parameters:
+    mode: mono
+    upsample: 0
+    verbose: 1
