@@ -1,8 +1,0 @@
-demo:
-  Config: /home/alejandro/VSLAM-LAB/configs/config_demo.yaml
-  Module: droidslam
-  NumRuns: 1
-  Parameters:
-    mode: mono
-    upsample: 0
-    verbose: 1
