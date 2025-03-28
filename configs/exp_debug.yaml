@@ -4,6 +4,25 @@
 #   Parameters: {verbose: 1}
 #   Module: orbslam2
 
+exp_test_tobi:
+  Config: config_debug.yaml
+  NumRuns: 1
+  Parameters: {verbose: 1}
+  Module: droidslam
+
+
+# exp_test_graph2:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 1}
+#   Module: orbslam2
+
+# exp_test_eth_droidslam:
+#   Config: config_eth.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: droidslam
+
 # exp_test_rgbdtum_droidslam:
 #   Config: config_easy.yaml
 #   NumRuns: 1
@@ -22,11 +41,11 @@
 #   Parameters: {verbose: 0}
 #   Module: mast3rslam
 
-exp_test_rgbdtum_dpvo:
-  Config: config_rgbdtum.yaml
-  NumRuns: 10
-  Parameters: {verbose: 0}
-  Module: dpvo
+# exp_test_rgbdtum_dpvo:
+#   Config: config_easy.yaml
+#   NumRuns: 10
+#   Parameters: {verbose: 0}
+#   Module: dpvo
 
 # exp_config_easy_det_orbslam2:
 #   Config: config_easy.yaml
