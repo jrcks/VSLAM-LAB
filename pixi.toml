@@ -29,7 +29,6 @@ clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
 # environments begin
 [environments]
 vslamlab = {features = ["vslamlab"], no-default-feature = true}
-evo = {features = ["evo"], no-default-feature = true}
 
 droidslam = {features = ["droidslam"], no-default-feature = true}
 dpvo = {features = ["dpvo"], no-default-feature = true}
@@ -78,32 +77,11 @@ py7zr="*"
 [feature.vslamlab.pypi-dependencies]
 evo = "*"
 
-# evo begin
-[feature.evo.dependencies]
-python="=3.12"
-py7zr="*"
-tqdm="*"
-inputimeout="*"
-scikit-learn="*"
-matplotlib="*"
-
-[feature.evo.pypi-dependencies]
-evo = "*"
-
-[feature.evo]
-channels = ["https://fast.prefix.dev/conda-forge"]
-platforms = ["linux-64"]
-
-[feature.evo.tasks]
-evo = "evo"
-evo_config =  "evo_config set save_traj_in_zip true"
-# evo end
-
 ########################################################################################################################
 ########################################################################################################################
 # droidslam begin
 [feature.droidslam]
-channels = ["nvidia/label/cuda-12.0.0","https://fast.prefix.dev/conda-forge"]
+channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
 [feature.droidslam.system-requirements]
@@ -117,8 +95,27 @@ execute_mono = {cmd = 'python vslamlab_droidslam_mono.py',  cwd = 'Baselines/DRO
 execute_rgbd = {cmd = 'python vslamlab_droidslam_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
 
 [feature.droidslam.dependencies]
-pytorch = {version =">=2.4.0,<3", build = "cuda120*"}
-cuda = "=12.0.0"
+pytorch-gpu = "*"
+cuda-version = "12.6.*"
+cuda-compiler = "*"
+cuda-cudart-dev = "*"
+cuda-crt = "*"
+cudnn = "*"
+libcusparse-dev = "*"
+cuda-driver-dev = "*"
+cuda-nvcc = "*"
+cuda-nvrtc-dev = "*"
+cuda-nvtx-dev = "*"
+cuda-nvml-dev = "*"
+cuda-profiler-api = "*"
+cusparselt = "*"
+libcublas-dev = "*"
+libcudss-dev = "*"
+libcufile-dev = "*"
+libcufft-dev = "*"
+libcurand-dev = "*"
+libcusolver-dev = "*"
+
 pip = ">=24.2,<25"
 python="3.11.*"
 compilers = ">=1.7.0,<1.8.0"
@@ -185,6 +182,9 @@ libxau-cos7-x86_64 ="*"
 libxcb-cos7-x86_64 ="*"
 
 #libgl-devel = "*" ????????????????????????????????
+#libegl-devel = "*"
+#libglvnd-devel = "*"
+#libopengl-devel = "*"
 
 glew = "*"
 wayland = "*"
