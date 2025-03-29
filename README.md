@@ -76,7 +76,7 @@ pixi run set-evaluation-path /media/${USER}/data
 With **VSLAM-LAB**, you can easily design and configure experiments using a YAML file and run them with a single command.
 To **run** the experiment demo, execute the following command:
 ```
-ARGUMENT="--exp_yaml exp_debug.yaml" OVEWRITE="-overwrite" pixi run vslamlab
+ARGUMENT="--exp_yaml exp_config_easy.yaml" OVEWRITE="-overwrite" pixi run vslamlab
 ```
 **Note:** *This demo will execute one run per sequence using each VSLAM system. There are 80 pre-executed runs saved in VSLAM-LAB-Evaluation to assist with visualization purposes. The demo uses modified versions of [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2) and [**DSO**](https://github.com/alejandrofontan/dso). Please note that the comparison is between SLAM and Odometry and is intended only as an example of how to use **VSLAM-LAB**.*
 
