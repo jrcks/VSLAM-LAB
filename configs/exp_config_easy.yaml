@@ -1,7 +1,7 @@
 exp_config_easy_mast3rslam:
   Config: config_easy.yaml
   NumRuns: 5
-  Parameters: {verbose: 1}
+  Parameters: {verbose: 0}
   Module: mast3rslam
 
 exp_config_easy_droidslam:

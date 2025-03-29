@@ -26,6 +26,7 @@ activate_env = {cmd = "pixi run -e vslamlab python utilities.py activate_env"}
 
 clean_experiment = {cmd = "pixi run -e vslamlab python Evaluate/clean_experiment.py"}
 clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
+kill_all = {cmd = "pkill -f -e 'droidslam|dpvo|orbslam2|mast3rslam|vslamlab'"} 
 
 # environments begin
 [environments]
@@ -34,12 +35,11 @@ vslamlab = {features = ["vslamlab"], no-default-feature = true}
 droidslam = {features = ["droidslam"], no-default-feature = true}
 mast3rslam = {features = ["mast3rslam"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
-
 dpvo = {features = ["dpvo"], no-default-feature = true}
-colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
-glomap = {features = ["glomap"], no-default-feature = true, solve-group = "colmap"}
-monodataset = {features = ["monodataset"], no-default-feature = true}
 
+#colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
+#glomap = {features = ["glomap"], no-default-feature = true, solve-group = "colmap"}
+#monodataset = {features = ["monodataset"], no-default-feature = true}
 #monogs = {features = ["monogs"], no-default-feature = true}
 #dust3r = {features = ["dust3r"], no-default-feature = true}
 #spann3r = {features = ["spann3r"], no-default-feature = true}
@@ -166,7 +166,6 @@ torchaudio = {build = "py311_cu124", channel = "pytorch"}
 # dpvo begin
 [feature.dpvo]
 channels = ["pyg", "pytorch", "nvidia/label/cuda-12.1.0", "conda-forge", "main", "r", "msys2"]
-
 platforms = ["linux-64"]
 
 [feature.dpvo.system-requirements]
@@ -196,28 +195,14 @@ numba = "*"
 compilers="=1.6.0"
 libxkbcommon="*"
 xorg-xorgproto="*"
-
-mesa-libegl-devel-cos7-x86_64 ="*"
-mesa-libgl-devel-cos7-x86_64 ="*"
-mesa-dri-drivers-cos7-x86_64 ="*"
-libglvnd-egl-cos7-x86_64 ="*"
-libglvnd-devel-cos7-x86_64 ="*"
-libselinux-cos7-x86_64 ="*"
-libxdamage-cos7-x86_64 ="*"
-libxxf86vm-cos7-x86_64 ="*"
-libxfixes-cos7-x86_64 ="*"
-libxext-cos7-x86_64 ="*"
-libxau-cos7-x86_64 ="*"
-libxcb-cos7-x86_64 ="*"
-
-#libgl-devel = "*" ????????????????????????????????
-#libegl-devel = "*"
-#libglvnd-devel = "*"
-#libopengl-devel = "*"
+libgl-devel = "*"
+libegl-devel = "*"
+libglvnd-devel = "*"
+libopengl-devel = "*"
 
 glew = "*"
 wayland = "*"
-#eigen = "*"
+eigen = "*"
 pkg-config = "*"
 
 [feature.dpvo.pypi-dependencies]
@@ -232,6 +217,43 @@ evo = "*"
 opencv-python = "*"
 yacs = "*"
 # dpvo end
+
+########################################################################################################################
+########################################################################################################################
+# orbslam2 begin
+[feature.orbslam2]
+channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
+platforms = ["linux-64"]
+
+[feature.orbslam2.tasks]
+git-clone = "git-clone.sh VSLAM-LAB ORB_SLAM2 Baselines"
+install = {cmd = "./build.sh", cwd = "Baselines/ORB_SLAM2"}
+execute_mono = {cmd = "./bin/mono",  cwd = "Baselines/ORB_SLAM2"}
+execute_rgbd = {cmd = "./bin/rgbd",  cwd = "Baselines/ORB_SLAM2"}
+
+[feature.orbslam2.dependencies]
+libgl-devel = "*"
+libegl-devel = "*"
+libglvnd-devel = "*"
+libopengl-devel = "*"
+xorg-libxext ="*"
+xorg-libx11 ="*"
+xorg-libxfixes="*"
+xorg-libxrender="*"
+xorg-libice="*"
+xorg-libsm="*"
+xorg-libxdmcp="*"
+xorg-libxau="*"
+
+compilers = "*"
+ninja = ">=1.12.1 ,<1.13"
+cmake = ">=3.31.1 ,<3.32"
+pkg-config = ">=0.29.2 ,<0.30"
+opencv = ">=4.10.0 ,<5"
+eigen = ">=3.4.0 ,<3.5.0"
+yaml-cpp = ">=0.8.0,<0.9"
+pangolin = {version="=2024.07.03", build="h3c9d71d_0", channel="fontan"}
+# orbslam2 end
 
 ########################################################################################################################
 ########################################################################################################################
@@ -279,155 +301,155 @@ yacs = "*"
 
 ########################################################################################################################
 ########################################################################################################################
-# colmap begin
-[feature.colmap]
-channels = ["https://fast.prefix.dev/conda-forge", "nvidia"]
-platforms = ["linux-64"]
+# # colmap begin
+# [feature.colmap]
+# channels = ["https://fast.prefix.dev/conda-forge", "nvidia"]
+# platforms = ["linux-64"]
 
-[feature.colmap.tasks]
-git-clone = {cmd = "git-clone.sh alejandrofontan colmap Baselines" }
-setup = {cmd = "pixi run -e vslamlab python Baselines/colmap/colmap_setup.py"}
-install = {cmd = "./Baselines/colmap/build.sh", depends-on = ["git-clone", "setup"]}
-execute = {cmd = './Baselines/colmap/colmap_reconstruction.sh'}
+# [feature.colmap.tasks]
+# git-clone = {cmd = "git-clone.sh alejandrofontan colmap Baselines" }
+# setup = {cmd = "pixi run -e vslamlab python Baselines/colmap/colmap_setup.py"}
+# install = {cmd = "./Baselines/colmap/build.sh", depends-on = ["git-clone", "setup"]}
+# execute = {cmd = './Baselines/colmap/colmap_reconstruction.sh'}
 
-colmap = {cmd = "./Baselines/colmap/bin/colmap"}
-glomap = {cmd = "./Baselines/glomap/bin/glomap"}
+# colmap = {cmd = "./Baselines/colmap/bin/colmap"}
+# glomap = {cmd = "./Baselines/glomap/bin/glomap"}
 
-[feature.colmap.dependencies]
-mesa-libegl-devel-cos7-x86_64 ="*"
-mesa-libgl-devel-cos7-x86_64 ="*"
-mesa-dri-drivers-cos7-x86_64 ="*"
-libglvnd-egl-cos7-x86_64 ="*"
-libglvnd-devel-cos7-x86_64 ="*"
-libselinux-cos7-x86_64 ="*"
-libxdamage-cos7-x86_64 ="*"
-libxxf86vm-cos7-x86_64 ="*"
-libxfixes-cos7-x86_64 ="*"
-libxext-cos7-x86_64 ="*"
-libxau-cos7-x86_64 ="*"
-libxcb-cos7-x86_64 ="*"
-xorg-libxext ="*"
-xorg-libx11 ="*"
-xorg-libxfixes="*"
-xorg-libxrender="*"
-xorg-libice="*"
-xorg-libsm="*"
-xorg-libxdmcp="*"
-xorg-libxau="*"
-cxx-compiler = ">=1.8.0,<1.9"
-c-compiler = ">=1.8.0,<1.9"
-ninja = ">=1.12.1,<1.13"
-cmake = ">=3.28.0,<3.29"
-pkg-config = ">=0.29.2,<0.30"
-make = ">=4.4.1,<4.5"
-llvm-openmp = ">=19.1.4,<19.2"
-libgomp = "*"
-libxcb = "*"
-libglu = "*"
-libblas = "*"
-libcblas = "*"
-libboost-devel = "*"
-suitesparse = ">=5.10.1,<5.11"
-eigen = ">=3.4.0,<3.5"
-freeimage = ">=3.18.0,<3.19"
-glog = "=0.6.0"
-gflags = ">=2.2.2,<2.3"
-glew = ">=2.1.0,<2.2"
-cgal-cpp = ">=6.0.1,<6.1"
-ceres-solver = ">=2.2.0,<2.3"
-qt-main = ">=5.15.15,<5.16"
-git = ">=2.47.1,<2.48"
-flann = ">=1.9.2,<1.10"
-sqlite = ">=3.47.0,<3.48"
-vlfeat = ">=0.9.21,<0.10"
-gmp = ">=6.3.0,<6.4"
-lz4-c = ">=1.9.4,<1.10"
-metis = ">=5.1.0,<5.2"
-libcurand-dev = ">=10.3.7.77,<10.4"
-cuda-nvcc = ">=12.6.85,<12.7"
-python = ">=3.13.0,<3.14"
-yq = ">=3.4.3,<3.5"
-numpy = ">=2.1.3,<2.2"
-scipy = ">=1.14.1,<1.15"
-pyyaml = ">=6.0.2,<6.1"
-matplotlib = ">=3.9.2,<3.10"
-tbb-devel="*"
-# colmap end
+# [feature.colmap.dependencies]
+# mesa-libegl-devel-cos7-x86_64 ="*"
+# mesa-libgl-devel-cos7-x86_64 ="*"
+# mesa-dri-drivers-cos7-x86_64 ="*"
+# libglvnd-egl-cos7-x86_64 ="*"
+# libglvnd-devel-cos7-x86_64 ="*"
+# libselinux-cos7-x86_64 ="*"
+# libxdamage-cos7-x86_64 ="*"
+# libxxf86vm-cos7-x86_64 ="*"
+# libxfixes-cos7-x86_64 ="*"
+# libxext-cos7-x86_64 ="*"
+# libxau-cos7-x86_64 ="*"
+# libxcb-cos7-x86_64 ="*"
+# xorg-libxext ="*"
+# xorg-libx11 ="*"
+# xorg-libxfixes="*"
+# xorg-libxrender="*"
+# xorg-libice="*"
+# xorg-libsm="*"
+# xorg-libxdmcp="*"
+# xorg-libxau="*"
+# cxx-compiler = ">=1.8.0,<1.9"
+# c-compiler = ">=1.8.0,<1.9"
+# ninja = ">=1.12.1,<1.13"
+# cmake = ">=3.28.0,<3.29"
+# pkg-config = ">=0.29.2,<0.30"
+# make = ">=4.4.1,<4.5"
+# llvm-openmp = ">=19.1.4,<19.2"
+# libgomp = "*"
+# libxcb = "*"
+# libglu = "*"
+# libblas = "*"
+# libcblas = "*"
+# libboost-devel = "*"
+# suitesparse = ">=5.10.1,<5.11"
+# eigen = ">=3.4.0,<3.5"
+# freeimage = ">=3.18.0,<3.19"
+# glog = "=0.6.0"
+# gflags = ">=2.2.2,<2.3"
+# glew = ">=2.1.0,<2.2"
+# cgal-cpp = ">=6.0.1,<6.1"
+# ceres-solver = ">=2.2.0,<2.3"
+# qt-main = ">=5.15.15,<5.16"
+# git = ">=2.47.1,<2.48"
+# flann = ">=1.9.2,<1.10"
+# sqlite = ">=3.47.0,<3.48"
+# vlfeat = ">=0.9.21,<0.10"
+# gmp = ">=6.3.0,<6.4"
+# lz4-c = ">=1.9.4,<1.10"
+# metis = ">=5.1.0,<5.2"
+# libcurand-dev = ">=10.3.7.77,<10.4"
+# cuda-nvcc = ">=12.6.85,<12.7"
+# python = ">=3.13.0,<3.14"
+# yq = ">=3.4.3,<3.5"
+# numpy = ">=2.1.3,<2.2"
+# scipy = ">=1.14.1,<1.15"
+# pyyaml = ">=6.0.2,<6.1"
+# matplotlib = ">=3.9.2,<3.10"
+# tbb-devel="*"
+# # colmap end
 
 ########################################################################################################################
 ########################################################################################################################
-# glomap begin
-[feature.glomap]
-channels = ["https://fast.prefix.dev/conda-forge"]
-platforms = ["linux-64"]
+# # glomap begin
+# [feature.glomap]
+# channels = ["https://fast.prefix.dev/conda-forge"]
+# platforms = ["linux-64"]
 
-[feature.glomap.dependencies]
-mesa-libegl-devel-cos7-x86_64 ="*"
-mesa-libgl-devel-cos7-x86_64 ="*"
-mesa-dri-drivers-cos7-x86_64 ="*"
-libglvnd-egl-cos7-x86_64 ="*"
-libglvnd-devel-cos7-x86_64 ="*"
-libselinux-cos7-x86_64 ="*"
-libxdamage-cos7-x86_64 ="*"
-libxxf86vm-cos7-x86_64 ="*"
-libxfixes-cos7-x86_64 ="*"
-libxext-cos7-x86_64 ="*"
-libxau-cos7-x86_64 ="*"
-libxcb-cos7-x86_64 ="*"
-xorg-libxext ="*"
-xorg-libx11 ="*"
-xorg-libxfixes="*"
-xorg-libxrender="*"
-xorg-libice="*"
-xorg-libsm="*"
-xorg-libxdmcp="*"
-xorg-libxau="*"
-cxx-compiler = ">=1.8.0,<1.9"
-c-compiler = ">=1.8.0,<1.9"
-ninja = ">=1.12.1,<1.13"
-cmake = ">=3.28.0,<3.29"
-pkg-config = ">=0.29.2,<0.30"
-make = ">=4.4.1,<4.5"
-llvm-openmp = ">=19.1.4,<19.2"
-libgomp = "*"
-libxcb = "*"
-libglu = "*"
-libblas = "*"
-libcblas = "*"
-libboost-devel = "*"
-suitesparse = ">=5.10.1,<5.11"
-eigen = ">=3.4.0,<3.5"
-freeimage = ">=3.18.0,<3.19"
-glog = "=0.6.0"
-gflags = ">=2.2.2,<2.3"
-glew = ">=2.1.0,<2.2"
-cgal-cpp = ">=6.0.1,<6.1"
-ceres-solver = ">=2.2.0,<2.3"
-qt-main = ">=5.15.15,<5.16"
-git = ">=2.47.1,<2.48"
-flann = ">=1.9.2,<1.10"
-sqlite = ">=3.47.0,<3.48"
-vlfeat = ">=0.9.21,<0.10"
-gmp = ">=6.3.0,<6.4"
-lz4-c = ">=1.9.4,<1.10"
-metis = ">=5.1.0,<5.2"
-libcurand-dev = ">=10.3.7.77,<10.4"
-cuda-nvcc = ">=12.6.85,<12.7"
-python = ">=3.13.0,<3.14"
-yq = ">=3.4.3,<3.5"
-numpy = ">=2.1.3,<2.2"
-scipy = ">=1.14.1,<1.15"
-pyyaml = ">=6.0.2,<6.1"
-matplotlib = ">=3.9.2,<3.10"
-tbb-devel="*"
+# [feature.glomap.dependencies]
+# mesa-libegl-devel-cos7-x86_64 ="*"
+# mesa-libgl-devel-cos7-x86_64 ="*"
+# mesa-dri-drivers-cos7-x86_64 ="*"
+# libglvnd-egl-cos7-x86_64 ="*"
+# libglvnd-devel-cos7-x86_64 ="*"
+# libselinux-cos7-x86_64 ="*"
+# libxdamage-cos7-x86_64 ="*"
+# libxxf86vm-cos7-x86_64 ="*"
+# libxfixes-cos7-x86_64 ="*"
+# libxext-cos7-x86_64 ="*"
+# libxau-cos7-x86_64 ="*"
+# libxcb-cos7-x86_64 ="*"
+# xorg-libxext ="*"
+# xorg-libx11 ="*"
+# xorg-libxfixes="*"
+# xorg-libxrender="*"
+# xorg-libice="*"
+# xorg-libsm="*"
+# xorg-libxdmcp="*"
+# xorg-libxau="*"
+# cxx-compiler = ">=1.8.0,<1.9"
+# c-compiler = ">=1.8.0,<1.9"
+# ninja = ">=1.12.1,<1.13"
+# cmake = ">=3.28.0,<3.29"
+# pkg-config = ">=0.29.2,<0.30"
+# make = ">=4.4.1,<4.5"
+# llvm-openmp = ">=19.1.4,<19.2"
+# libgomp = "*"
+# libxcb = "*"
+# libglu = "*"
+# libblas = "*"
+# libcblas = "*"
+# libboost-devel = "*"
+# suitesparse = ">=5.10.1,<5.11"
+# eigen = ">=3.4.0,<3.5"
+# freeimage = ">=3.18.0,<3.19"
+# glog = "=0.6.0"
+# gflags = ">=2.2.2,<2.3"
+# glew = ">=2.1.0,<2.2"
+# cgal-cpp = ">=6.0.1,<6.1"
+# ceres-solver = ">=2.2.0,<2.3"
+# qt-main = ">=5.15.15,<5.16"
+# git = ">=2.47.1,<2.48"
+# flann = ">=1.9.2,<1.10"
+# sqlite = ">=3.47.0,<3.48"
+# vlfeat = ">=0.9.21,<0.10"
+# gmp = ">=6.3.0,<6.4"
+# lz4-c = ">=1.9.4,<1.10"
+# metis = ">=5.1.0,<5.2"
+# libcurand-dev = ">=10.3.7.77,<10.4"
+# cuda-nvcc = ">=12.6.85,<12.7"
+# python = ">=3.13.0,<3.14"
+# yq = ">=3.4.3,<3.5"
+# numpy = ">=2.1.3,<2.2"
+# scipy = ">=1.14.1,<1.15"
+# pyyaml = ">=6.0.2,<6.1"
+# matplotlib = ">=3.9.2,<3.10"
+# tbb-devel="*"
 
-[feature.glomap.tasks]
-git-clone = {cmd = "git-clone.sh alejandrofontan glomap Baselines"}
-build-colmap = {cmd = "pixi run -e colmap install -v"}
-install = {cmd = "./Baselines/glomap/build.sh", depends-on = ["build-colmap"]}
-execute = {cmd = './Baselines/glomap/glomap_reconstruction.sh'}
-rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
-# glomap end
+# [feature.glomap.tasks]
+# git-clone = {cmd = "git-clone.sh alejandrofontan glomap Baselines"}
+# build-colmap = {cmd = "pixi run -e colmap install -v"}
+# install = {cmd = "./Baselines/glomap/build.sh", depends-on = ["build-colmap"]}
+# execute = {cmd = './Baselines/glomap/glomap_reconstruction.sh'}
+# rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
+# # glomap end
 
 ########################################################################################################################
 ########################################################################################################################
@@ -470,59 +492,6 @@ rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
 # rich = ">=13.9.4 ,<13.10"
 # ruff = ">=0.8.0 ,<0.9"
 # # monogs end
-
-########################################################################################################################
-########################################################################################################################
-# orbslam2 begin
-[feature.orbslam2]
-channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
-platforms = ["linux-64"]
-
-[feature.orbslam2.tasks]
-git-clone = "git-clone.sh VSLAM-LAB ORB_SLAM2 Baselines"
-install = {cmd = "./build.sh", cwd = "Baselines/ORB_SLAM2"}
-execute_mono = {cmd = "./bin/mono",  cwd = "Baselines/ORB_SLAM2"}
-execute_rgbd = {cmd = "./bin/rgbd",  cwd = "Baselines/ORB_SLAM2"}
-
-[feature.orbslam2.dependencies]
-libgl-devel = "*"
-libegl-devel = "*"
-libglvnd-devel = "*"
-libopengl-devel = "*"
-
-#mesa-libegl-devel-cos7-x86_64 ="*"
-#mesa-libgl-devel-cos7-x86_64 ="*"
-#mesa-dri-drivers-cos7-x86_64 ="*"
-#libglvnd-egl-cos7-x86_64 ="*"
-#libglvnd-devel-cos7-x86_64 ="*"
-#libselinux-cos7-x86_64 ="*"
-#libxdamage-cos7-x86_64 ="*"
-#libxxf86vm-cos7-x86_64 ="*"
-#libxfixes-cos7-x86_64 ="*"
-#libxext-cos7-x86_64 ="*"
-#libxau-cos7-x86_64 ="*"
-#libxcb-cos7-x86_64 ="*"
-xorg-libxext ="*"
-xorg-libx11 ="*"
-xorg-libxfixes="*"
-xorg-libxrender="*"
-xorg-libice="*"
-xorg-libsm="*"
-xorg-libxdmcp="*"
-xorg-libxau="*"
-
-#cxx-compiler = ">=1.8.0 ,<1.9"
-#c-compiler = ">=1.8.0 ,<1.9"
-compilers = "*"
-
-ninja = ">=1.12.1 ,<1.13"
-cmake = ">=3.31.1 ,<3.32"
-pkg-config = ">=0.29.2 ,<0.30"
-opencv = ">=4.10.0 ,<5"
-eigen = ">=3.4.0 ,<3.5.0"
-yaml-cpp = ">=0.8.0,<0.9"
-pangolin = {version="=2024.07.03", build="h3c9d71d_0", channel="fontan"}
-# orbslam2 end
 
 ########################################################################################################################
 ########################################################################################################################
@@ -728,49 +697,49 @@ pangolin = {version="=2024.07.03", build="h3c9d71d_0", channel="fontan"}
 # extract-rosbag-frames = "python Datasets/extra-files/extract_rosbag_frames.py"
 # ## ros end
 
-# monodataset begin
-[feature.monodataset]
-channels = ["https://fast.prefix.dev/conda-forge"]
-platforms = ["linux-64"]
+# # monodataset begin
+# [feature.monodataset]
+# channels = ["https://fast.prefix.dev/conda-forge"]
+# platforms = ["linux-64"]
 
-[feature.monodataset.tasks]
-git-clone = "git-clone.sh tum-vision mono_dataset_code Baselines"
-build = {cmd = "./Baselines/mono_dataset_code/build.sh", depends-on = ["git-clone"]}
-undistort = {cmd = "./Baselines/mono_dataset_code/bin/playbackDataset"}
+# [feature.monodataset.tasks]
+# git-clone = "git-clone.sh tum-vision mono_dataset_code Baselines"
+# build = {cmd = "./Baselines/mono_dataset_code/build.sh", depends-on = ["git-clone"]}
+# undistort = {cmd = "./Baselines/mono_dataset_code/bin/playbackDataset"}
 
-[feature.monodataset.dependencies]
-cxx-compiler="*"
-c-compiler="*"
-ninja="*"
-cmake="*"
-pkg-config="*"
-libglvnd-egl-cos7-x86_64 ="*"
-libglvnd-devel-cos7-x86_64 ="*"
-mesa-libegl-devel-cos7-x86_64 ="*"
-mesa-libgl-devel-cos7-x86_64 ="*"
-mesa-dri-drivers-cos7-x86_64 ="*"
-libselinux-cos7-x86_64 ="*"
-libxdamage-cos7-x86_64 ="*"
-libxxf86vm-cos7-x86_64 ="*"
-libxfixes-cos7-x86_64 ="*"
-libxext-cos7-x86_64 ="*"
-libxau-cos7-x86_64 ="*"
-libxcb-cos7-x86_64 ="*"
-xorg-libxext ="*"
-xorg-libx11 ="*"
-xorg-libxfixes="*"
-opencv="*"
-eigen ="*"
-libzip = "*"
+# [feature.monodataset.dependencies]
+# cxx-compiler="*"
+# c-compiler="*"
+# ninja="*"
+# cmake="*"
+# pkg-config="*"
+# libglvnd-egl-cos7-x86_64 ="*"
+# libglvnd-devel-cos7-x86_64 ="*"
+# mesa-libegl-devel-cos7-x86_64 ="*"
+# mesa-libgl-devel-cos7-x86_64 ="*"
+# mesa-dri-drivers-cos7-x86_64 ="*"
+# libselinux-cos7-x86_64 ="*"
+# libxdamage-cos7-x86_64 ="*"
+# libxxf86vm-cos7-x86_64 ="*"
+# libxfixes-cos7-x86_64 ="*"
+# libxext-cos7-x86_64 ="*"
+# libxau-cos7-x86_64 ="*"
+# libxcb-cos7-x86_64 ="*"
+# xorg-libxext ="*"
+# xorg-libx11 ="*"
+# xorg-libxfixes="*"
+# opencv="*"
+# eigen ="*"
+# libzip = "*"
 
-[dependencies]
-ffmpeg = ">=7.1.0,<8"
-av = ">=14.1.0,<15"
-svt-av1 = ">=2.3.0,<3"
-gst-libav = ">=1.24.6,<2"
-torchvision = "0.20.1.*"
-torchaudio = "2.5.1.*"
-# monodataset end
+# [dependencies]
+# ffmpeg = ">=7.1.0,<8"
+# av = ">=14.1.0,<15"
+# svt-av1 = ">=2.3.0,<3"
+# gst-libav = ">=1.24.6,<2"
+# torchvision = "0.20.1.*"
+# torchaudio = "2.5.1.*"
+# # monodataset end
 
 ## r2d2 begin
 #[feature.r2d2]
