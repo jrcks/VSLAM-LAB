@@ -717,3 +717,111 @@ def num_tracked_frames(values, dataset_sequences, figures_path, experiments, sha
     fig.canvas.manager.set_window_title("Number of Frames")
     plt.show(block=False)
 
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def plot_table(ax, experiments, label, norm_label, title = '', unit_factor = 1):
+    colors = {}
+    for exp_name, exp in experiments.items():
+        baseline = get_baseline(experiments[exp_name].module)   
+        colors[experiments[exp_name].module] = baseline.color     
+    colors['Sequence name'] = 'black'
+
+    all_logs = []
+    for exp_name, exp in experiments.items():
+        exp_log = pd.read_csv(exp.log_csv)
+        exp_log = exp_log[
+        (exp_log['STATUS'] == 'completed') &
+        (exp_log['SUCCESS'] == True) &
+        (exp_log['EVALUATION'] != 'none')]
+        
+        if norm_label is None:
+            exp_log['__norm__'] = 1.0
+            exp_log['label_per_norm_label'] = unit_factor * exp_log[label] / exp_log['__norm__']
+        else:
+            exp_log['label_per_norm_label'] = unit_factor * exp_log[label] / exp_log[norm_label]
+
+        all_logs.append(exp_log)
+    
+    df = pd.concat(all_logs, ignore_index=True)
+
+    # Per-sequence mean ± std
+    summary = df.groupby(['method_name', 'sequence_name'])['label_per_norm_label'].agg(['mean', 'std']).reset_index()
+    summary['LABEL'] = summary.apply(lambda row: f"{row['mean']:.2f} ± {row['std']:.2f}" 
+                                        if not pd.isna(row['std']) 
+                                        else f"{row['mean']:.2f} ± 0.00", axis=1)
+    pivot = summary.pivot(index='sequence_name', columns='method_name', values='LABEL').fillna('-')
+    pivot = pivot.reset_index()
+    pivot = pivot.rename(columns={'sequence_name': 'Sequence name'})
+
+    # Overall mean ± std per method
+    overall = df.groupby('method_name')['label_per_norm_label'].agg(['mean', 'std']).reset_index()
+    overall['LABEL'] = overall.apply(lambda row: f"{row['mean']:.2f} ± {row['std']:.2f}", axis=1)
+    overall_row = {'Sequence name': 'Overall'}
+    overall_row.update(dict(zip(overall['method_name'], overall['LABEL'])))
+    pivot = pd.concat([pivot, pd.DataFrame([overall_row])], ignore_index=True)
+    
+    # Plot the visual table
+    #fig, ax = plt.subplots(figsize=(10, 4 + 0.3 * len(pivot)))
+    #ax.axis('tight')
+    #ax.axis('off')
+    ax.axis('off')
+    table = ax.table(cellText=pivot.values, colLabels=pivot.columns, loc='center', cellLoc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1.2, 1.2)
+
+    # Align first column (sequence_name) to the left
+    for (row, col), cell in table.get_celld().items():
+        if col == 0:
+            cell.get_text().set_ha('left')
+
+    # Format borders
+    for (row, col), cell in table.get_celld().items():
+        cell.set_linewidth(1)
+        # Show top/bottom borders (horizontal lines)
+        if row == 0:
+            cell.visible_edges = 'B'  # top row: top, bottom, left
+        elif row == len(pivot):
+            cell.visible_edges = 'T'  # last row: bottom, top, left
+        else:
+            cell.visible_edges = ''  # inner rows: top & bottom, left
+
+        # Only first column keeps left border
+        if col == 1:
+            if 'L' not in cell.visible_edges:
+                cell.visible_edges += 'L'
+        else:
+            cell.visible_edges = cell.visible_edges.replace('R', '').replace('L', '')
+
+    # Define header colors for each column (match number of columns)
+    header_colors = ['#d62728', '#1f77b4', '#2ca02c', '#ff7f0e', '#9467bd', '#8c564b', '#e377c2']  # Extend as needed
+    color_map = {'droidslam': '#1f77b4', 'orbslam2': '#d62728'}
+    # Apply colors to header row
+    for col, cell in table.get_celld().items():
+        row_idx, col_idx = col
+        if row_idx == 0 or row_idx == len(pivot):
+            # Cycle colors if there are more columns than colors defined
+            header_label = table._cells[(0, col_idx)].get_text().get_text()
+            method = header_label.split('\n')[0] if '\n' in header_label else header_label
+            #cell.set_facecolor(color)
+            cell.set_text_props(color=colors[method], weight='bold')  # white bold text for contrast
+
+    if title:
+        ax.set_title(title, pad=10)
+    
+
+def running_time(dataset_sequences, figures_path, experiments):
+    fig, axs = plt.subplots(2, 1, figsize=(7, 6))
+    plot_table(axs[0], experiments, 'TIME', 'num_frames', title='Processing Time (ms / frame)', unit_factor=1e3)
+    plot_table(axs[1], experiments, 'TIME', None, title='Processing Time (s)')
+    plt.tight_layout()
+    plt.show()
+    #table = axs[0].table(cellText=pivot.values, colLabels=pivot.columns, loc='center', cellLoc='center')
+    ...
+    
+    #plot_table(experiments, 'TIME','num_frames')
+
+
+
+

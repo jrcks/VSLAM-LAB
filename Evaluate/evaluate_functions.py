@@ -70,13 +70,15 @@ def evaluate_sequence(exp, dataset, sequence_name, overwrite=False):
         trajectory_file = f"{evaluated_run}_{TRAJECTORY_FILE_NAME}.txt"
         exists = (accuracy["traj_name"] == trajectory_file).any()
         if exists:
-            exp_log.loc[(exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name),"EVALUATION"] = METRIC
+            run_mask = (exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name)
+            exp_log.loc[run_mask, "EVALUATION"] = METRIC
 
             # Find number of frames in the sequence
             rgb_exp_txt = os.path.join(trajectories_path, f"rgb_exp.txt")
             with open(rgb_exp_txt, "r") as file:
                 num_frames = sum(1 for _ in file)
             accuracy.loc[accuracy["traj_name"] == trajectory_file,"num_frames"] = num_frames
+            exp_log.loc[run_mask, "num_frames"] = num_frames
 
             # Find number of tracked frames
             trajectory_file_txt = os.path.join(trajectories_path, trajectory_file)
@@ -86,6 +88,7 @@ def evaluate_sequence(exp, dataset, sequence_name, overwrite=False):
             with open(trajectory_file_txt, "r") as file:
                 num_tracked_frames = sum(1 for _ in file)
             accuracy.loc[accuracy["traj_name"] == trajectory_file,"num_tracked_frames"] = num_tracked_frames    
+            exp_log.loc[run_mask, "num_tracked_frames"] = num_tracked_frames
 
             # Find number of evaluated frames
             trajectory_file_tum = os.path.join(trajectories_path,VSLAM_LAB_EVALUATION_FOLDER, trajectory_file.replace(".txt", ".tum"))
@@ -94,7 +97,8 @@ def evaluate_sequence(exp, dataset, sequence_name, overwrite=False):
                 continue
             with open(trajectory_file_tum, "r") as file:
                 num_evaluated_frames = sum(1 for _ in file) - 1
-            accuracy.loc[accuracy["traj_name"] == trajectory_file,"num_evaluated_frames"] = num_evaluated_frames    
+            accuracy.loc[accuracy["traj_name"] == trajectory_file,"num_evaluated_frames"] = num_evaluated_frames   
+            exp_log.loc[run_mask, "num_evaluated_frames"] = num_evaluated_frames 
         else:
             exp_log.loc[(exp_log["exp_it"] == int(evaluated_run)) & (exp_log["sequence_name"] == sequence_name),"EVALUATION"] = 'failed'
 
