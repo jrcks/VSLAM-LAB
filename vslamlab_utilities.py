@@ -211,7 +211,7 @@ def check_experiment_resources(num_baselines_to_install, num_automatic_install, 
         except TimeoutOccurred:
             user_input = 'Y'
             print(f"{ws(4)}No input detected. Defaulting to 'Y'.")
-        if user_input != 'Y':
+        if user_input == 'n':
             exit()   
 
 ###################### Check experiment syntax ######################
