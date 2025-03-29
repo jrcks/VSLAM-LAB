@@ -207,7 +207,7 @@ def check_experiment_resources(num_baselines_to_install, num_automatic_install, 
         
         message = (f"{ws(4)}All issues are \033[92mautomatically\033[0m fixable. Would you like to continue solving them (Y/n): ")
         try:
-            user_input = inputimeout(prompt=message, timeout=60*10).strip().upper()
+            user_input = inputimeout(prompt=message, timeout=60*10).strip()
         except TimeoutOccurred:
             user_input = 'Y'
             print(f"{ws(4)}No input detected. Defaulting to 'Y'.")
