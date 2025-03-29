@@ -91,8 +91,9 @@ def evo_get_accuracy(zip_files, accuracy_csv):
         else:
             existing_data = None
 
-        command = (f"pixi run -e evo evo_res {zip_file_chunk} --save_table {accuracy_csv}")
+        command = (f"pixi run -e vslamlab evo_res {zip_file_chunk} --save_table {accuracy_csv}")
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
         _, _ = process.communicate()
 
         if os.path.exists(accuracy_csv):
