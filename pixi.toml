@@ -6,8 +6,9 @@ channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
 [tasks]
-vslamlab = {cmd = "pixi run -e vslamlab python vslamlab_run.py $ARGUMENT $OVEWRITE && pixi run -e vslamlab python vslamlab_eval.py $ARGUMENT $OVEWRITE", env = { ARGUMENT = "--exp_yaml exp_debug.yaml"}}
-evaluate = {cmd = "pixi run -e vslamlab python vslamlab_eval.py $ARGUMENT", env = { ARGUMENT = "--exp_yaml exp_debug.yaml"}}
+vslamlab = {cmd = "pixi run -e vslamlab python vslamlab_run.py $ARGUMENT $OVEWRITE && pixi run -e vslamlab python vslamlab_eval.py $ARGUMENT $OVEWRITE", env = {ARGUMENT = "--exp_yaml exp_debug.yaml", OVEWRITE = "-overwrite"}}
+vslamlab_debug = {cmd = "pixi run -e vslamlab python vslamlab_run.py $ARGUMENT $OVEWRITE && pixi run -e vslamlab python vslamlab_eval.py $ARGUMENT $OVEWRITE", env = {ARGUMENT = "--exp_yaml exp_debug.yaml", OVEWRITE = " "}}
+evaluate = {cmd = "pixi run -e vslamlab python vslamlab_eval.py $ARGUMENT $OVEWRITE", env = {ARGUMENT = "--exp_yaml exp_debug.yaml", OVEWRITE = " "}}
 
 set-benchmark-path  = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_BENCHMARK_path"}
 set-evaluation-path = {cmd = "pixi run -e vslamlab python path_constants.py set_VSLAMLAB_EVALUATION_path"}
@@ -30,12 +31,13 @@ clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
 [environments]
 vslamlab = {features = ["vslamlab"], no-default-feature = true}
 
-droidslam = {features = ["droidslam"], no-default-feature = true, solve-group = "pytorch-cuda"}
-dpvo = {features = ["dpvo"], no-default-feature = true}
+droidslam = {features = ["droidslam"], no-default-feature = true}
 mast3rslam = {features = ["mast3rslam"], no-default-feature = true}
+orbslam2 = {features = ["orbslam2"], no-default-feature = true}
+
+dpvo = {features = ["dpvo"], no-default-feature = true}
 colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
 glomap = {features = ["glomap"], no-default-feature = true, solve-group = "colmap"}
-orbslam2 = {features = ["orbslam2"], no-default-feature = true}
 monodataset = {features = ["monodataset"], no-default-feature = true}
 
 #monogs = {features = ["monogs"], no-default-feature = true}
@@ -132,6 +134,33 @@ huggingface_hub="*"
 torch-scatter =">=2.1.1,<2.2"
 # droidslam end
 
+
+########################################################################################################################
+########################################################################################################################
+# mast3rslam begin
+[feature.mast3rslam]
+platforms = ["linux-64"]
+channels = ["https://fast.prefix.dev/conda-forge", "pytorch"]
+
+[feature.mast3rslam.system-requirements]
+cuda = "12.0"
+
+[feature.mast3rslam.tasks]
+git-clone = {cmd = "git-clone.sh VSLAM-LAB MASt3R-SLAM Baselines"}
+download-weights = {cmd = "./vslamlab_mast3rslam_download_weights.sh", cwd = "Baselines/MASt3R-SLAM"}
+install = {cmd = "pip install -e thirdparty/mast3r && pip install -e thirdparty/in3d && pip install --no-build-isolation -e .", cwd = "Baselines/MASt3R-SLAM", depends-on = ["download-weights"]}
+execute = {cmd = 'python vslamlab_mast3rslam_mono.py',  cwd = 'Baselines/MASt3R-SLAM'}
+
+[feature.mast3rslam.dependencies]
+cuda = ">=12.4.0"
+pip = "*"
+python="3.11.*"
+pytorch = {build = "py3.11_cuda12.4_cudnn9.1.0_0", channel = "pytorch"}      
+pytorch-cuda = {build = "hc786d27_7", channel = "pytorch"}
+torchvision = {build = "py311_cu124", channel = "pytorch"} 
+torchaudio = {build = "py311_cu124", channel = "pytorch"}  
+# mast3rslam end
+
 ########################################################################################################################
 ########################################################################################################################
 # dpvo begin
@@ -203,32 +232,6 @@ evo = "*"
 opencv-python = "*"
 yacs = "*"
 # dpvo end
-
-########################################################################################################################
-########################################################################################################################
-# mast3rslam begin
-[feature.mast3rslam]
-platforms = ["linux-64"]
-channels = ["https://fast.prefix.dev/conda-forge", "pytorch"]
-
-[feature.mast3rslam.system-requirements]
-cuda = "12.0"
-
-[feature.mast3rslam.tasks]
-git-clone = {cmd = "git-clone.sh VSLAM-LAB MASt3R-SLAM Baselines"}
-download-weights = {cmd = "./vslamlab_mast3rslam_download_weights.sh", cwd = "Baselines/MASt3R-SLAM"}
-install = {cmd = "pip install -e thirdparty/mast3r && pip install -e thirdparty/in3d && pip install --no-build-isolation -e .", cwd = "Baselines/MASt3R-SLAM", depends-on = ["download-weights"]}
-execute = {cmd = 'python vslamlab_mast3rslam_mono.py',  cwd = 'Baselines/MASt3R-SLAM'}
-
-[feature.mast3rslam.dependencies]
-cuda = ">=12.4.0"
-pip = "*"
-python="3.11.*"
-pytorch = {build = "py3.11_cuda12.4_cudnn9.1.0_0", channel = "pytorch"}      
-pytorch-cuda = {build = "hc786d27_7", channel = "pytorch"}
-torchvision = {build = "py311_cu124", channel = "pytorch"} 
-torchaudio = {build = "py311_cu124", channel = "pytorch"}  
-# mast3rslam end
 
 ########################################################################################################################
 ########################################################################################################################

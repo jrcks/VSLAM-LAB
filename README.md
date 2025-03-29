@@ -62,7 +62,7 @@ For a full list of available systems and datasets, see the [VSLAM-LAB Supported 
 Example commands:
 ```
 pixi run demo droidslam euroc MH_01_easy
-pixi run demo monogs hamlyn rectified01
+pixi run demo mast3rslam eth table_3
 pixi run demo orbslam2 rgbdtum rgbd_dataset_freiburg1_xyz
 pixi run demo dust3r 7scenes chess_seq-01
 pixi run demo glomap eth table_3
@@ -76,7 +76,7 @@ pixi run set-evaluation-path /media/${USER}/data
 With **VSLAM-LAB**, you can easily design and configure experiments using a YAML file and run them with a single command.
 To **run** the experiment demo, execute the following command:
 ```
-pixi run vslamlab --exp_yaml configs/exp_demo.yaml
+ARGUMENT="--exp_yaml exp_debug.yaml" OVEWRITE="-overwrite" pixi run vslamlab
 ```
 **Note:** *This demo will execute one run per sequence using each VSLAM system. There are 80 pre-executed runs saved in VSLAM-LAB-Evaluation to assist with visualization purposes. The demo uses modified versions of [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2) and [**DSO**](https://github.com/alejandrofontan/dso). Please note that the comparison is between SLAM and Odometry and is intended only as an example of how to use **VSLAM-LAB**.*
 
