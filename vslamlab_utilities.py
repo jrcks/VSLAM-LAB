@@ -1,5 +1,7 @@
 import sys, os, yaml, shutil, csv
+import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from inputimeout import inputimeout, TimeoutOccurred
 
 from Datasets.get_dataset import get_dataset
@@ -303,6 +305,67 @@ def print_baselines():
         print(f" - {baseline}")
     print("For detailed information about a baseline, use 'pixi run baseline-info <baseline_name>'")
 
+def sequence_info(dataset_name, sequence_name):
+    dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
+    sequence_path = os.path.join(dataset.dataset_path, sequence_name)
+    groundtruth_txt = os.path.join(sequence_path, 'groundtruth.txt')
+    if os.path.exists(groundtruth_txt):
+        plot_trajectory(groundtruth_txt)
+
+def plot_trajectories(trajectory_files):
+    fig2d, ax2d = plt.subplots(figsize=(8, 6))
+
+    for trajectory_file in trajectory_files:
+        label = trajectory_file.split('/')[-1]  # Use filename as label
+        plot_trajectory(trajectory_file, ax=ax2d)#, label=label)
+
+    # Final touches for 2D plot
+    ax2d.set_xlabel("X [m]")
+    ax2d.set_ylabel("Y [m]")
+    ax2d.set_title("2D Trajectories")
+    ax2d.axis('equal')
+    ax2d.grid(True)
+    #ax2d.legend()
+    fig2d.tight_layout()
+    plt.show()
+    
+def plot_trajectory(trajectory_file, ax):
+
+    data = np.loadtxt(trajectory_file)
+
+    # Extract positions
+    timestamps = data[:, 0]
+    xs = data[:, 1]
+    ys = data[:, 2]
+    zs = data[:, 3]
+
+    #ax.plot(xs, ys, marker='o', linestyle='-', markersize=2, label=label or trajectory_file)
+    ax.plot(xs, ys, marker='o', linestyle='-', markersize=2 or trajectory_file)
+    # # Plot 2D trajectory (XY)
+    # plt.figure(figsize=(8, 6))
+    # plt.plot(xs, ys, marker='o', linestyle='-', markersize=2, label='Trajectory')
+    # plt.xlabel("X [m]")
+    # plt.ylabel("Y [m]")
+    # plt.title("2D Trajectory")
+    # plt.axis('equal')
+    # plt.grid(True)
+    # plt.legend()
+    # plt.tight_layout()
+    # plt.show()
+
+    # # Optional: 3D plot
+    # from mpl_toolkits.mplot3d import Axes3D
+
+    # fig = plt.figure(figsize=(10, 7))
+    # ax = fig.add_subplot(111, projection='3d')
+    # ax.plot(xs, ys, zs, marker='o', linestyle='-', markersize=2, label='Trajectory')
+    # ax.set_xlabel('X [m]')
+    # ax.set_ylabel('Y [m]')
+    # ax.set_zlabel('Z [m]')
+    # ax.set_title('3D Trajectory')
+    # ax.legend()
+    # plt.tight_layout()
+
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         function_name = sys.argv[1]
@@ -312,4 +375,9 @@ if __name__ == "__main__":
             print_datasets()
         if function_name == "print_baselines":
             print_baselines()
+        if function_name == "sequence_info":
+            sequence_info(sys.argv[2], sys.argv[3])
+        if function_name == "plot_trajectories":
+            trajectory_files = sys.argv[2:]
+            plot_trajectories(trajectory_files)
             

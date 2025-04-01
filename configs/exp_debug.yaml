@@ -4,11 +4,11 @@
 #   Parameters: {verbose: 1}
 #   Module: orbslam2
 
-exp_test_tobi:
+exp_test_grpah:
   Config: config_debug.yaml
   NumRuns: 1
-  Parameters: {verbose: 1}
-  Module: droidslam
+  Parameters: {verbose: 1, rgb_idx: [0,400]}
+  Module: mast3rslam
 
 
 # exp_test_graph2:
