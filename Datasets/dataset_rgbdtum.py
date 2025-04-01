@@ -145,4 +145,4 @@ class RGBDTUM_dataset(DatasetVSLAMLab):
             os.remove(os.path.join(sequence_path, 'depth.txt'))
             os.remove(os.path.join(sequence_path, 'accelerometer.txt'))
             os.remove(os.path.join(sequence_path, 'rgb_original.txt'))
-            os.remove(os.path.join(self.dataset_path, '*.tgz*'))
+            os.remove(os.path.join(self.dataset_path, f'{sequence_name}.tgz'))
