@@ -20,9 +20,9 @@ def full_comparison(experiments, VSLAMLAB_BENCHMARK, COMPARISONS_YAML_DEFAULT, c
     with open(COMPARISONS_YAML_DEFAULT, 'r') as file:
         comparisons = yaml.safe_load(file)
 
-    dataset_sequences, dataset_nicknames, dataset_rgbHz, exp_names = get_experiments(experiments)
+    dataset_sequences, dataset_nicknames, dataset_rgbHz, exp_names, sequence_nicknames = get_experiments(experiments)
     accuracies = get_accuracies(experiments, dataset_sequences)
-
+   
     # Comparisons switch
     def switch_comparison(comparison_):
         switcher = {
@@ -38,7 +38,7 @@ def full_comparison(experiments, VSLAMLAB_BENCHMARK, COMPARISONS_YAML_DEFAULT, c
                                                                      experiments, accuracies, figures_path),
             'image_canvas': lambda: plot_functions.create_and_show_canvas(dataset_sequences, VSLAMLAB_BENCHMARK, figures_path),
             'num_tracked_frames': lambda: plot_functions.num_tracked_frames(accuracies, dataset_sequences, figures_path, experiments),
-            'running_time': lambda: plot_functions.running_time(dataset_sequences, figures_path, experiments),
+            'running_time': lambda: plot_functions.running_time(figures_path, experiments, sequence_nicknames),
         }
 
         func = switcher.get(comparison_, lambda: "Invalid case")
@@ -88,6 +88,7 @@ def get_experiments(experiments):
         exp_folders.append(exp.folder)
 
     dataset_nicknames = {}
+    sequence_nicknames = {}
     dataset_rgbHz = {}
     for dataset_name, sequence_names in dataset_sequences.items():
         dataset = get_dataset(dataset_name, "-")
@@ -95,9 +96,10 @@ def get_experiments(experiments):
         dataset_rgbHz[dataset_name] = dataset.rgb_hz
         for sequence_name in sequence_names:
             sequences_nickname = dataset.get_sequence_nickname(sequence_name)
+            sequence_nicknames[sequence_name] = sequences_nickname
             dataset_nicknames[dataset_name].append(sequences_nickname)
 
-    return dataset_sequences, dataset_nicknames, dataset_rgbHz, exp_names
+    return dataset_sequences, dataset_nicknames, dataset_rgbHz, exp_names, sequence_nicknames
 
 
 def get_accuracies(experiments, dataset_sequences):

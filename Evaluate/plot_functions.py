@@ -39,6 +39,7 @@ from Datasets.get_dataset import get_dataset
 
 import matplotlib.ticker as ticker
 from matplotlib.transforms import ScaledTranslation
+from matplotlib.colors import to_hex
 
 random.seed(6)
 colors_all = mcolors.CSS4_COLORS
@@ -720,12 +721,13 @@ def num_tracked_frames(values, dataset_sequences, figures_path, experiments, sha
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def plot_table(ax, experiments, label, norm_label, title = '', unit_factor = 1):
+def plot_table(ax, experiments, label, norm_label, sequence_nicknames, title = '', unit_factor = 1, figures_path = ''):
     colors = {}
     for exp_name, exp in experiments.items():
         baseline = get_baseline(experiments[exp_name].module)   
         colors[experiments[exp_name].module] = baseline.color     
-    colors['Sequence name'] = 'black'
+        
+    colors['Sequence'] = 'black'
 
     all_logs = []
     for exp_name, exp in experiments.items():
@@ -750,14 +752,15 @@ def plot_table(ax, experiments, label, norm_label, title = '', unit_factor = 1):
     summary['LABEL'] = summary.apply(lambda row: f"{row['mean']:.2f} ± {row['std']:.2f}" 
                                         if not pd.isna(row['std']) 
                                         else f"{row['mean']:.2f} ± 0.00", axis=1)
+    summary['sequence_name'] = summary['sequence_name'].map(sequence_nicknames).fillna(summary['sequence_name'])
     pivot = summary.pivot(index='sequence_name', columns='method_name', values='LABEL').fillna('-')
     pivot = pivot.reset_index()
-    pivot = pivot.rename(columns={'sequence_name': 'Sequence name'})
+    pivot = pivot.rename(columns={'sequence_name': 'Sequence'})
 
     # Overall mean ± std per method
     overall = df.groupby('method_name')['label_per_norm_label'].agg(['mean', 'std']).reset_index()
     overall['LABEL'] = overall.apply(lambda row: f"{row['mean']:.2f} ± {row['std']:.2f}", axis=1)
-    overall_row = {'Sequence name': 'Overall'}
+    overall_row = {'Sequence': 'Overall'}
     overall_row.update(dict(zip(overall['method_name'], overall['LABEL'])))
     pivot = pd.concat([pivot, pd.DataFrame([overall_row])], ignore_index=True)
     
@@ -797,7 +800,9 @@ def plot_table(ax, experiments, label, norm_label, title = '', unit_factor = 1):
     # Define header colors for each column (match number of columns)
     header_colors = ['#d62728', '#1f77b4', '#2ca02c', '#ff7f0e', '#9467bd', '#8c564b', '#e377c2']  # Extend as needed
     color_map = {'droidslam': '#1f77b4', 'orbslam2': '#d62728'}
+
     # Apply colors to header row
+
     for col, cell in table.get_celld().items():
         row_idx, col_idx = col
         if row_idx == 0 or row_idx == len(pivot):
@@ -810,11 +815,45 @@ def plot_table(ax, experiments, label, norm_label, title = '', unit_factor = 1):
     if title:
         ax.set_title(title, pad=10)
     
+    latex_path = os.path.join(figures_path, f"{label}_{norm_label}_label_table.tex")
+    latex_code = pivot.to_latex(index=False, escape=False, column_format='l' + 'c' * (pivot.shape[1] - 1))
 
-def running_time(dataset_sequences, figures_path, experiments):
+    latex_code = latex_code.replace('±', r'$\pm$') 
+    latex_code = latex_code.replace('_', r'\_') 
+    latex_code = latex_code.replace(r'\bottomrule', '') 
+    latex_code = latex_code.replace(r'\toprule', '') 
+    latex_code = latex_code.replace('Overall', r'\textbf{Overall}') 
+    latex_code = latex_code.replace('Sequence', '') 
+
+    for exp_name, exp in experiments.items():
+        baseline = get_baseline(experiments[exp_name].module)   
+        baseline_name = experiments[exp_name].module
+        color_hex = to_hex(baseline.color)  
+        #latex_col = rf'\textcolor[HTML]{{{color_hex[1:].upper()}}}{rf'\\textbf{'{baseline_name}'}'}'
+        latex_col = rf'\textbf{{\textcolor[HTML]{{{color_hex[1:].upper()}}}{{{baseline_name}}}}}'
+
+        latex_code = latex_code.replace(baseline_name, latex_col)
+        # colors[experiments[exp_name].module] = baseline.color     
+        # color_hex = to_hex(colors[col])  
+        # latex_col = rf'\textcolor[HTML]{{{color_hex[1:].upper()}}}{{{col}}}'
+        # colored_columns_latex[experiments[exp_name].module] = latex_col
+
+    lines = latex_code.splitlines()
+    for i, line in enumerate(lines):
+        if 'Overall' in line:
+            lines.insert(i, r'\bottomrule')
+            break
+    latex_code = '\n'.join(lines)
+
+    with open(latex_path, 'w') as f:
+        f.write(latex_code)
+
+def running_time(figures_path, experiments, sequence_nicknames):
     fig, axs = plt.subplots(2, 1, figsize=(7, 6))
-    plot_table(axs[0], experiments, 'TIME', 'num_frames', title='Processing Time (ms / frame)', unit_factor=1e3)
-    plot_table(axs[1], experiments, 'TIME', None, title='Processing Time (s)')
+    plot_table(axs[0], experiments, 'TIME', 'num_frames', title='Processing Time (ms / frame)', unit_factor=1e3, 
+               figures_path=figures_path, sequence_nicknames= sequence_nicknames)
+    plot_table(axs[1], experiments, 'TIME', None, title='Processing Time (s)', 
+               figures_path=figures_path, sequence_nicknames= sequence_nicknames)
     plt.tight_layout()
     plt.show()
     #table = axs[0].table(cellText=pivot.values, colLabels=pivot.columns, loc='center', cellLoc='center')
