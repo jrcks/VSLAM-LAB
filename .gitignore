@@ -31,6 +31,8 @@ Baselines/DroidCalib
 Baselines/DPVO
 Baselines/MASt3R-SLAM
 Baselines/*.txt*
+Baselines/pyslam
+Baselines/MAGiC-SLAM
 
 configs/exp_demo.yaml
 configs/config_demo.yaml
