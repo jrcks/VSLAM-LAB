@@ -96,6 +96,9 @@ def run(experiments, exp_yaml, ablation=False):
             exp_log.loc[first_not_finished_experiment, "SUCCESS"] = results['success']
             exp_log.loc[first_not_finished_experiment, "COMMENTS"] = results['comments']
             exp_log.loc[first_not_finished_experiment, "TIME"] = duration_time
+            exp_log.loc[first_not_finished_experiment, "RAM"] = results['ram']
+            exp_log.loc[first_not_finished_experiment, "SWAP"] = results['swap']
+            exp_log.loc[first_not_finished_experiment, "GPU"] = results['gpu']
             exp_log.to_csv(exp.log_csv, index=False)
                 
             all_experiments_completed[exp_name] = exp_log['STATUS'].eq("completed").all()

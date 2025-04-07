@@ -39,14 +39,14 @@ class Experiment:
                                                 & (exp_log["sequence_name"] == sequence_name) 
                                                 & (exp_log["exp_it"] == int(exp_it))]
                             if exp_log_row.empty:
-                                new_run = [self.module, dataset_name, sequence_name, f"{exp_it}", "", "",0.0, 0.0, "", "none"]
+                                new_run = [self.module, dataset_name, sequence_name, f"{exp_it}", "", "",0.0,0.0, 0.0, 0.0, "", "none"]
                                 new_runs.append(new_run)
             with open(self.log_csv, mode="a", newline="") as file:
                 writer = csv.writer(file)
                 for new_run in new_runs:
                     writer.writerow(new_run)
         else: 
-            log_headers = ["method_name", "dataset_name", "sequence_name", "exp_it", "STATUS", "SUCCESS", "TIME", "MEMORY", "COMMENTS", "EVALUATION"]
+            log_headers = ["method_name", "dataset_name", "sequence_name", "exp_it", "STATUS", "SUCCESS", "TIME", "RAM", "SWAP", "GPU", "COMMENTS", "EVALUATION"]
 
             with open(self.log_csv, mode="w", newline="") as file:
                 writer = csv.writer(file)
@@ -57,7 +57,7 @@ class Experiment:
                         for dataset_name, sequence_names in config_file_data.items():
                             for sequence_name in sequence_names:
                                 exp_it = str(i).zfill(5)  
-                                writer.writerow([self.module, dataset_name, sequence_name, f"{exp_it}", "", "",0.0, 0.0, "", "none"])
+                                writer.writerow([self.module, dataset_name, sequence_name, f"{exp_it}", "", "",0.0, 0.0, 0.0, 0.0, "", "none"])
 
 def check_experiments(exp_yaml, overwrite):
 

@@ -260,9 +260,17 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
             whisker_max[sequence_name] = np.nan
             whisker_min[sequence_name] = np.nan
         else:
+            print(sequence_name)
+            # if whisker_max_seq + width > 0.055 and ('56a0ec536c' in sequence_name) :
+            #     whisker_max[sequence_name] = 0.03
+            #     whisker_min[sequence_name] = 0.02
+            # else:
             whisker_max[sequence_name] = whisker_max_seq + width
-            whisker_min[sequence_name] = whisker_min_seq - width
-
+            if(whisker_min_seq - width < 0):    
+                whisker_min[sequence_name] = whisker_min_seq / 2
+            else:
+                whisker_min[sequence_name] = whisker_min_seq - width
+                         
     # Adjust plot properties for paper
     max_value, min_value = max(whisker_max.values()), min(whisker_min.values())
 
@@ -391,6 +399,7 @@ def radar_seq(values, dataset_sequences, exp_names, dataset_nicknames, metric_na
 
             median_sequence[sequence_name] = np.min(values_sequence[sequence_name])
 
+    print(median_sequence)
     num_vars = len(all_sequence_names)
     iExp = 0
     y = {}
@@ -413,6 +422,7 @@ def radar_seq(values, dataset_sequences, exp_names, dataset_nicknames, metric_na
 
         ax.plot(angles, values_, color=baseline.color, marker='o', linewidth=6)
         ax.plot(np.linspace(0, 2 * np.pi, 100), [2.75] * 100, linestyle="dashed", color="red", linewidth=1)
+        ax.plot(np.linspace(0, 2 * np.pi, 100), [1.0] * 100, linestyle="dashed", color="lime", linewidth=1)
         #ax.plot(np.linspace(0, 2 * np.pi, 100), [2.72] * 100, linestyle="dashed", color="green", linewidth=2)
         ax.set_ylim(0, 3)
         plt.xticks(angles[:-1], all_sequence_names)
@@ -423,7 +433,7 @@ def radar_seq(values, dataset_sequences, exp_names, dataset_nicknames, metric_na
         #new_yticks = current_yticks[:-1]  # Exclude the last tick
         #ax.set_yticks(new_yticks)
         #ax.set_yticklabels([str(tick) for tick in new_yticks], fontsize=12)
-        ax.set_yticklabels(['', 1, '', '',  '', 3], fontsize=24)   
+        ax.set_yticklabels(['', '', '', '',  '', ''], fontsize=24)   
         ax.tick_params(labelsize=30) 
         ax.set_xticklabels(all_sequence_names, fontsize=30, fontweight="bold")
         iExp = iExp + 1
@@ -622,13 +632,12 @@ def num_tracked_frames(values, dataset_sequences, figures_path, experiments, sha
     # Plot boxplots        
     max_rgb = {}      
     for sequence_name, splt in splts.items():
+        max_rgb[sequence_name] = 0
         for i_exp, exp_name in enumerate(exp_names):
             values_seq_exp = values[splt['dataset_name']][sequence_name][exp_name]
-            if values_seq_exp.empty:
-                max_rgb[sequence_name] = 1
-            else:
+            if not values_seq_exp.empty:
                 num_frames = values[splt['dataset_name']][sequence_name][exp_name]['num_frames']
-                max_rgb[sequence_name] = max(num_frames)
+                max_rgb[sequence_name] = max(max(num_frames), max_rgb[sequence_name])
 
     for sequence_name, splt in splts.items():
         for i_exp, exp_name in enumerate(exp_names):
@@ -648,7 +657,7 @@ def num_tracked_frames(values, dataset_sequences, figures_path, experiments, sha
             median_num_frames = np.median(num_frames)
             median_num_tracked_frames = np.median(num_tracked_frames)
             median_num_evaluated_frames = np.median(num_evaluated_frames)
-
+           
             positions = np.array([3 * i_exp, 3 * i_exp + 1, 3 * i_exp + 2]) * WIDTH_PER_SERIES
             axs[splt['id']].bar(
             positions, 
@@ -667,7 +676,7 @@ def num_tracked_frames(values, dataset_sequences, figures_path, experiments, sha
                     boxprops=boxprops, medianprops=medianprops,
                     whiskerprops=whiskerprops,
                     capprops=capprops, flierprops=flierprops)
-        
+
         if shared_scale:
             yticks = [0, 1]
         else:
@@ -749,9 +758,13 @@ def plot_table(ax, experiments, label, norm_label, sequence_nicknames, title = '
 
     # Per-sequence mean ± std
     summary = df.groupby(['method_name', 'sequence_name'])['label_per_norm_label'].agg(['mean', 'std']).reset_index()
-    summary['LABEL'] = summary.apply(lambda row: f"{row['mean']:.2f} ± {row['std']:.2f}" 
-                                        if not pd.isna(row['std']) 
-                                        else f"{row['mean']:.2f} ± 0.00", axis=1)
+    if norm_label == None:
+        summary['LABEL'] = summary.apply(lambda row: f"{row['mean']:.2f} ± {row['std']:.2f}" 
+                                            if not pd.isna(row['std']) 
+                                            else f"{row['mean']:.2f} ± 0.00", axis=1)
+    else:
+        summary['LABEL'] = summary.apply(lambda row: f"{row['mean']:.2f}", axis=1)
+        
     summary['sequence_name'] = summary['sequence_name'].map(sequence_nicknames).fillna(summary['sequence_name'])
     pivot = summary.pivot(index='sequence_name', columns='method_name', values='LABEL').fillna('-')
     pivot = pivot.reset_index()
@@ -759,15 +772,16 @@ def plot_table(ax, experiments, label, norm_label, sequence_nicknames, title = '
 
     # Overall mean ± std per method
     overall = df.groupby('method_name')['label_per_norm_label'].agg(['mean', 'std']).reset_index()
-    overall['LABEL'] = overall.apply(lambda row: f"{row['mean']:.2f} ± {row['std']:.2f}", axis=1)
-    overall_row = {'Sequence': 'Overall'}
-    overall_row.update(dict(zip(overall['method_name'], overall['LABEL'])))
-    pivot = pd.concat([pivot, pd.DataFrame([overall_row])], ignore_index=True)
+    overall['LABEL'] = overall.apply(lambda row: f"{row['mean']:.2f} ± {row['std']:.2f}"
+                                     if not pd.isna(row['std']) 
+                                    else f"{row['mean']:.2f} ± 0.00", axis=1)
+    
+    if norm_label != None:
+        overall_row = {'Sequence': 'Overall'}
+        overall_row.update(dict(zip(overall['method_name'], overall['LABEL'])))
+        pivot = pd.concat([pivot, pd.DataFrame([overall_row])], ignore_index=True)
     
     # Plot the visual table
-    #fig, ax = plt.subplots(figsize=(10, 4 + 0.3 * len(pivot)))
-    #ax.axis('tight')
-    #ax.axis('off')
     ax.axis('off')
     table = ax.table(cellText=pivot.values, colLabels=pivot.columns, loc='center', cellLoc='center')
     table.auto_set_font_size(False)
@@ -848,12 +862,512 @@ def plot_table(ax, experiments, label, norm_label, sequence_nicknames, title = '
     with open(latex_path, 'w') as f:
         f.write(latex_code)
 
+def get_baseline_colors(experiments):
+    colors = {}
+    for exp_name, _ in experiments.items():
+        baseline = get_baseline(experiments[exp_name].module)   
+        colors[baseline.name_label] = baseline.color     
+    colors['Sequence'] = 'black'
+    return colors
+
+def get_baseline_labels(experiments):
+    baseline_labels = {}
+    for exp_name, _ in experiments.items():
+        baseline = get_baseline(experiments[exp_name].module)   
+        baseline_labels[baseline.baseline_name] = baseline.name_label     
+    return baseline_labels    
+
+def combine_exp_log(experiments, label, norm_label, unit_factor):
+    all_logs = []
+    for exp_name, exp in experiments.items():
+        exp_log = pd.read_csv(exp.log_csv)
+        exp_log = exp_log[
+        (exp_log['STATUS'] == 'completed') &
+        (exp_log['SUCCESS'] == True) &
+        (exp_log['EVALUATION'] != 'none')]
+        
+        if norm_label is None:
+            exp_log['__norm__'] = 1.0
+            exp_log['label_per_norm_label'] = unit_factor * exp_log[label] / exp_log['__norm__']
+        else:
+            exp_log['label_per_norm_label'] = unit_factor * exp_log[label] / exp_log[norm_label]
+
+        all_logs.append(exp_log)
+    
+    df = pd.concat(all_logs, ignore_index=True)
+    return df
+
+def apply_colors(rows_to_color, table, colors):
+    for col, cell in table.get_celld().items():
+        row_idx, col_idx = col
+        if row_idx in rows_to_color:
+            header_label = table._cells[(0, col_idx)].get_text().get_text()
+            method = header_label.split('\n')[0] if '\n' in header_label else header_label
+            cell.set_text_props(color=colors[method], weight='bold')  # white bold text for contrast
+    return table
+
+def plot_table_memory_per_frame(ax, experiments, sequence_nicknames, title = '', unit_factor = 1, figures_path = ''):
+    ax.axis('off')
+    baseline_colors = get_baseline_colors(experiments)
+    baseline_labels = get_baseline_labels(experiments)
+
+    dfs = []
+    for exp_name, exp in experiments.items():
+        exp_log = pd.read_csv(exp.log_csv)
+        exp_log = exp_log[
+        (exp_log['STATUS'] == 'completed') &
+        (exp_log['SUCCESS'] == True) &
+        (exp_log['EVALUATION'] != 'none')]
+        dfs.append(exp_log)
+    df_all = pd.concat(dfs, ignore_index=True)
+    df_all['GPU'] *= unit_factor/df_all['num_frames'] 
+    df_all['SWAP'] *= unit_factor/df_all['num_frames'] 
+    df_all['RAM'] *= unit_factor/df_all['num_frames'] 
+
+    metrics = ['GPU', 'RAM', 'SWAP']
+    # Compute both mean and std
+    grouped_mean = df_all.groupby(['sequence_name', 'method_name'])[metrics].mean()
+    grouped_std = df_all.groupby(['sequence_name', 'method_name'])[metrics].std()
+
+    # Combine them into a formatted string: "mean ± std"
+    def format_mean_std(mean, std):
+        mean_rounded = mean.round(2)
+        return mean_rounded.astype(str)
+
+    grouped = grouped_mean.combine(grouped_std, format_mean_std)
+
+    table = grouped.unstack('method_name')
+
+    table.columns = pd.MultiIndex.from_tuples(
+        [(method, metric) for metric, method in table.columns],
+        names=['Baseline', 'Metric']
+    )
+    table = table.sort_index(axis=1, level=0)
+    
+    # Add 'Sequence' column with value 'Average'
+    top_row = [baseline_labels.get(col[0], col[0]) if col[1] == 'RAM' else '' for col in table.columns]
+    bottom_row = [col[1] for col in table.columns]
+    # Compute average (mean) across sequences for each method and metric
+ 
+    full_table = pd.DataFrame([top_row, bottom_row], columns=table.columns)
+    data_rows = pd.DataFrame(table.values, columns=table.columns, index=table.index)
+    
+    full_matrix = pd.concat([full_table, data_rows])
+
+    ax.axis('tight')
+    cell_text = full_matrix.values.tolist()
+    mapped_index = [sequence_nicknames.get(seq, seq) for seq in data_rows.index]
+    row_labels = [''] * 2 + mapped_index
+
+    table_plot = ax.table(
+        cellText=cell_text,
+        rowLabels=row_labels,
+        loc='center',
+        cellLoc='center'
+    )
+    table_plot.auto_set_font_size(False)
+    table_plot.set_fontsize(10)
+    table_plot.scale(1.3, 1.3)
+
+    # Format borders
+    for (row, col), cell in table_plot.get_celld().items():
+        cell.set_linewidth(1)
+        cell.visible_edges = '' 
+        if row == 0 or row == 1:
+            cell.visible_edges = 'B' 
+
+    # Apply colors only to the top header row (row index 0)
+    for col_idx, col in enumerate(table.columns):
+        method_name = col[0]
+        metric = col[1]
+        if metric == 'RAM' and baseline_labels[method_name] in baseline_colors:
+            cell = table_plot[0, col_idx]
+            cell.set_text_props(weight='bold', color=baseline_colors[baseline_labels[method_name]])  # Optional: bold label
+
+    ax.set_title(title, pad=10)
+    #ax.tight_layout()
+   
+    import os
+
+    # Prepare data for LaTeX export
+    latex_table = data_rows.copy()
+    latex_table.index = mapped_index  # Replace index with sequence nicknames
+
+    # Get the ordered list of baselines and metrics
+    baseline_headers = [col[0] for col in latex_table.columns]
+    metric_headers = [col[1] for col in latex_table.columns]
+
+    # Group baseline headers and count occurrences
+    from collections import OrderedDict
+
+    baseline_counts = OrderedDict()
+    for b in baseline_headers:
+        baseline_counts[b] = baseline_counts.get(b, 0) + 1
+
+    # STEP 1: Build the LaTeX header with two rows
+    header_row_1 = [""]
+    header_row_2 = [""]
+    for baseline_name, count in baseline_counts.items():
+        label = baseline_labels.get(baseline_name, baseline_name)
+        color = baseline_colors.get(label, '#FFFFFF').lstrip('#')
+        color_hex = to_hex(color)  
+        header_row_1.append(
+            rf"\multicolumn{{{3}}}{{c}}{{\textbf{{\textcolor[HTML]{{{color_hex[1:].upper()}}}{{{baseline_labels[baseline_name]}}}}}}}"
+        )
+        header_row_2.extend(["GPU", "RAM", "SWAP"])  # assuming fixed order
+
+    # STEP 2: Format the data rows (with LaTeX-safe escaping)
+    body_lines = []
+    for idx, row in latex_table.iterrows():
+        row_line = [f"\\texttt{{{idx}}}"] + list(row.values)
+        body_lines.append(" & ".join(row_line) + " \\\\")
+
+    # STEP 3: Write the complete LaTeX table
+    ncols = len(header_row_2)
+    col_format = 'l' + 'c' * ncols
+    lines = [
+        f"\\begin{{tabular}}{{{col_format}}}",
+        " & ".join(header_row_1) + " \\\\", 
+        " & ".join(header_row_2) + " \\\\ \\midrule"
+    ] + body_lines + [
+        "\\bottomrule",
+        "\\end{tabular}",
+    ]
+
+    # Save to file
+    latex_path = os.path.join(figures_path, "memory_usage_table.tex")
+    with open(latex_path, "w") as f:
+        f.write("\n".join(lines))
+
+def plot_table_memory_total(ax, experiments, sequence_nicknames, title = '', unit_factor = 1, figures_path = ''):
+    ax.axis('off')
+    baseline_colors = get_baseline_colors(experiments)
+    baseline_labels = get_baseline_labels(experiments)
+
+    dfs = []
+    for exp_name, exp in experiments.items():
+        exp_log = pd.read_csv(exp.log_csv)
+        exp_log = exp_log[
+        (exp_log['STATUS'] == 'completed') &
+        (exp_log['SUCCESS'] == True) &
+        (exp_log['EVALUATION'] != 'none')]
+        dfs.append(exp_log)
+    df_all = pd.concat(dfs, ignore_index=True)
+    df_all['GPU'] /= unit_factor
+    df_all['SWAP'] /= unit_factor
+    df_all['RAM'] /= unit_factor
+
+    metrics = ['GPU', 'RAM', 'SWAP']
+    # Compute both mean and std
+    grouped_mean = df_all.groupby(['sequence_name', 'method_name'])[metrics].mean()
+    grouped_std = df_all.groupby(['sequence_name', 'method_name'])[metrics].std()
+
+    # Combine them into a formatted string: "mean ± std"
+    def format_mean_std(mean, std):
+        mean_rounded = mean.round(2)
+        std_rounded = std.round(2)
+        # Replace NaN std with 0.00 and format
+        std_filled = std_rounded.fillna(0.0)
+        return mean_rounded.astype(str) + ' ± ' + std_filled.astype(str)
+
+    grouped = grouped_mean.combine(grouped_std, format_mean_std)
+
+    table = grouped.unstack('method_name')
+
+    table.columns = pd.MultiIndex.from_tuples(
+        [(method, metric) for metric, method in table.columns],
+        names=['Baseline', 'Metric']
+    )
+    table = table.sort_index(axis=1, level=0)
+    top_row = [baseline_labels.get(col[0], col[0]) if col[1] == 'RAM' else '' for col in table.columns]
+    bottom_row = [col[1] for col in table.columns]
+    full_table = pd.DataFrame([top_row, bottom_row], columns=table.columns)
+    data_rows = pd.DataFrame(table.values, columns=table.columns, index=table.index)
+    full_matrix = pd.concat([full_table, data_rows])
+
+    ax.axis('tight')
+    cell_text = full_matrix.values.tolist()
+    mapped_index = [sequence_nicknames.get(seq, seq) for seq in data_rows.index]
+    row_labels = [''] * 2 + mapped_index
+
+    table_plot = ax.table(
+        cellText=cell_text,
+        rowLabels=row_labels,
+        loc='center',
+        cellLoc='center'
+    )
+    table_plot.auto_set_font_size(False)
+    table_plot.set_fontsize(10)
+    table_plot.scale(1.3, 1.3)
+
+    # Format borders
+    for (row, col), cell in table_plot.get_celld().items():
+        cell.set_linewidth(1)
+        cell.visible_edges = '' 
+        if row == 0 or row == 1:
+            cell.visible_edges = 'B' 
+
+    # Apply colors only to the top header row (row index 0)
+    for col_idx, col in enumerate(table.columns):
+        method_name = col[0]
+        metric = col[1]
+        if metric == 'RAM' and baseline_labels[method_name] in baseline_colors:
+            cell = table_plot[0, col_idx]
+            cell.set_text_props(weight='bold', color=baseline_colors[baseline_labels[method_name]])  # Optional: bold label
+
+    ax.set_title(title, pad=10)
+
+    import os
+
+    # Prepare data for LaTeX export
+    latex_table = data_rows.copy()
+    latex_table.index = mapped_index  # Replace index with sequence nicknames
+
+    # Get the ordered list of baselines and metrics
+    baseline_headers = [col[0] for col in latex_table.columns]
+    metric_headers = [col[1] for col in latex_table.columns]
+
+    # Group baseline headers and count occurrences
+    from collections import OrderedDict
+
+    baseline_counts = OrderedDict()
+    for b in baseline_headers:
+        baseline_counts[b] = baseline_counts.get(b, 0) + 1
+
+    # STEP 1: Build the LaTeX header with two rows
+    header_row_1 = [""]
+    header_row_2 = [""]
+    for baseline_name, count in baseline_counts.items():
+        label = baseline_labels.get(baseline_name, baseline_name)
+        color = baseline_colors.get(label, '#FFFFFF').lstrip('#')
+        color_hex = to_hex(color)  
+        header_row_1.append(
+            rf"\multicolumn{{{3}}}{{c}}{{\textbf{{\textcolor[HTML]{{{color_hex[1:].upper()}}}{{{baseline_labels[baseline_name]}}}}}}}"
+        )
+        header_row_2.extend(["GPU", "RAM", "SWAP"])  # assuming fixed order
+
+    # STEP 2: Format the data rows (with LaTeX-safe escaping)
+    body_lines = []
+    for idx, row in latex_table.iterrows():
+        row_line = [f"\\texttt{{{idx}}}"] + list(row.values)
+        body_lines.append(" & ".join(row_line) + " \\\\")
+
+    # STEP 3: Write the complete LaTeX table
+    ncols = len(header_row_2)
+    col_format = 'l' + 'c' * ncols
+    lines = [
+        f"\\begin{{tabular}}{{{col_format}}}",
+        " & ".join(header_row_1) + " \\\\", 
+        " & ".join(header_row_2) + " \\\\ \\midrule"
+    ] + body_lines + [
+        "\\bottomrule",
+        "\\end{tabular}",
+    ]
+
+    # Save to file
+    latex_path = os.path.join(figures_path, "memory_usage_table.tex")
+    with open(latex_path, "w") as f:
+        f.write("\n".join(lines))
+
+def plot_table_time_total(ax, experiments, label, sequence_nicknames, title = '', unit_factor = 1, figures_path = ''):
+    baseline_colors = get_baseline_colors(experiments)
+    baseline_labels = get_baseline_labels(experiments)
+    df = combine_exp_log(experiments, label, None, unit_factor)
+        
+    # Per-sequence mean ± std
+    summary = df.groupby(['method_name', 'sequence_name'])['label_per_norm_label'].agg(['mean', 'std']).reset_index()
+    summary['LABEL'] = summary.apply(lambda row: f"{row['mean']:.2f} ± {row['std']:.2f}"
+                                    if not pd.isna(row['std']) 
+                                    else f"{row['mean']:.2f} ± 0.00", axis=1)
+
+    summary['sequence_name'] = summary['sequence_name'].map(sequence_nicknames).fillna(summary['sequence_name'])
+    pivot = summary.pivot(index='sequence_name', columns='method_name', values='LABEL').fillna('-')
+    pivot = pivot.reset_index()
+    pivot = pivot.rename(columns={'sequence_name': 'Sequence'})
+
+    pivot = pivot.rename(columns=baseline_labels)
+    # Plot the visual table
+    ax.axis('off')
+    table = ax.table(cellText=pivot.values, colLabels=pivot.columns, loc='center', cellLoc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1.2, 1.2)
+
+    # Align first column (sequence_name) to the left
+    for (row, col), cell in table.get_celld().items():
+        if col == 0:
+            cell.get_text().set_ha('left')
+
+    # Format borders
+    for (row, col), cell in table.get_celld().items():
+        cell.set_linewidth(1)
+        # Show top/bottom borders (horizontal lines)
+        if row == 0:
+            cell.visible_edges = 'B'  # top row: top, bottom, left
+        else:
+            cell.visible_edges = ''  # inner rows: top & bottom, left
+
+        # Only first column keeps left border
+        if col == 1:
+            if 'L' not in cell.visible_edges:
+                cell.visible_edges += 'L'
+        else:
+            cell.visible_edges = cell.visible_edges.replace('R', '').replace('L', '')
+
+    table =  apply_colors([0], table, baseline_colors)
+
+    if title:
+        ax.set_title(title, pad=10)
+    
+    # Save latex code
+    latex_path = os.path.join(figures_path, f"{label}_total_table.tex")
+    latex_code = pivot.to_latex(index=False, escape=False, column_format='l' + 'c' * (pivot.shape[1] - 1))
+
+    latex_code = latex_code.replace('±', r'$\pm$') 
+    latex_code = latex_code.replace('_', r'\_') 
+    latex_code = latex_code.replace(r'\bottomrule', '') 
+    latex_code = latex_code.replace(r'\toprule', '') 
+    latex_code = latex_code.replace('Overall', r'\textbf{Overall}') 
+    latex_code = latex_code.replace('Sequence', '') 
+
+    for exp_name, _ in experiments.items():
+        baseline = get_baseline(experiments[exp_name].module)   
+        baseline_name = experiments[exp_name].module
+        color_hex = to_hex(baseline.color)  
+        latex_col = rf'\textbf{{\textcolor[HTML]{{{color_hex[1:].upper()}}}{{{baseline_labels[baseline_name]}}}}}'
+        latex_code = latex_code.replace(baseline_labels[baseline_name], latex_col)
+
+
+    lines = latex_code.splitlines()
+    for i, line in enumerate(lines):
+        if 'Overall' in line:
+            lines.insert(i, r'\bottomrule')
+            break
+    latex_code = '\n'.join(lines)
+
+    with open(latex_path, 'w') as f:
+        f.write(latex_code)
+
+def plot_table_time_per_frame(ax, experiments, label, norm_label, sequence_nicknames, title = '', unit_factor = 1, figures_path = ''):
+    baseline_colors = get_baseline_colors(experiments)
+    baseline_labels = get_baseline_labels(experiments)
+
+    df = combine_exp_log(experiments, label, norm_label, unit_factor)
+
+    # Per-sequence mean
+    summary = df.groupby(['method_name', 'sequence_name'])['label_per_norm_label'].agg(['mean']).reset_index()
+    summary['LABEL'] = summary.apply(lambda row: f"{row['mean']:.2f}", axis=1)
+        
+    summary['sequence_name'] = summary['sequence_name'].map(sequence_nicknames).fillna(summary['sequence_name'])
+    pivot = summary.pivot(index='sequence_name', columns='method_name', values='LABEL').fillna('-')
+    pivot = pivot.reset_index()
+    pivot = pivot.rename(columns={'sequence_name': 'Sequence'})
+
+    # Overall mean ± std per method
+    overall = df.groupby('method_name')['label_per_norm_label'].agg(['mean', 'std']).reset_index()
+    overall['LABEL'] = overall.apply(lambda row: f"{row['mean']:.2f} ± {row['std']:.2f}"
+                                     if not pd.isna(row['std']) 
+                                    else f"{row['mean']:.2f} ± 0.00", axis=1)
+    overall_row = {'Sequence': 'Overall'}
+    overall_row.update(dict(zip(overall['method_name'], overall['LABEL'])))
+    pivot = pd.concat([pivot, pd.DataFrame([overall_row])], ignore_index=True)
+
+    pivot = pivot.rename(columns=baseline_labels)
+    
+    # Plot the visual table
+    ax.axis('off')
+    table = ax.table(cellText=pivot.values, colLabels=pivot.columns, loc='center', cellLoc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1.2, 1.2)
+    # Align first column (sequence_name) to the left
+    for (row, col), cell in table.get_celld().items():
+        if col == 0:
+            cell.get_text().set_ha('left')
+
+    # Format borders
+    for (row, col), cell in table.get_celld().items():
+        cell.set_linewidth(1)
+        # Show top/bottom borders (horizontal lines)
+        if row == 0:
+            cell.visible_edges = 'B'  # top row: top, bottom, left
+        elif row == len(pivot):
+            cell.visible_edges = 'T'  # last row: bottom, top, left
+        else:
+            cell.visible_edges = ''  # inner rows: top & bottom, left
+
+        # Only first column keeps left border
+        if col == 1:
+            if 'L' not in cell.visible_edges:
+                cell.visible_edges += 'L'
+        else:
+            cell.visible_edges = cell.visible_edges.replace('R', '').replace('L', '')
+
+    table =  apply_colors([0, len(pivot)], table, baseline_colors)
+    if title:
+        ax.set_title(title, pad=10)
+    
+    # Save latex code
+    latex_path = os.path.join(figures_path, f"{label}_{norm_label}_table.tex")
+    latex_code = pivot.to_latex(index=False, escape=False, column_format='l' + 'c' * (pivot.shape[1] - 1))
+
+    latex_code = latex_code.replace('±', r'$\pm$') 
+    latex_code = latex_code.replace('_', r'\_') 
+    latex_code = latex_code.replace(r'\bottomrule', '') 
+    latex_code = latex_code.replace(r'\toprule', '') 
+    latex_code = latex_code.replace('Overall', r'\textbf{Overall}') 
+    latex_code = latex_code.replace('Sequence', '') 
+
+    for exp_name, _ in experiments.items():
+        baseline = get_baseline(experiments[exp_name].module)   
+        baseline_name = experiments[exp_name].module
+        color_hex = to_hex(baseline.color)  
+        latex_col = rf'\textbf{{\textcolor[HTML]{{{color_hex[1:].upper()}}}{{{baseline_labels[baseline_name]}}}}}'
+        latex_code = latex_code.replace(baseline_labels[baseline_name], latex_col)
+
+
+    lines = latex_code.splitlines()
+    for i, line in enumerate(lines):
+        if 'Overall' in line:
+            lines.insert(i, r'\bottomrule')
+            break
+    latex_code = '\n'.join(lines)
+
+    with open(latex_path, 'w') as f:
+        f.write(latex_code)
+
 def running_time(figures_path, experiments, sequence_nicknames):
     fig, axs = plt.subplots(2, 1, figsize=(7, 6))
-    plot_table(axs[0], experiments, 'TIME', 'num_frames', title='Processing Time (ms / frame)', unit_factor=1e3, 
+    plot_table_time_per_frame(axs[0], experiments, 'TIME', 'num_frames', title='Processing Time (ms / frame)', unit_factor=1e3, 
                figures_path=figures_path, sequence_nicknames= sequence_nicknames)
-    plot_table(axs[1], experiments, 'TIME', None, title='Processing Time (s)', 
+    plot_table_time_total(axs[1], experiments, 'TIME', title='Total Processing Time (s)', 
                figures_path=figures_path, sequence_nicknames= sequence_nicknames)
+    plt.tight_layout()
+    plt.show()
+    #table = axs[0].table(cellText=pivot.values, colLabels=pivot.columns, loc='center', cellLoc='center')
+    ...
+    
+    #plot_table(experiments, 'TIME','num_frames')
+
+def plot_memory(figures_path, experiments, sequence_nicknames):
+    fig, axs = plt.subplots(2, 1, figsize=(3 + 2*len(experiments), 6))
+    #axs = axs.flatten()
+
+    plot_table_memory_per_frame(axs[0], experiments, title='GPU Memory (MB / frame)', unit_factor=1e3, 
+               figures_path=figures_path, sequence_nicknames= sequence_nicknames)
+    plot_table_memory_total(axs[1], experiments, title='GPU Memory (GB)', unit_factor=1e0, 
+               figures_path=figures_path, sequence_nicknames= sequence_nicknames)
+    # plot_table(axs[1], experiments, 'RAM', 'num_frames', title='RAM Memory (MB / frame)', unit_factor=1e3, 
+    #            figures_path=figures_path, sequence_nicknames= sequence_nicknames)
+    # plot_table(axs[2], experiments, 'SWAP', 'num_frames', title='SWAP Memory (MB / frame)', unit_factor=1e3, 
+    #            figures_path=figures_path, sequence_nicknames= sequence_nicknames)
+    # plot_table(axs[3], experiments, 'GPU', None, title='Total GPU Memory (GB)', 
+    #            figures_path=figures_path, sequence_nicknames= sequence_nicknames)
+    # plot_table(axs[4], experiments, 'RAM', None, title='Total RAM Memory (GB)', 
+    #            figures_path=figures_path, sequence_nicknames= sequence_nicknames)
+    # plot_table(axs[5], experiments, 'SWAP', None, title='Total SWAP Memory (GB)', 
+    #            figures_path=figures_path, sequence_nicknames= sequence_nicknames)
+    
     plt.tight_layout()
     plt.show()
     #table = axs[0].table(cellText=pivot.values, colLabels=pivot.columns, loc='center', cellLoc='center')

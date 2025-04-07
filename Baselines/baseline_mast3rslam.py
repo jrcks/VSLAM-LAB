@@ -11,6 +11,7 @@ class MAST3RSLAM_baseline(BaselineVSLAMLab):
         # Initialize the baseline
         super().__init__(baseline_name, baseline_folder, default_parameters)
         self.color = 'orange'
+        self.name_label = 'MASt3R-SLAM'
 
     def build_execute_command(self, exp_it, exp, dataset, sequence_name):
         vslamlab_command = super().build_execute_command_python(exp_it, exp, dataset, sequence_name)        

@@ -8,7 +8,8 @@ import queue
 
 from utilities import ws, print_msg
 from path_constants import VSLAMLAB_BASELINES, TRAJECTORY_FILE_NAME
-
+from pynvml import nvmlInit, nvmlShutdown, nvmlDeviceGetHandleByIndex, nvmlDeviceGetMemoryInfo
+import pynvml
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -21,6 +22,7 @@ class BaselineVSLAMLab:
         self.settings_yaml = os.path.join(VSLAMLAB_BASELINES, baseline_folder, f'vslamlab_{baseline_name}_settings.yaml')
         self.default_parameters = default_parameters
         self.color = 'black'
+        self.name_label = baseline_name
 
     def get_default_parameters(self):
         return self.default_parameters
@@ -71,19 +73,39 @@ class BaselineVSLAMLab:
             os.killpg(os.getpgid(process.pid), signal.SIGKILL) 
         print_msg(SCRIPT_LABEL, "Process killed.",'error')
 
-    def monitor_memory(self, process, interval, comment_queue, success_flag):
+    def monitor_memory(self, process, interval, comment_queue, success_flag, memory_stats):
         MAX_SWAP_PERC = 0.80
         MAX_RAM_PERC= 0.95
-        swap_max = psutil.swap_memory().total / (1024**3)
-        ram_0, ram_max = psutil.virtual_memory().used / (1024**3), psutil.virtual_memory().total / (1024**3)
 
+        nvmlInit()
+        device_count = pynvml.nvmlDeviceGetCount()
+        device_handle = nvmlDeviceGetHandleByIndex(0) 
+
+        swap_0, swap_max = psutil.swap_memory().used / (1024**3), psutil.swap_memory().total / (1024**3)
+        ram_0, ram_max = psutil.virtual_memory().used / (1024**3), psutil.virtual_memory().total / (1024**3)
+        gpu_0 = nvmlDeviceGetMemoryInfo(device_handle).used / (1024**3)
+
+        ram_inc, swap_inc, gpu_inc = 0, 0, 0
+        ram_inc_max, swap_inc_max, gpu_inc_max = 0, 0, 0
         while process.poll() is None: 
             try:
                 swap, ram =  psutil.swap_memory(), psutil.virtual_memory()
                 swap_used, ram_used = swap.used / (1024**3), ram.used / (1024**3)
-                ram_inc = ram_used - ram_0
-                swap_perc, ram_perc = swap_used / swap_max, ram_used / ram_max
+                gpu_mem_info = nvmlDeviceGetMemoryInfo(device_handle)
+                gpu_used = gpu_mem_info.used / (1024**3)
+                #gpu_total = gpu_mem_info.total / (1024**3)
+                #gpu_inc = gpu_used - gpu_0
+                #gpu_perc = gpu_used / gpu_total
 
+                ram_inc = ram_used - ram_0
+                swap_inc = swap_used - swap_0
+                gpu_inc = gpu_used - gpu_0
+
+                ram_inc_max = max(ram_inc_max, ram_inc)
+                swap_inc_max = max(swap_inc_max, swap_inc)
+                gpu_inc_max = max(gpu_inc_max, gpu_inc)
+
+                swap_perc, ram_perc = swap_used / swap_max, ram_used / ram_max
                 if ram_perc > MAX_RAM_PERC:
                     print_msg(SCRIPT_LABEL, f"Memory threshold exceeded  {ram_used:0.1f} GB / {ram_max:0.1f} GB > {100 * MAX_RAM_PERC:0.2f} %",'error')
                     success_flag[0] = False
@@ -104,15 +126,21 @@ class BaselineVSLAMLab:
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 break  
 
+        memory_stats['ram'] = ram_inc_max
+        memory_stats['swap'] = swap_inc_max
+        memory_stats['gpu'] = gpu_inc_max
+
+
     def execute(self, command, exp_it, exp_folder, timeout_seconds=1*60*10):
         log_file_path = os.path.join(exp_folder, "system_output_" + str(exp_it).zfill(5) + ".txt")
         comments = ""
         comment_queue = queue.Queue()
         success_flag = [True] 
+        memory_stats = {}
         with open(log_file_path, 'w') as log_file:
             print(f"{ws(8)}log file: {log_file_path}")
             process = subprocess.Popen(command, shell=True, stdout=log_file, stderr=log_file, text=True, preexec_fn=os.setsid)
-            memory_thread = threading.Thread(target=self.monitor_memory, args=(process, 10, comment_queue, success_flag))
+            memory_thread = threading.Thread(target=self.monitor_memory, args=(process, 10, comment_queue, success_flag, memory_stats))
             memory_thread.start()
 
             try:
@@ -132,7 +160,10 @@ class BaselineVSLAMLab:
 
         return {
             "success": success_flag[0],
-            "comments": comments  
+            "comments": comments,
+            "ram": memory_stats.get('ram', 'N/A'),
+            "swap": memory_stats.get('swap', 'N/A'),
+            "gpu": memory_stats.get('gpu', 'N/A')
         }
 
     

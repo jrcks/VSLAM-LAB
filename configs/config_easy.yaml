@@ -1,13 +1,13 @@
-rgbdtum:
-  - rgbd_dataset_freiburg1_xyz
-replica:
-  - office0
-eth:
-  - 'table_3'
-7scenes:
-  - 'chess_seq-01'
-euroc:
-  - 'V1_01_easy'
+# rgbdtum:
+#   - rgbd_dataset_freiburg1_xyz
+# replica:
+#   - office0
+# eth:
+#   - 'table_3'
+# 7scenes:
+#   - 'chess_seq-01'
+# euroc:
+#   - 'V1_01_easy'
 
   # - rgbd_dataset_freiburg1_xyz
   # - rgbd_dataset_freiburg2_xyz
@@ -37,11 +37,13 @@ euroc:
 # replica:
 #   - office0
 
-# eth:
-# - 'table_3'
-# 7scenes:
-# - 'chess_seq-01'
-# euroc:
-# - 'V1_01_easy'
-# kitti:
-# - '04'
+rgbdtum:
+  - rgbd_dataset_freiburg1_xyz
+eth:
+- 'table_3'
+7scenes:
+- 'chess_seq-01'
+euroc:
+- 'V1_01_easy'
+kitti:
+- '04'

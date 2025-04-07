@@ -1,13 +1,13 @@
 exp_config_difficult_mast3rslam:
   Config: config_difficult.yaml
-  NumRuns: 1
-  Parameters: {verbose: 0, rgb_idx: [0,999]}
+  NumRuns: 5
+  Parameters: {verbose: 0}
   Module: mast3rslam
 
 exp_config_difficult_droidslam:
   Config: config_difficult.yaml
-  NumRuns: 1
-  Parameters: {verbose: 0, rgb_idx: [0,999]}
+  NumRuns: 5
+  Parameters: {verbose: 0}
   Module: droidslam
 
 # exp_config_difficult_dpvo:

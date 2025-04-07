@@ -12,6 +12,7 @@ class DPVO_baseline(BaselineVSLAMLab):
         # Initialize the baseline
         super().__init__(baseline_name, baseline_folder, default_parameters)
         self.color = 'red'
+        self.name_label = 'DPVO'
 
     def build_execute_command(self, exp_it, exp, dataset, sequence_name):
         vslamlab_command = super().build_execute_command_python(exp_it, exp, dataset, sequence_name)

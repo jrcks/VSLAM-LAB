@@ -14,6 +14,7 @@ class ORBSLAM2_baseline(BaselineVSLAMLab):
                                    'vocabulary': os.path.join(self.baseline_path, 'Vocabulary', 'ORBvoc.txt'),
                                    'mode': 'mono'}
         self.color = 'blue'
+        self.name_label = 'ORB-SLAM2'
 
     def build_execute_command(self, exp_it, exp, dataset, sequence_name):
 

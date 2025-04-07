@@ -1,3 +1,6 @@
+hamlyn:
+- 'rectified01'
+
 #openloris:
 #   - cafe1-1
   # - cafe1-2
@@ -37,10 +40,10 @@
 #  - 'room0'
 #  - 'room1'
 #  - 'room2'
-rgbdtum:
-  # - 'rgbd_dataset_freiburg3_structure_texture_far'
-  - 'rgbd_dataset_freiburg1_xyz'
-  # - 'rgbd_dataset_freiburg3_long_office_household'
+# rgbdtum:
+#   # - 'rgbd_dataset_freiburg3_structure_texture_far'
+#   - 'rgbd_dataset_freiburg1_xyz'
+#   # - 'rgbd_dataset_freiburg3_long_office_household'
   #  - 'rgbd_dataset_freiburg2_desk'
 
 # eth:

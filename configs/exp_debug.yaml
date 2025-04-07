@@ -1,15 +1,33 @@
+exp_test_monogs:
+  Config: config_debug.yaml
+  NumRuns: 1
+  Parameters: {verbose: 1}
+  Module: monogs
+
 # exp_test_graph:
 #   Config: config_debug.yaml
 #   NumRuns: 1
 #   Parameters: {verbose: 1}
 #   Module: orbslam2
 
-exp_test_grpah:
-  Config: config_debug.yaml
-  NumRuns: 1
-  Parameters: {verbose: 1, rgb_idx: [0,400]}
-  Module: mast3rslam
+# exp_test_memory_droid:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 1, rgb_idx: [0,400]}
+#   Module: droidslam
 
+# exp_test_memory_orb:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 1, rgb_idx: [0,400]}
+#   Module: orbslam2
+
+
+# exp_test_memory_mast3r:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 1, rgb_idx: [0,400]}
+#   Module: mast3rslam
 
 # exp_test_graph2:
 #   Config: config_debug.yaml

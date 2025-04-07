@@ -28,7 +28,7 @@ activate_env = {cmd = "pixi run -e vslamlab python utilities.py activate_env"}
 
 clean_experiment = {cmd = "pixi run -e vslamlab python Evaluate/clean_experiment.py"}
 clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
-kill_all = {cmd = "pkill -f -e 'droidslam|dpvo|orbslam2|mast3rslam|vslamlab'"} 
+kill_all = {cmd = "pkill -f -e 'droidslam|dpvo|orbslam2|mast3rslam|monogs|vslamlab'"} 
 
 # environments begin
 [environments]
@@ -38,11 +38,11 @@ droidslam = {features = ["droidslam"], no-default-feature = true}
 mast3rslam = {features = ["mast3rslam"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
 dpvo = {features = ["dpvo"], no-default-feature = true}
+monogs = {features = ["monogs"], no-default-feature = true}
 
 #colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
 #glomap = {features = ["glomap"], no-default-feature = true, solve-group = "colmap"}
 #monodataset = {features = ["monodataset"], no-default-feature = true}
-#monogs = {features = ["monogs"], no-default-feature = true}
 #dust3r = {features = ["dust3r"], no-default-feature = true}
 #spann3r = {features = ["spann3r"], no-default-feature = true}
 #droidcalib = {features = ["droidcalib"], no-default-feature = true}
@@ -61,7 +61,7 @@ dpvo = {features = ["dpvo"], no-default-feature = true}
 
 # VSLAM-LAB
 [feature.vslamlab]
-channels = ["https://fast.prefix.dev/conda-forge"]
+channels = ["https://fast.prefix.dev/conda-forge", "fastai"]
 platforms = ["linux-64"]
 
 [feature.vslamlab.dependencies]
@@ -81,6 +81,7 @@ huggingface_hub="*"
 py7zr="*"
 exifread="*"
 pyproj="*"
+nvidia-ml-py3 = {version="*", channel = "fastai"}
 
 [feature.vslamlab.pypi-dependencies]
 evo = "*"
@@ -259,6 +260,48 @@ eigen = ">=3.4.0 ,<3.5.0"
 yaml-cpp = ">=0.8.0,<0.9"
 pangolin = {version="=2024.07.03", build="h3c9d71d_0", channel="fontan"}
 # orbslam2 end
+
+########################################################################################################################
+########################################################################################################################
+# # monogs begin
+[feature.monogs]
+channels = ["https://fast.prefix.dev/conda-forge", "nvidia", "pytorch"]
+platforms = ["linux-64"]
+
+[feature.monogs.system-requirements]
+cuda = "12.4"
+
+[feature.monogs.tasks]
+git-clone = "git-clone.sh alejandrofontan MonoGS_VSLAMLAB Baselines"
+install = {cmd = "pip install submodules/simple-knn submodules/diff-gaussian-rasterization", cwd = "Baselines/MonoGS_VSLAMLAB"}
+execute = {cmd = 'python slam.py', cwd = "Baselines/MonoGS_VSLAMLAB"}
+check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
+
+[feature.monogs.dependencies]
+python = ">=3.8.19,<3.9"
+cuda = "12.4.*"
+pytorch = {version="=2.4.0", build="py3.8_cuda12.4*", channel="pytorch"}
+pip = ">=24.3.1,<24.4"
+torchvision = {version="0.19.*", channel="pytorch"}
+torchaudio = {version="2.4.*", channel="pytorch"}
+plyfile = ">=0.8.1,<0.9"
+
+[feature.monogs.pypi-dependencies]
+opencv-python = "==4.8.1.78"
+munch = ">=4.0.0,<4.1"
+trimesh = ">=4.5.3,<4.6"
+evo="==1.11.0"
+wandb = ">=0.18.7 ,<0.19"
+open3d="==0.17.0"
+torchmetrics = ">=1.5.2 ,<1.6"
+imgviz = ">=1.7.5  ,<1.8"
+PyOpenGL = ">=3.1.7 ,<3.2"
+glfw = ">=2.8.0 ,<2.9"
+PyGLM = ">=2.7.3 ,<2.8"
+lpips = ">=0.1.4 ,<0.2"
+rich = ">=13.9.4 ,<13.10"
+ruff = ">=0.8.0 ,<0.9"
+# # monogs end
 
 ########################################################################################################################
 ########################################################################################################################
@@ -679,48 +722,6 @@ pangolin = {version="=2024.07.03", build="h3c9d71d_0", channel="fontan"}
 # execute = {cmd = './Baselines/glomap/glomap_reconstruction.sh'}
 # rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
 # # glomap end
-
-########################################################################################################################
-########################################################################################################################
-# # monogs begin
-# [feature.monogs]
-# channels = ["https://fast.prefix.dev/conda-forge", "nvidia", "pytorch"]
-# platforms = ["linux-64"]
-
-# [feature.monogs.system-requirements]
-# cuda = "12.4"
-
-# [feature.monogs.tasks]
-# git-clone = "git-clone.sh alejandrofontan MonoGS_VSLAMLAB Baselines"
-# install = {cmd = "pip install submodules/simple-knn submodules/diff-gaussian-rasterization", cwd = "Baselines/MonoGS_VSLAMLAB"}
-# execute = {cmd = 'python slam.py', cwd = "Baselines/MonoGS_VSLAMLAB"}
-# check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
-
-# [feature.monogs.dependencies]
-# python = ">=3.8.19,<3.9"
-# cuda = "12.4.*"
-# pytorch = {version="=2.4.0", build="py3.8_cuda12.4*", channel="pytorch"}
-# pip = ">=24.3.1,<24.4"
-# torchvision = {version="0.19.*", channel="pytorch"}
-# torchaudio = {version="2.4.*", channel="pytorch"}
-# plyfile = ">=0.8.1,<0.9"
-
-# [feature.monogs.pypi-dependencies]
-# opencv-python = "==4.8.1.78"
-# munch = ">=4.0.0,<4.1"
-# trimesh = ">=4.5.3,<4.6"
-# evo="==1.11.0"
-# wandb = ">=0.18.7 ,<0.19"
-# open3d="==0.17.0"
-# torchmetrics = ">=1.5.2 ,<1.6"
-# imgviz = ">=1.7.5  ,<1.8"
-# PyOpenGL = ">=3.1.7 ,<3.2"
-# glfw = ">=2.8.0 ,<2.9"
-# PyGLM = ">=2.7.3 ,<2.8"
-# lpips = ">=0.1.4 ,<0.2"
-# rich = ">=13.9.4 ,<13.10"
-# ruff = ">=0.8.0 ,<0.9"
-# # monogs end
 
 ########################################################################################################################
 ########################################################################################################################
