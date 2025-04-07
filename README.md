@@ -168,9 +168,10 @@ We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6
 |:----------------------------------------------------------------------------|:------:|:----------------:|:---------------------------------------------------------------------------:|:------------:|
 | [**MASt3R-SLAM**](https://github.com/rmurai0610/MASt3R-SLAM)                | VSLAM  |       mono       |    [CC BY-NC-SA 4.0](https://github.com/rmurai0610/MASt3R-SLAM/blob/main/LICENSE.md)    | `mast3rslam`  |
 | [**DROID-SLAM**](https://github.com/princeton-vl/DROID-SLAM)                | VSLAM  |       mono       |    [BSD-3](https://github.com/princeton-vl/DROID-SLAM/blob/main/LICENSE)    | `droidslam`  |
-| [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)                       |  SfM   |       mono       |         [BSD-3](https://github.com/colmap/glomap/blob/main/LICENSE)         |   `glomap`   |
-| [**MonoGS**](https://github.com/muskie82/MonoGS)                            | VSLAM  | mono/RGBD/Stereo |     [License](https://github.com/muskie82/MonoGS?tab=License-1-ov-file)     |   `monogs`   | 
+| [**DPVO**](https://github.com/princeton-vl/DPVO)                            | VSLAM  |       mono       |    [License](https://github.com/princeton-vl/DPVO/blob/main/LICENSE)    | `dpvo`  |
 | [**ORB-SLAM2**](https://github.com/alejandrofontan/ORB_SLAM2)               | VSLAM  | mono/RGBD/Stereo |    [GPLv3](https://github.com/raulmur/ORB_SLAM2/blob/master/LICENSE.txt)    |  `orbslam2`  | 
+| [**MonoGS**](https://github.com/muskie82/MonoGS)                            | VSLAM  | mono/RGBD/Stereo |     [License](https://github.com/muskie82/MonoGS?tab=License-1-ov-file)     |   `monogs`   | 
+| [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)                       |  SfM   |       mono       |         [BSD-3](https://github.com/colmap/glomap/blob/main/LICENSE)         |   `glomap`   |
 | [**DUST3R**](https://dust3r.europe.naverlabs.com)                           |  SfM   |       mono       |    [CC BY-NC-SA 4.0](https://github.com/naver/dust3r/blob/main/LICENSE)     |   `dust3r`   | 
 | [**COLMAP**](https://colmap.github.io/)                                     |  SfM   |       mono       |                [BSD](https://colmap.github.io/license.html)                 |   `colmap`   | 
 | [**DSO**](https://github.com/alejandrofontan/dso)                           |   VO   |       mono       |       [GPLv3](https://github.com/JakobEngel/dso/blob/master/LICENSE)        |    `dso`     |
