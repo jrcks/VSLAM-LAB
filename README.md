@@ -149,11 +149,11 @@ Datasets in **VSLAM-LAB** are stored in a folder named **VSLAM-LAB-Benchmark**, 
 ## Citation
 If you're using **VSLAM-LAB** in your research, please cite. If you're specifically using VSLAM systems or datasets that have been included, please cite those as well. We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6x_TXkgLsw9zWszHU9M-0mGgDT92TEs/edit?usp=drive_link) with citation for each dataset and VSLAM system for your convenience.
 ```bibtex
-@misc{fontan2024vslamlab,
-author = {Fontan, Alejandro},
-title = {VSLAM-LAB: A Comprehensive Framework for Visual SLAM Baselines and Datasets},
-howpublished = "\url{https://github.com/alejandrofontan/VSLAM-LAB}",
-year = {2024}
+@article{fontan2025vslam,
+  title={VSLAM-LAB: A Comprehensive Framework for Visual SLAM Methods and Datasets},
+  author={Fontan, Alejandro and Fischer, Tobias and Civera, Javier and Milford, Michael},
+  journal={arXiv preprint arXiv:2504.04457},
+  year={2025}
 }
 ```
 
