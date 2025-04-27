@@ -7,7 +7,7 @@ from inputimeout import inputimeout, TimeoutOccurred
 from Datasets.get_dataset import get_dataset
 from Baselines.baseline_utilities import get_baseline
 from utilities import ws, check_yaml_file_integrity, print_msg
-from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, VSLAM_LAB_DIR, CONFIG_DEFAULT
+from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, VSLAM_LAB_DIR, CONFIG_DEFAULT, VSLAMLAB_VIDEOS
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -366,6 +366,24 @@ def plot_trajectory(trajectory_file, ax):
     # ax.legend()
     # plt.tight_layout()
 
+def add_video(video_path):
+    abs_path = os.path.abspath(video_path)
+    video_name_ext = os.path.basename(abs_path)
+    sequence_name = os.path.splitext(video_name_ext)[0]
+    dataset_videos_yaml = os.path.join(VSLAM_LAB_DIR, 'Datasets', 'dataset_videos.yaml')
+    with open(dataset_videos_yaml, 'r') as f:
+        data = yaml.safe_load(f)
+    if 'sequence_names' not in data or data['sequence_names'] is None:
+        data['sequence_names'] = []
+    if sequence_name not in data['sequence_names']:
+        data['sequence_names'].append(sequence_name)
+    with open(dataset_videos_yaml, 'w') as f:
+            yaml.dump(data, f, sort_keys=False)
+    if not os.path.exists(os.path.join(VSLAMLAB_VIDEOS, video_name_ext)):
+        shutil.copy2(abs_path, os.path.join(VSLAMLAB_VIDEOS, video_name_ext))
+    
+    return sequence_name
+
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         function_name = sys.argv[1]
@@ -380,4 +398,5 @@ if __name__ == "__main__":
         if function_name == "plot_trajectories":
             trajectory_files = sys.argv[2:]
             plot_trajectories(trajectory_files)
+
             

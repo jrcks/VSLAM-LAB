@@ -7,6 +7,7 @@ VSLAM_LAB_PATH = os.path.dirname(VSLAM_LAB_DIR)
 VSLAMLAB_BENCHMARK = os.path.join(VSLAM_LAB_PATH, 'VSLAM-LAB-Benchmark')
 VSLAMLAB_EVALUATION = os.path.join(VSLAM_LAB_PATH, 'VSLAM-LAB-Evaluation')
 VSLAMLAB_BASELINES = os.path.join(VSLAM_LAB_DIR, 'Baselines')
+VSLAMLAB_VIDEOS = os.path.join(VSLAMLAB_BENCHMARK, 'VIDEOS')
 
 COMPARISONS_YAML_DEFAULT = os.path.join(VSLAM_LAB_DIR, 'configs', 'comp_complete.yaml')
 EXP_YAML_DEFAULT = 'exp_debug.yaml'
@@ -50,5 +51,6 @@ if __name__ == "__main__":
         function_name = sys.argv[1]
         if function_name == 'set_VSLAMLAB_BENCHMARK_path':
             set_VSLAMLAB_path(os.path.join(sys.argv[2], 'VSLAM-LAB-Benchmark'), __file__, "VSLAMLAB_BENCHMARK =")
+            set_VSLAMLAB_path(os.path.join(sys.argv[2], 'VSLAM-LAB-Benchmark', 'VIDEOS'), __file__, "VSLAMLAB_VIDEOS =")
         if function_name == 'set_VSLAMLAB_EVALUATION_path':
             set_VSLAMLAB_path(os.path.join(sys.argv[2], 'VSLAM-LAB-Evaluation'), __file__, "VSLAMLAB_EVALUATION =")
