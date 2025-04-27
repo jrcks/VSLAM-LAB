@@ -9,11 +9,9 @@ SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
 class DROIDSLAM_baseline(BaselineVSLAMLab):
     def __init__(self, baseline_name='droidslam', baseline_folder='conda-packages/DROID-SLAM'):
-        #baseline_name = 'droidslam'
-        #baseline_folder = 'conda-packages/DROID-SLAM'
+
         default_parameters = {'verbose': 1, 'upsample': 0, 'mode': 'mono', 'weights': 'droid.pth'}
         
-
         # Initialize the baseline
         super().__init__(baseline_name, baseline_folder, default_parameters)
         self.color = 'green'
