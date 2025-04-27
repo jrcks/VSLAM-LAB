@@ -21,6 +21,9 @@ class VIDEOS_dataset(DatasetVSLAMLab):
         # Create sequence_nicknames
         self.sequence_nicknames = self.sequence_names
 
+        # Get resolution size
+        self.resolution_size = data['resolution_size']
+
     def create_rgb_folder(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         rgb_path = os.path.join(sequence_path, 'rgb')
@@ -89,7 +92,6 @@ class VIDEOS_dataset(DatasetVSLAMLab):
         timestamp_list = []
 
         estimate_new_resolution = True
-        resolution_size = (640, 480)  # Default resolution size
         while True:
             ret, frame = cap.read()
             if not ret:
@@ -104,8 +106,8 @@ class VIDEOS_dataset(DatasetVSLAMLab):
 
                 if estimate_new_resolution:
                     rgb_frame_height, rgb_frame_width = rgb_frame.shape[:2]
-                    scaled_height = np.sqrt(resolution_size[0] * resolution_size[1] * rgb_frame_height / rgb_frame_width)
-                    scaled_width = resolution_size[0] * resolution_size[1] / scaled_height
+                    scaled_height = np.sqrt(self.resolution_size[0] * self.resolution_size[1] * rgb_frame_height / rgb_frame_width)
+                    scaled_width = self.resolution_size[0] * self.resolution_size[1] / scaled_height
                     scaled_height = int(scaled_height)
                     scaled_width = int(scaled_width)
                     estimate_new_resolution = False
