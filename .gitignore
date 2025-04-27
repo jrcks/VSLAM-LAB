@@ -39,5 +39,11 @@ configs/config_demo.yaml
 
 path_constants.py
 
+# Conda pagkages feedstock
+Baselines/conda-packages/lietorch/output/
+Baselines/conda-packages/DROID-SLAM/output/
+Baselines/conda-packages/DROID-SLAM/archive/
+Baselines/conda-packages/DROID-SLAM/droid.pth
+
 #VSCode
 .vscode/
