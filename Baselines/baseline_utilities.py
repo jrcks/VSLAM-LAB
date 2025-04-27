@@ -5,6 +5,7 @@ SCRIPT_LABEL = "[baseline_utilities.py] "
 
 # ADD your imports here
 from Baselines.baseline_droidslam import DROIDSLAM_baseline
+from Baselines.baseline_droidslam import DROIDSLAM_baseline_dev
 from Baselines.baseline_dpvo import DPVO_baseline
 from Baselines.baseline_anyfeature import ANYFEATURE_baseline
 from Baselines.baseline_dso import DSO_baseline
@@ -22,6 +23,7 @@ def get_baseline(baseline_name):
     switcher = {
         # ADD your baselines here
         "droidslam": lambda: DROIDSLAM_baseline(),
+        "droidslam-dev": lambda: DROIDSLAM_baseline_dev(),
         "dpvo": lambda: DPVO_baseline(),
         "anyfeature": lambda: ANYFEATURE_baseline(),
         "dso": lambda: DSO_baseline(),

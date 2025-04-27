@@ -27,8 +27,13 @@ class BaselineVSLAMLab:
     def get_default_parameters(self):
         return self.default_parameters
 
+    def is_cloned(self):
+        if os.path.isdir(os.path.join(self.baseline_path, '.git')):
+            return True
+        return False
+    
     def git_clone(self):
-        if os.path.isdir(self.baseline_path):
+        if self.is_cloned():
             return
 
         log_file_path = os.path.join(VSLAMLAB_BASELINES, f'git_clone_{self.baseline_name}.txt')
