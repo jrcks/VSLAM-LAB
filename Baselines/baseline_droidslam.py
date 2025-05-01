@@ -39,9 +39,6 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
         
         return vslamlab_command
 
-    def is_installed(self):
-        return True
-
     def info_print(self):
         super().info_print()
         print(f"Default executable: Baselines/DROID-SLAM/droidslam_vslamlab_mono.py")
@@ -60,6 +57,9 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
         super().execute(command, exp_it, exp_folder, timeout_seconds)
 
     def is_cloned(self):
+        return True
+    
+    def is_installed(self):
         return True
     
 class DROIDSLAM_baseline_dev(DROIDSLAM_baseline):

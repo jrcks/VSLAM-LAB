@@ -6,6 +6,9 @@ SCRIPT_LABEL = "[baseline_utilities.py] "
 # ADD your imports here
 from Baselines.baseline_droidslam import DROIDSLAM_baseline
 from Baselines.baseline_droidslam import DROIDSLAM_baseline_dev
+from Baselines.baseline_mast3rslam import MAST3RSLAM_baseline
+from Baselines.baseline_mast3rslam import MAST3RSLAM_baseline_dev
+
 from Baselines.baseline_dpvo import DPVO_baseline
 from Baselines.baseline_anyfeature import ANYFEATURE_baseline
 from Baselines.baseline_dso import DSO_baseline
@@ -15,7 +18,6 @@ from Baselines.baseline_monogs import MONOGS_baseline
 from Baselines.baseline_colmap import COLMAP_baseline
 from Baselines.baseline_glomap import GLOMAP_baseline
 from Baselines.baseline_depthpro import DEPTHPRO_baseline
-from Baselines.baseline_mast3rslam import MAST3RSLAM_baseline
 
 
 def get_baseline(baseline_name):
@@ -24,6 +26,8 @@ def get_baseline(baseline_name):
         # ADD your baselines here
         "droidslam": lambda: DROIDSLAM_baseline(),
         "droidslam-dev": lambda: DROIDSLAM_baseline_dev(),
+        "mast3rslam": lambda: MAST3RSLAM_baseline(),
+        "mast3rslam-dev": lambda: MAST3RSLAM_baseline_dev(),
         "dpvo": lambda: DPVO_baseline(),
         "anyfeature": lambda: ANYFEATURE_baseline(),
         "dso": lambda: DSO_baseline(),
@@ -32,8 +36,7 @@ def get_baseline(baseline_name):
         "monogs": lambda: MONOGS_baseline(),
         "colmap": lambda: COLMAP_baseline(),
         "glomap": lambda: GLOMAP_baseline(),
-        "depthpro": lambda: DEPTHPRO_baseline(),
-        "mast3rslam": lambda: MAST3RSLAM_baseline()
+        "depthpro": lambda: DEPTHPRO_baseline()
     }
 
     return switcher.get(baseline_name, lambda: "Invalid case")()
