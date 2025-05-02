@@ -5,7 +5,7 @@ from Baselines.BaselineVSLAMLab import BaselineVSLAMLab
 class MONOGS_baseline(BaselineVSLAMLab):
     def __init__(self):
         baseline_name = 'monogs'
-        baseline_folder = 'MonoGS_VSLAMLAB'
+        baseline_folder = 'MonoGS'
 
         # Initialize the baseline
         super().__init__(baseline_name, baseline_folder)
@@ -34,4 +34,4 @@ class MONOGS_baseline(BaselineVSLAMLab):
 
     def info_print(self):
         super().info_print()
-        print(f"Default executable: Baselines/MonoGS_VSLAMLAB/slam.py")
+        print(f"Default executable: Baselines/MonoGS/slam.py")
