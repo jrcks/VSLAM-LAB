@@ -12,24 +12,28 @@ Compare/__pycache__/
 pixi.lock
 
 # Baselines
+Baselines/DROID-SLAM
+Baselines/DROID-SLAM-DEV
+Baselines/MASt3R-SLAM
+Baselines/MASt3R-SLAM-DEV
+Baselines/ORB_SLAM2
+Baselines/ORB_SLAM2-DEV
+
 Baselines/AnyFeature-VSLAM
 Baselines/dso
 Baselines/dust3r
 Baselines/mono_dataset_code
-Baselines/ORB_SLAM2
 Baselines/colmap
 Baselines/glomap
 Baselines/r2d2
 Baselines/MonoGS_VSLAMLAB
 Baselines/kalibr_catkin
-Baselines/DROID-SLAM
 Baselines/Depth-Anything-V2
 Baselines/staticfusion
 Baselines/spann3r
 Baselines/ml-depth-pro
 Baselines/DroidCalib
 Baselines/DPVO
-Baselines/MASt3R-SLAM
 Baselines/*.txt*
 Baselines/pyslam
 Baselines/MAGiC-SLAM
@@ -38,12 +42,6 @@ configs/exp_demo.yaml
 configs/config_demo.yaml
 
 path_constants.py
-
-# Conda pagkages feedstock
-Baselines/conda-packages/lietorch/output/
-Baselines/conda-packages/DROID-SLAM/output/
-Baselines/conda-packages/DROID-SLAM/archive/
-Baselines/conda-packages/DROID-SLAM/droid.pth
 
 #VSCode
 .vscode/

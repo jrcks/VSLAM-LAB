@@ -39,7 +39,7 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
         return True
     
     def is_installed(self): 
-        return self.droidslam_download_weights() and self.download_vslamlab_settings()
+        return True
     
     def info_print(self):
         super().info_print()
@@ -54,7 +54,12 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
             with ZipFile(file_path, 'r') as zip_ref:
                 zip_ref.extractall(self.baseline_path)
         return os.path.isfile(weights_pth)
-                
+
+    def execute(self, command, exp_it, exp_folder, timeout_seconds=1*60*10):
+        self.droidslam_download_weights() 
+        self.download_vslamlab_settings()
+        super().execute(command, exp_it, exp_folder, timeout_seconds)
+
 class DROIDSLAM_baseline_dev(DROIDSLAM_baseline):
     def __init__(self):
         super().__init__(baseline_name = 'droidslam-dev', baseline_folder =  'DROID-SLAM-DEV')

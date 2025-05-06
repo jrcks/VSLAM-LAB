@@ -33,7 +33,7 @@ class MAST3RSLAM_baseline(BaselineVSLAMLab):
         return True
     
     def is_installed(self):
-        return self.mast3rslam_download_weights() and self.download_vslamlab_settings() 
+        return True
     
     def info_print(self):
         super().info_print()
@@ -56,7 +56,12 @@ class MAST3RSLAM_baseline(BaselineVSLAMLab):
                 _ = hf_hub_download(repo_id='vslamlab/mast3rslam', filename=file_name, repo_type='model', local_dir=checkpoints_dir)  
 
         return os.path.exists(files[0]) and os.path.exists(files[1]) and os.path.exists(files[2])
-  
+    
+    def execute(self, command, exp_it, exp_folder, timeout_seconds=1*60*10):
+        self.mast3rslam_download_weights() 
+        self.download_vslamlab_settings()
+        super().execute(command, exp_it, exp_folder, timeout_seconds)
+
 class MAST3RSLAM_baseline_dev(MAST3RSLAM_baseline):
     def __init__(self):
         super().__init__(baseline_name = 'mast3rslam-dev', baseline_folder =  'MASt3R-SLAM-DEV')

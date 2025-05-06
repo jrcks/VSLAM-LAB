@@ -35,7 +35,7 @@ class ORBSLAM2_baseline(BaselineVSLAMLab):
         return True
     
     def is_installed(self):
-        return self.orbslam2_download_vocabulary() and self.download_vslamlab_settings()
+        return True
     
     def info_print(self):
         super().info_print()
@@ -65,6 +65,11 @@ class ORBSLAM2_baseline(BaselineVSLAMLab):
 
         with open(yaml_file, 'w') as file:
             file.writelines(modified_lines)
+
+    def execute(self, command, exp_it, exp_folder, timeout_seconds=1*60*10):
+        self.orbslam2_download_vocabulary() 
+        self.download_vslamlab_settings()
+        super().execute(command, exp_it, exp_folder, timeout_seconds)
 
 class ORBSLAM2_baseline_dev(ORBSLAM2_baseline):
     def __init__(self):
