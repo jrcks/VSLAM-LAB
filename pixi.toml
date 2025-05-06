@@ -38,8 +38,9 @@ droidslam = {features = ["droidslam"], no-default-feature = true}
 #droidslam-dev = {features = ["droidslam-dev"], no-default-feature = true}
 mast3rslam = {features = ["mast3rslam"], no-default-feature = true}
 #mast3rslam-dev = {features = ["mast3rslam-dev"], no-default-feature = true}
-
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
+orbslam2-dev = {features = ["orbslam2-dev"], no-default-feature = true}
+
 dpvo = {features = ["dpvo"], no-default-feature = true}
 monogs = {features = ["monogs"], no-default-feature = true}
 
@@ -118,6 +119,22 @@ trimesh="*"
 
 ########################################################################################################################
 ########################################################################################################################
+# orbslam2 begin
+[feature.orbslam2]
+channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
+platforms = ["linux-64"]
+
+[feature.orbslam2.tasks]
+execute_mono = {cmd = "vslamlab_orbslam2_mono"}
+
+[feature.orbslam2.dependencies]
+orbslam2 = {channel="fontan"}
+pangolin = {channel="fontan"}
+opencv = ">=4.10.0 ,<5"
+# orbslam2 end
+
+########################################################################################################################
+########################################################################################################################
 # dpvo begin
 [feature.dpvo]
 channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
@@ -128,7 +145,7 @@ platforms = ["linux-64"]
 cuda = "12.0"
 
 [feature.dpvo.tasks]
-git-clone = {cmd = "git-clone.sh VSLAM-LAB DPVO Baselines"}
+git-clone = {cmd = "git-clone.sh VSLAM-LAB DPVO"}
 download-models-and-data = {cmd = "./download_models_and_data.sh", cwd = "Baselines/DPVO"}
 get_eigen = {cmd = "wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip && unzip eigen-3.4.0.zip -d thirdparty", cwd = "Baselines/DPVO"}
 build_pangolin = {cmd = "mkdir -p build && cd build && cmake .. && make -j12", cwd = "Baselines/DPVO/Pangolin"}
@@ -195,44 +212,6 @@ cuda-nvtx= "*"
 [feature.dpvo.pypi-dependencies]
 pypose = "*"
 # dpvo end
-
-########################################################################################################################
-########################################################################################################################
-# orbslam2 begin
-[feature.orbslam2]
-channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
-platforms = ["linux-64"]
-
-[feature.orbslam2.tasks]
-git-clone = "git-clone.sh VSLAM-LAB ORB_SLAM2 Baselines"
-install = {cmd = "./build.sh", cwd = "Baselines/ORB_SLAM2"}
-execute_mono = {cmd = "./bin/mono",  cwd = "Baselines/ORB_SLAM2"}
-execute_rgbd = {cmd = "./bin/rgbd",  cwd = "Baselines/ORB_SLAM2"}
-
-[feature.orbslam2.dependencies]
-libgl-devel = "*"
-libegl-devel = "*"
-libglvnd-devel = "*"
-libopengl-devel = "*"
-xorg-libxext ="*"
-xorg-libx11 ="*"
-xorg-libxfixes="*"
-xorg-libxrender="*"
-xorg-libice="*"
-xorg-libsm="*"
-xorg-libxdmcp="*"
-xorg-libxau="*"
-
-compilers = "*"
-ninja = ">=1.12.1 ,<1.13"
-cmake = ">=3.31.1 ,<3.32"
-pkg-config = ">=0.29.2 ,<0.30"
-opencv = ">=4.10.0 ,<5"
-eigen = ">=3.4.0 ,<3.5.0"
-yaml-cpp = ">=0.8.0,<0.9"
-pangolin = {version="=2024.07.03", build="h3c9d71d_0", channel="fontan"}
-# orbslam2 end
-
 ########################################################################################################################
 ########################################################################################################################
 # monogs begin
@@ -245,7 +224,7 @@ platforms = ["linux-64"]
 cuda = "12"
 
 [feature.monogs.tasks]
-git-clone = "git-clone.sh alejandrofontan MonoGS Baselines"
+git-clone = "git-clone.sh alejandrofontan MonoGS"
 install = {cmd = "pip install submodules/simple-knn submodules/diff-gaussian-rasterization", cwd = "Baselines/MonoGS"}
 execute = {cmd = 'python slam.py', cwd = "Baselines/MonoGS"}
 check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
@@ -308,7 +287,7 @@ channels = ["https://fast.prefix.dev/conda-forge", "nvidia"]
 platforms = ["linux-64"]
 
 [feature.colmap.tasks]
-git-clone = {cmd = "git-clone.sh alejandrofontan colmap Baselines" }
+git-clone = {cmd = "git-clone.sh alejandrofontan colmap" }
 setup = {cmd = "pixi run -e vslamlab python Baselines/colmap/colmap_setup.py"}
 install = {cmd = "./Baselines/colmap/build.sh", depends-on = ["git-clone", "setup"]}
 execute = {cmd = './Baselines/colmap/colmap_reconstruction.sh'}
@@ -445,7 +424,7 @@ matplotlib = ">=3.9.2,<3.10"
 tbb-devel="*"
 
 [feature.glomap.tasks]
-git-clone = {cmd = "git-clone.sh alejandrofontan glomap Baselines"}
+git-clone = {cmd = "git-clone.sh alejandrofontan glomap"}
 build-colmap = {cmd = "pixi run -e colmap install -v"}
 install = {cmd = "./Baselines/glomap/build.sh", depends-on = ["build-colmap"]}
 execute = {cmd = './Baselines/glomap/glomap_reconstruction.sh'}
@@ -469,10 +448,10 @@ rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
 # cuda = "12.0"
 
 # [feature.droidslam-dev.tasks]
-# git-clone = {cmd = "git-clone.sh VSLAM-LAB DROID-SLAM Baselines"}
-# install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM", depends-on = ["git-clone"]}
-# execute_mono = {cmd = 'python vslamlab_droidslam_mono.py',  cwd = 'Baselines/DROID-SLAM'}
-# execute_rgbd = {cmd = 'python vslamlab_droidslam_rgbd.py',  cwd = 'Baselines/DROID-SLAM'}
+# git-clone = {cmd = "git-clone.sh VSLAM-LAB DROID-SLAM-DEV"}
+# install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM-DEV", depends-on = ["git-clone"]}
+# execute_mono = {cmd = 'python vslamlab_droidslam_mono.py',  cwd = 'Baselines/DROID-SLAM-DEV'}
+# execute_rgbd = {cmd = 'python vslamlab_droidslam_rgbd.py',  cwd = 'Baselines/DROID-SLAM-DEV'}
 
 # [feature.droidslam-dev.dependencies]
 # python="3.11.*"
@@ -525,9 +504,9 @@ rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
 # cuda = "12.0"
 
 # [feature.mast3rslam-dev.tasks]
-# git-clone = {cmd = "git-clone.sh VSLAM-LAB MASt3R-SLAM Baselines"}
-# install = {cmd = "pip install -e thirdparty/mast3r && pip install -e thirdparty/in3d && pip install --no-build-isolation -e .", cwd = "Baselines/MASt3R-SLAM"}
-# execute = {cmd = 'python vslamlab_mast3rslam_mono.py',  cwd = 'Baselines/MASt3R-SLAM'}
+# git-clone = {cmd = "git-clone.sh VSLAM-LAB MASt3R-SLAM-DEV"}
+# install = {cmd = "pip install -e thirdparty/mast3r && pip install -e thirdparty/in3d && pip install --no-build-isolation -e .", cwd = "Baselines/MASt3R-SLAM-DEV"}
+# execute = {cmd = 'python vslamlab_mast3rslam_mono.py',  cwd = 'Baselines/MASt3R-SLAM-DEV'}
 
 # [feature.mast3rslam-dev.dependencies]
 # mast3rslam = {version = "*", channel = "fontan"}
@@ -594,3 +573,38 @@ rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
 # moderngl= "*"
 # faiss= "*"
 # # mast3rslam-dev end
+
+########################################################################################################################
+########################################################################################################################
+# orbslam2-dev begin
+[feature.orbslam2-dev]
+channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
+platforms = ["linux-64"]
+
+[feature.orbslam2-dev.tasks]
+git-clone = "git-clone.sh VSLAM-LAB ORB_SLAM2 ORB_SLAM2-DEV"
+install = {cmd = "./build.sh", cwd = "Baselines/ORB_SLAM2-DEV"}
+execute_mono = {cmd = "./bin/vslamlab_orbslam2_mono",  cwd = "Baselines/ORB_SLAM2-DEV"}
+
+[feature.orbslam2-dev.dependencies]
+libgl-devel = "*"
+libegl-devel = "*"
+libglvnd-devel = "*"
+libopengl-devel = "*"
+xorg-libxext ="*"
+xorg-libx11 ="*"
+xorg-libxfixes="*"
+xorg-libxrender="*"
+xorg-libice="*"
+xorg-libsm="*"
+xorg-libxdmcp="*"
+xorg-libxau="*"
+compilers = "*"
+ninja = ">=1.12.1 ,<1.13"
+cmake = ">=3.31.1 ,<3.32"
+pkg-config = ">=0.29.2 ,<0.30"
+opencv = ">=4.10.0 ,<5"
+eigen = ">=3.4.0 ,<3.5.0"
+yaml-cpp = ">=0.8.0,<0.9"
+pangolin = {channel="fontan"}
+# orbslam2-dev end
