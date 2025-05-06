@@ -1,8 +1,8 @@
-exp_test_monogs:
+exp_test_mast3r_todelete:
   Config: config_debug.yaml
   NumRuns: 1
   Parameters: {verbose: 1}
-  Module: monogs
+  Module: mast3rslam
 
 # exp_test_graph:
 #   Config: config_debug.yaml
