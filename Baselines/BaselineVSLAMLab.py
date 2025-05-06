@@ -5,11 +5,13 @@ import psutil
 import threading
 import time
 import queue
+import pynvml
+from huggingface_hub import hf_hub_download
+from pynvml import nvmlInit, nvmlShutdown, nvmlDeviceGetHandleByIndex, nvmlDeviceGetMemoryInfo
 
 from utilities import ws, print_msg
 from path_constants import VSLAMLAB_BASELINES, TRAJECTORY_FILE_NAME
-from pynvml import nvmlInit, nvmlShutdown, nvmlDeviceGetHandleByIndex, nvmlDeviceGetMemoryInfo
-import pynvml
+
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -19,10 +21,10 @@ class BaselineVSLAMLab:
         self.baseline_name = baseline_name
         self.baseline_path = os.path.join(VSLAMLAB_BASELINES, baseline_folder)
         self.label = f"\033[96m{baseline_name}\033[0m"
-        self.settings_yaml = os.path.join(VSLAMLAB_BASELINES, baseline_folder, f'vslamlab_{baseline_name}_settings.yaml')
+        self.settings_yaml = os.path.join(self.baseline_path, f'vslamlab_{baseline_name}_settings.yaml')
         self.default_parameters = default_parameters
         self.color = 'black'
-        self.name_label = baseline_name
+        self.name_label = baseline_folder
 
     def get_default_parameters(self):
         return self.default_parameters
@@ -70,6 +72,13 @@ class BaselineVSLAMLab:
             f"Path:\033[92m {self.baseline_path}\033[0m" if is_installed else f"Path:\033[91m {self.baseline_path}\033[0m")
         print(f'Default parameters: {self.get_default_parameters()}')
 
+    def download_vslamlab_settings(self): # Download vslamlab_{baseline_name}_settings.yaml
+        if not os.path.isfile(self.settings_yaml):
+            settings_yaml = os.path.basename(self.settings_yaml)
+            print_msg(SCRIPT_LABEL, f"Downloading {self.settings_yaml} ...",'info')
+            _ = hf_hub_download(repo_id=f'vslamlab/{self.baseline_name}', filename=settings_yaml, repo_type='model', local_dir=self.baseline_path)
+        return os.path.isfile(self.settings_yaml)
+    
     def kill_process(self, process):
         os.killpg(os.getpgid(process.pid), signal.SIGTERM)  
         try:

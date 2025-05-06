@@ -6,7 +6,7 @@ class GLOMAP_baseline(BaselineVSLAMLab):
     def __init__(self):
         baseline_name = 'glomap'
         baseline_folder = 'glomap'
-        default_parameters = {'verbose': 1, 'matcher_type': 'sequential', 'use_gpu': 1, 'max_rgb': 100}
+        default_parameters = {'verbose': 1, 'matcher_type': 'sequential', 'use_gpu': 1}
 
         # Initialize the baseline
         super().__init__(baseline_name, baseline_folder, default_parameters)
