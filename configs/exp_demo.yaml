@@ -1,0 +1,23 @@
+demo_mast3rslam:
+  Config: config_demo.yaml
+  NumRuns: 1
+  Parameters: {verbose: 0}
+  Module: mast3rslam
+
+demo_droidslam:
+  Config: config_demo.yaml
+  NumRuns: 1
+  Parameters: {verbose: 0}
+  Module: droidslam
+
+demo_dpvo:
+  Config: config_demo.yaml
+  NumRuns: 1
+  Parameters: {verbose: 0}
+  Module: dpvo
+  
+demo_orbslam2:
+  Config: config_demo.yaml
+  NumRuns: 1
+  Parameters: {verbose: 0}
+  Module: orbslam2
