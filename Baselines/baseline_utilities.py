@@ -12,11 +12,12 @@ from Baselines.baseline_orbslam2 import ORBSLAM2_baseline
 from Baselines.baseline_orbslam2 import ORBSLAM2_baseline_dev
 from Baselines.baseline_dpvo import DPVO_baseline
 from Baselines.baseline_dpvo import DPVO_baseline_dev
+from Baselines.baseline_monogs import MONOGS_baseline
+from Baselines.baseline_monogs import MONOGS_baseline_dev
 
 from Baselines.baseline_anyfeature import ANYFEATURE_baseline
 from Baselines.baseline_dso import DSO_baseline
 from Baselines.baseline_dust3r import DUST3R_baseline
-from Baselines.baseline_monogs import MONOGS_baseline
 from Baselines.baseline_colmap import COLMAP_baseline
 from Baselines.baseline_glomap import GLOMAP_baseline
 from Baselines.baseline_depthpro import DEPTHPRO_baseline
@@ -34,11 +35,12 @@ def get_baseline(baseline_name):
         "orbslam2-dev": lambda: ORBSLAM2_baseline_dev(),  
         "dpvo": lambda: DPVO_baseline(),
         "dpvo-dev": lambda: DPVO_baseline_dev(),
+        "monogs": lambda: MONOGS_baseline(),
+        "monogs-dev": lambda: MONOGS_baseline_dev(),
 
         "anyfeature": lambda: ANYFEATURE_baseline(),
         "dso": lambda: DSO_baseline(),
         "dust3r": lambda: DUST3R_baseline(),
-        "monogs": lambda: MONOGS_baseline(),
         "colmap": lambda: COLMAP_baseline(),
         "glomap": lambda: GLOMAP_baseline(),
         "depthpro": lambda: DEPTHPRO_baseline()

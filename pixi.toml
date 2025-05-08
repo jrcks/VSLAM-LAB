@@ -29,6 +29,7 @@ activate_env = {cmd = "pixi run -e vslamlab python utilities.py activate_env"}
 clean_experiment = {cmd = "pixi run -e vslamlab python Evaluate/clean_experiment.py"}
 clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
 kill_all = {cmd = "pkill -f -e 'droidslam|dpvo|orbslam2|mast3rslam|monogs|vslamlab' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
+# check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
 
 # environments begin
 [environments]
@@ -38,13 +39,14 @@ droidslam = {features = ["droidslam"], no-default-feature = true}
 mast3rslam = {features = ["mast3rslam"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
 dpvo = {features = ["dpvo"], no-default-feature = true}
+monogs = {features = ["monogs"], no-default-feature = true}
 
 # droidslam-dev = {features = ["droidslam-dev"], no-default-feature = true}
 # mast3rslam-dev = {features = ["mast3rslam-dev"], no-default-feature = true}
 # orbslam2-dev = {features = ["orbslam2-dev"], no-default-feature = true}
 # dpvo-dev = {features = ["dpvo-dev"], no-default-feature = true}
+# monogs-dev = {features = ["monogs-dev"], no-default-feature = true}
 
-monogs = {features = ["monogs"], no-default-feature = true}
 
 colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
 glomap = {features = ["glomap"], no-default-feature = true, solve-group = "colmap"}
@@ -165,64 +167,30 @@ numba = "*"
 ########################################################################################################################
 # monogs begin
 [feature.monogs]
-channels = ["https://fast.prefix.dev/conda-forge"]
-
+channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
 platforms = ["linux-64"]
 
 [feature.monogs.system-requirements]
 cuda = "12"
 
 [feature.monogs.tasks]
-git-clone = "git-clone.sh alejandrofontan MonoGS"
-install = {cmd = "pip install submodules/simple-knn submodules/diff-gaussian-rasterization", cwd = "Baselines/MonoGS"}
-execute = {cmd = 'python slam.py', cwd = "Baselines/MonoGS"}
-check_cuda = 'python -c "import torch; print(torch.cuda.is_available())"'
+execute = {cmd = 'vslamlab_monogs_mono'}
 
 [feature.monogs.dependencies]
-
-cuda-version = "12.6.*"
-python="3.10.*"
-
-pytorch-gpu = "*"
-cuda-compiler = "*"
-cuda-cudart-dev = "*"
-cuda-crt = "*"
-cudnn = "*"
-libcusparse-dev = "*"
-cuda-driver-dev = "*"
-cuda-nvcc = "*"
-cuda-nvrtc-dev = "*"
-cuda-nvtx-dev = "*"
-cuda-nvml-dev = "*"
-cuda-profiler-api = "*"
-cusparselt = "*"
-libcublas-dev = "*"
-libcudss-dev = "*"
-libcufile-dev = "*"
-libcufft-dev = "*"
-libcurand-dev = "*"
-libcusolver-dev = "*"
-
-torchvision="*"
-plyfile = "*"
-pip="*"
-
-opencv = "*"
-munch = "*"
-trimesh = "*"
-evo="*"
-wandb = "*"
-torchmetrics = "*"
+monogs = {channel="fontan"}
+pytorch-gpu="*"
+munch="*"
+wandb="*"
+plyfile="*"
+opencv="*"
+pyglfw = "*"
 imgviz = "*"
 pyopengl = "*"
-glfw = "*"
-pyglm  = "*"
-lpips = "*"
+pyglm = "*"
 rich = "*"
-ruff = "*"
-nbformat = "==5.7.0"
-pyglfw = "*"
-numpy ="<2"
+trimesh = "*"
+evo = "*"
+torchmetrics = "*"
 
 [feature.monogs.pypi-dependencies]
 open3d="==0.17.0"
@@ -649,3 +617,81 @@ rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
 # plyfile = "*"
 # evo = "*"
 # # dpvo-dev end
+
+########################################################################################################################
+########################################################################################################################
+# # monogs-dev begin
+# [feature.monogs-dev]
+# channels = ["https://fast.prefix.dev/conda-forge"]
+
+# platforms = ["linux-64"]
+
+# [feature.monogs-dev.system-requirements]
+# cuda = "12"
+
+# [feature.monogs-dev.tasks]
+# git-clone = "git-clone.sh VSLAM-LAB MonoGS MonoGS-DEV"
+# install = {cmd = "pip install submodules/simple-knn submodules/diff-gaussian-rasterization", cwd = "Baselines/MonoGS-DEV"}
+# execute = {cmd = 'python vslamlab_monogs_mono.py', cwd = "Baselines/MonoGS-DEV"}
+
+# [feature.monogs-dev.dependencies]
+# # Build
+# cuda-compiler = "*"
+# compilers="*"
+# pkg-config = "*"
+# cmake = "<4"
+
+# # Python & Build Tools
+# python="3.10.*"
+# setuptools = "*"
+# pip = "*"
+
+# # Python core + DL
+# pytorch-gpu = "*"
+# torchvision = "*"
+# pytorch_scatter = "*"
+# numpy ="<2"
+# opencv = "*"
+
+# # CUDA Toolkit Libraries
+# cuda-version = "12.6.*"
+# cuda-cudart-dev = "*"
+# cuda-crt = "*"
+# cudnn = "*"
+# libcusparse-dev = "*"
+# cuda-driver-dev = "*"
+# cuda-nvcc = "*"
+# cuda-nvrtc-dev = "*"
+# cuda-nvtx = "*"
+# cuda-nvtx-dev = "*"
+# cuda-nvml-dev = "*"
+# cuda-profiler-api = "*"
+# cusparselt = "*"
+# libcublas-dev = "*"
+# libcudss-dev = "*"
+# libcufile-dev = "*"
+# libcufft-dev = "*"
+# libcurand-dev = "*"
+# libcusolver-dev = "*"
+# libnvjitlink = "*"
+
+# # Logging / Evaluation
+# plyfile = "*"
+# evo = "*"
+# munch = "*"
+# trimesh = "*"
+# wandb = "*"
+# torchmetrics = "*"
+# imgviz = "*"
+# pyopengl = "*"
+# glfw = "*"
+# pyglm  = "*"
+# lpips = "*"
+# rich = "*"
+# ruff = "*"
+# nbformat = "==5.7.0"
+# pyglfw = "*"
+
+# [feature.monogs-dev.pypi-dependencies]
+# open3d="==0.17.0"
+# # monogs-dev end

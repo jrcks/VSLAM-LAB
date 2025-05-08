@@ -20,6 +20,8 @@ Baselines/ORB_SLAM2
 Baselines/ORB_SLAM2-DEV
 Baselines/DPVO
 Baselines/DPVO-DEV
+Baselines/MonoGS
+Baselines/MonoGS-DEV
 
 Baselines/AnyFeature-VSLAM
 Baselines/dso
@@ -28,7 +30,6 @@ Baselines/mono_dataset_code
 Baselines/colmap
 Baselines/glomap
 Baselines/r2d2
-Baselines/MonoGS_VSLAMLAB
 Baselines/kalibr_catkin
 Baselines/Depth-Anything-V2
 Baselines/staticfusion

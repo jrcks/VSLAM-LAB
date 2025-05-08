@@ -3,8 +3,8 @@ import tarfile
 from huggingface_hub import hf_hub_download
 
 from utilities import print_msg
-from Baselines.BaselineVSLAMLab import BaselineVSLAMLab
 from path_constants import VSLAMLAB_BASELINES
+from Baselines.BaselineVSLAMLab import BaselineVSLAMLab
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
