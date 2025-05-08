@@ -81,7 +81,7 @@ To **run** the experiment demo, execute the following command:
 ARGUMENT="--exp_yaml exp_demo.yaml" pixi run vslamlab
 ```
 
-Experiments in **VSLAM-LAB** are sequences of entries in a YAML file (see example **~/VSLAM-LAB/configs/exp_demo_short.yaml**):
+Experiments in **VSLAM-LAB** are sequences of entries in a YAML file (see example **~/VSLAM-LAB/configs/exp_demo.yaml**):
 ```
 exp_vslamlab:
   Config: config_demo.yaml     # YAML file containing the sequences to be run 
