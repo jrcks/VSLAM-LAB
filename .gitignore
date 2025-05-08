@@ -18,6 +18,8 @@ Baselines/MASt3R-SLAM
 Baselines/MASt3R-SLAM-DEV
 Baselines/ORB_SLAM2
 Baselines/ORB_SLAM2-DEV
+Baselines/DPVO
+Baselines/DPVO-DEV
 
 Baselines/AnyFeature-VSLAM
 Baselines/dso
@@ -33,7 +35,6 @@ Baselines/staticfusion
 Baselines/spann3r
 Baselines/ml-depth-pro
 Baselines/DroidCalib
-Baselines/DPVO
 Baselines/*.txt*
 Baselines/pyslam
 Baselines/MAGiC-SLAM

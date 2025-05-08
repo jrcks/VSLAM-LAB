@@ -37,12 +37,13 @@ vslamlab = {features = ["vslamlab"], no-default-feature = true}
 droidslam = {features = ["droidslam"], no-default-feature = true}
 mast3rslam = {features = ["mast3rslam"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
+dpvo = {features = ["dpvo"], no-default-feature = true}
 
 # droidslam-dev = {features = ["droidslam-dev"], no-default-feature = true}
 # mast3rslam-dev = {features = ["mast3rslam-dev"], no-default-feature = true}
 # orbslam2-dev = {features = ["orbslam2-dev"], no-default-feature = true}
+# dpvo-dev = {features = ["dpvo-dev"], no-default-feature = true}
 
-dpvo = {features = ["dpvo"], no-default-feature = true}
 monogs = {features = ["monogs"], no-default-feature = true}
 
 colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
@@ -140,80 +141,26 @@ opencv = ">=4.10.0 ,<5"
 # dpvo begin
 [feature.dpvo]
 channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
-
 platforms = ["linux-64"]
 
 [feature.dpvo.system-requirements]
 cuda = "12.0"
 
 [feature.dpvo.tasks]
-git-clone = {cmd = "git-clone.sh VSLAM-LAB DPVO"}
-download-models-and-data = {cmd = "./download_models_and_data.sh", cwd = "Baselines/DPVO"}
-get_eigen = {cmd = "wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip && unzip eigen-3.4.0.zip -d thirdparty", cwd = "Baselines/DPVO"}
-build_pangolin = {cmd = "mkdir -p build && cd build && cmake .. && make -j12", cwd = "Baselines/DPVO/Pangolin"}
-install_DPViewer = {cmd = "pip install .", cwd = "Baselines/DPVO/DPViewer"}
-install = {cmd = "pip install .", cwd = "Baselines/DPVO", depends-on = ["download-models-and-data", "get_eigen", "build_pangolin", "install_DPViewer"]}
-execute = {cmd = 'python vslamlab_dpvo_mono.py' ,cwd = 'Baselines/DPVO'}
+execute = {cmd = 'vslamlab_dpvo_mono'}
 
 [feature.dpvo.dependencies]
-pytorch-gpu = "*"
-cuda-version = "12.6.*"
-cuda-compiler = "*"
-cuda-cudart-dev = "*"
-cuda-crt = "*"
-cudnn = "*"
-libcusparse-dev = "*"
-cuda-driver-dev = "*"
-cuda-nvcc = "*"
-cuda-nvrtc-dev = "*"
-cuda-nvtx-dev = "*"
-cuda-nvml-dev = "*"
-cuda-profiler-api = "*"
-cusparselt = "*"
-libcublas-dev = "*"
-libcudss-dev = "*"
-libcufile-dev = "*"
-libcufft-dev = "*"
-libcurand-dev = "*"
-libcusolver-dev = "*"
-
-python="3.11.*"
-pybind11="*"
-libnvjitlink = "*"
-pip = "*"
-pytorch_scatter = "*"
-torchvision = "*"
-numba = "*"
-compilers="*"
-libxkbcommon="*"
-xorg-xorgproto="*"
-libgl-devel = "*"
-libegl-devel = "*"
-libglvnd-devel = "*"
-libopengl-devel = "*"
-cmake = "<4"
-glew = "*"
-wayland = "*"
-eigen = "*"
-pkg-config = "*"
-
-tensorboard = "*"
-tqdm = "*"
-einops = "*"
-kornia = "*"
-numpy = "*"
-plyfile = "*"
+dpvo = {channel="fontan"}
+pangolin = {channel="fontan"}
+pypose = {channel="fontan"}
+opencv = "*"
 evo = "*"
-opencv= "*"
 yacs = "*"
+pytorch_scatter = "*"
+einops = "*"   
+numba = "*"
+## dpvo end
 
-pangolin = {version="=2024.07.03", build="h3c9d71d_0", channel="fontan"}
-nvtx-c= "*"
-cuda-nvtx= "*"
-
-[feature.dpvo.pypi-dependencies]
-pypose = "*"
-# dpvo end
 ########################################################################################################################
 ########################################################################################################################
 # monogs begin
@@ -610,3 +557,95 @@ rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
 # yaml-cpp = ">=0.8.0,<0.9"
 # pangolin = {channel="fontan"}
 # # orbslam2-dev end
+
+########################################################################################################################
+########################################################################################################################
+# # dpvo-dev begin
+# [feature.dpvo-dev]
+# channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
+
+# platforms = ["linux-64"]
+
+# [feature.dpvo-dev.system-requirements]
+# cuda = "12.0"
+
+# [feature.dpvo-dev.tasks]
+# git-clone = {cmd = "git-clone.sh VSLAM-LAB DPVO DPVO-DEV"}
+# install_DPViewer = {cmd = "pip install .", cwd = "Baselines/DPVO-DEV/DPViewer"}
+# install = {cmd = "pip install .", cwd = "Baselines/DPVO-DEV", depends-on = ["install_DPViewer"]}
+# execute = {cmd = 'python vslamlab_dpvo_mono.py' ,cwd = 'Baselines/DPVO-DEV'}
+
+# [feature.dpvo-dev.dependencies]
+# # Build
+# cuda-compiler = "*"
+# compilers="*"
+# pkg-config = "*"
+# cmake = "<4"
+
+# # Python & Build Tools
+# python="3.11.*"
+# setuptools = "*"
+# pip = "*"
+# pybind11 = "*"
+
+# # Python core + DL
+# pangolin = {channel="fontan"}
+# pypose = {channel="fontan"}
+
+# pytorch-gpu = "*"
+# torchvision = "*"
+# pytorch_scatter = "*"
+# numba = "*"
+# numpy = "*"
+# tqdm = "*"
+# einops = "*"   
+# kornia  = "*"   
+# opencv = "*"
+# yacs = "*"
+# eigen = "*"
+
+# # CUDA Toolkit Libraries
+# cuda-version = "12.6.*"
+# cuda-cudart-dev = "*"
+# cuda-crt = "*"
+# cudnn = "*"
+# libcusparse-dev = "*"
+# cuda-driver-dev = "*"
+# cuda-nvcc = "*"
+# cuda-nvrtc-dev = "*"
+# cuda-nvtx = "*"
+# cuda-nvtx-dev = "*"
+# cuda-nvml-dev = "*"
+# cuda-profiler-api = "*"
+# cusparselt = "*"
+# libcublas-dev = "*"
+# libcudss-dev = "*"
+# libcufile-dev = "*"
+# libcufft-dev = "*"
+# libcurand-dev = "*"
+# libcusolver-dev = "*"
+# libnvjitlink = "*"
+
+# # X11 + OpenGL
+# libgl-devel = "*"
+# libegl-devel = "*"
+# libglvnd-devel = "*"
+# libopengl-devel = "*"
+# xorg-libxext = "*"
+# xorg-libx11 = "*"
+# xorg-libxfixes = "*"
+# xorg-libxrender = "*"
+# xorg-libice = "*"
+# xorg-libsm = "*"
+# xorg-libxdmcp = "*"
+# xorg-libxau = "*"
+# xorg-xorgproto = "*"
+# libxkbcommon = "*"
+# glew = "*"
+# wayland = "*"
+
+# # Logging / Evaluation
+# tensorboard = "*"
+# plyfile = "*"
+# evo = "*"
+# # dpvo-dev end

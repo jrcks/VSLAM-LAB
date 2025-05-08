@@ -10,8 +10,9 @@ from Baselines.baseline_mast3rslam import MAST3RSLAM_baseline
 from Baselines.baseline_mast3rslam import MAST3RSLAM_baseline_dev
 from Baselines.baseline_orbslam2 import ORBSLAM2_baseline
 from Baselines.baseline_orbslam2 import ORBSLAM2_baseline_dev
-
 from Baselines.baseline_dpvo import DPVO_baseline
+from Baselines.baseline_dpvo import DPVO_baseline_dev
+
 from Baselines.baseline_anyfeature import ANYFEATURE_baseline
 from Baselines.baseline_dso import DSO_baseline
 from Baselines.baseline_dust3r import DUST3R_baseline
@@ -30,9 +31,10 @@ def get_baseline(baseline_name):
         "mast3rslam": lambda: MAST3RSLAM_baseline(),
         "mast3rslam-dev": lambda: MAST3RSLAM_baseline_dev(),
         "orbslam2": lambda: ORBSLAM2_baseline(),
-        "orbslam2-dev": lambda: ORBSLAM2_baseline_dev(),
-        
+        "orbslam2-dev": lambda: ORBSLAM2_baseline_dev(),  
         "dpvo": lambda: DPVO_baseline(),
+        "dpvo-dev": lambda: DPVO_baseline_dev(),
+
         "anyfeature": lambda: ANYFEATURE_baseline(),
         "dso": lambda: DSO_baseline(),
         "dust3r": lambda: DUST3R_baseline(),
