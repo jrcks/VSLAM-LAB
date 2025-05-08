@@ -9,7 +9,7 @@ Compare/__pycache__/
 
 # pixi environments
 .pixi
-pixi.lock
+#pixi.lock
 
 # Baselines
 Baselines/DROID-SLAM
