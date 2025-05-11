@@ -60,7 +60,7 @@ class MAST3RSLAM_baseline(BaselineVSLAMLab):
     def execute(self, command, exp_it, exp_folder, timeout_seconds=1*60*10):
         self.mast3rslam_download_weights() 
         self.download_vslamlab_settings()
-        super().execute(command, exp_it, exp_folder, timeout_seconds)
+        return super().execute(command, exp_it, exp_folder, timeout_seconds)
 
 class MAST3RSLAM_baseline_dev(MAST3RSLAM_baseline):
     def __init__(self):

@@ -12,7 +12,7 @@ class MONOGS_baseline(BaselineVSLAMLab):
         
         # Initialize the baseline
         super().__init__(baseline_name, baseline_folder, default_parameters)
-        self.color = 'yellow'
+        self.color = 'black'
 
     def build_execute_command(self, exp_it, exp, dataset, sequence_name):
         vslamlab_command = super().build_execute_command_python(exp_it, exp, dataset, sequence_name)
@@ -30,12 +30,12 @@ class MONOGS_baseline(BaselineVSLAMLab):
 
     def execute(self, command, exp_it, exp_folder, timeout_seconds=1*60*10):
         self.download_vslamlab_settings()
-        super().execute(command, exp_it, exp_folder, timeout_seconds)
+        return super().execute(command, exp_it, exp_folder, timeout_seconds)
         
 class MONOGS_baseline_dev(MONOGS_baseline):
     def __init__(self):
         super().__init__(baseline_name = 'monogs-dev', baseline_folder =  'MonoGS-DEV')
-        self.color = 'red'
+        self.color = 'black'
 
     def is_cloned(self):
         return os.path.isdir(os.path.join(self.baseline_path, '.git'))

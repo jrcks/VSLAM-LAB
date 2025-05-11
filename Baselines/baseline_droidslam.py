@@ -58,7 +58,7 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
     def execute(self, command, exp_it, exp_folder, timeout_seconds=1*60*10):
         self.droidslam_download_weights() 
         self.download_vslamlab_settings()
-        super().execute(command, exp_it, exp_folder, timeout_seconds)
+        return super().execute(command, exp_it, exp_folder, timeout_seconds)
 
 class DROIDSLAM_baseline_dev(DROIDSLAM_baseline):
     def __init__(self):
