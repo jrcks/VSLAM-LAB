@@ -1253,3 +1253,155 @@ rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
 # roma= "*"
 
 # # magicslam end
+
+########################################################################################################################
+########################################################################################################################
+# colmap begin
+# [feature.colmap]
+# channels = ["https://fast.prefix.dev/conda-forge"] #, "nvidia"]
+# platforms = ["linux-64"]
+
+# [feature.colmap.tasks]
+# git-clone = {cmd = "git-clone.sh alejandrofontan colmap" }
+# setup = {cmd = "pixi run -e vslamlab python Baselines/colmap/colmap_setup.py"}
+# install = {cmd = "./Baselines/colmap/build.sh", depends-on = ["git-clone", "setup"]}
+# execute = {cmd = './Baselines/colmap/colmap_reconstruction.sh'}
+
+# colmap = {cmd = "./Baselines/colmap/bin/colmap"}
+# glomap = {cmd = "./Baselines/glomap/bin/glomap"}
+
+# [feature.colmap.dependencies]
+# mesa-libegl-devel-cos7-x86_64 ="*"
+# mesa-libgl-devel-cos7-x86_64 ="*"
+# mesa-dri-drivers-cos7-x86_64 ="*"
+# libglvnd-egl-cos7-x86_64 ="*"
+# libglvnd-devel-cos7-x86_64 ="*"
+# libselinux-cos7-x86_64 ="*"
+# libxdamage-cos7-x86_64 ="*"
+# libxxf86vm-cos7-x86_64 ="*"
+# libxfixes-cos7-x86_64 ="*"
+# libxext-cos7-x86_64 ="*"
+# libxau-cos7-x86_64 ="*"
+# libxcb-cos7-x86_64 ="*"
+# xorg-libxext ="*"
+# xorg-libx11 ="*"
+# xorg-libxfixes="*"
+# xorg-libxrender="*"
+# xorg-libice="*"
+# xorg-libsm="*"
+# xorg-libxdmcp="*"
+# xorg-libxau="*"
+# cxx-compiler = ">=1.8.0,<1.9"
+# c-compiler = ">=1.8.0,<1.9"
+# ninja = ">=1.12.1,<1.13"
+# cmake = ">=3.28.0,<3.29"
+# pkg-config = ">=0.29.2,<0.30"
+# make = ">=4.4.1,<4.5"
+# llvm-openmp = ">=19.1.4,<19.2"
+# libgomp = "*"
+# libxcb = "*"
+# libglu = "*"
+# libblas = "*"
+# libcblas = "*"
+# libboost-devel = "*"
+# suitesparse = ">=5.10.1,<5.11"
+# eigen = ">=3.4.0,<3.5"
+# freeimage = ">=3.18.0,<3.19"
+# glog = "=0.6.0"
+# gflags = ">=2.2.2,<2.3"
+# glew = ">=2.1.0,<2.2"
+# cgal-cpp = ">=6.0.1,<6.1"
+# ceres-solver = ">=2.2.0,<2.3"
+# qt-main = ">=5.15.15,<5.16"
+# git = ">=2.47.1,<2.48"
+# flann = ">=1.9.2,<1.10"
+# sqlite = ">=3.47.0,<3.48"
+# vlfeat = ">=0.9.21,<0.10"
+# gmp = ">=6.3.0,<6.4"
+# lz4-c = ">=1.9.4,<1.10"
+# metis = ">=5.1.0,<5.2"
+# libcurand-dev = ">=10.3.7.77,<10.4"
+# cuda-nvcc = ">=12.6.85,<12.7"
+# python = ">=3.13.0,<3.14"
+# yq = ">=3.4.3,<3.5"
+# numpy = ">=2.1.3,<2.2"
+# scipy = ">=1.14.1,<1.15"
+# pyyaml = ">=6.0.2,<6.1"
+# matplotlib = ">=3.9.2,<3.10"
+# tbb-devel="*"
+# colmap end
+
+########################################################################################################################
+########################################################################################################################
+# glomap-dev begin
+# [feature.glomap-dev]
+# channels = ["https://fast.prefix.dev/conda-forge"]
+# platforms = ["linux-64"]
+
+# [feature.glomap-dev.tasks]
+# git-clone = {cmd = "git-clone.sh alejandrofontan glomap"}
+# build-colmap = {cmd = "pixi run -e colmap install -v"}
+# install = {cmd = "./Baselines/glomap/build.sh", depends-on = ["build-colmap"]}
+# execute = {cmd = './Baselines/glomap/glomap_reconstruction.sh'}
+# rep_error = {cmd = 'pixi run -e colmap ./reprojection_error.sh'}
+
+# [feature.glomap-dev.dependencies]
+# mesa-libegl-devel-cos7-x86_64 ="*"
+# mesa-libgl-devel-cos7-x86_64 ="*"
+# mesa-dri-drivers-cos7-x86_64 ="*"
+# libglvnd-egl-cos7-x86_64 ="*"
+# libglvnd-devel-cos7-x86_64 ="*"
+# libselinux-cos7-x86_64 ="*"
+# libxdamage-cos7-x86_64 ="*"
+# libxxf86vm-cos7-x86_64 ="*"
+# libxfixes-cos7-x86_64 ="*"
+# libxext-cos7-x86_64 ="*"
+# libxau-cos7-x86_64 ="*"
+# libxcb-cos7-x86_64 ="*"
+# xorg-libxext ="*"
+# xorg-libx11 ="*"
+# xorg-libxfixes="*"
+# xorg-libxrender="*"
+# xorg-libice="*"
+# xorg-libsm="*"
+# xorg-libxdmcp="*"
+# xorg-libxau="*"
+# cxx-compiler = ">=1.8.0,<1.9"
+# c-compiler = ">=1.8.0,<1.9"
+# ninja = ">=1.12.1,<1.13"
+# cmake = ">=3.28.0,<3.29"
+# pkg-config = ">=0.29.2,<0.30"
+# make = ">=4.4.1,<4.5"
+# llvm-openmp = ">=19.1.4,<19.2"
+# libgomp = "*"
+# libxcb = "*"
+# libglu = "*"
+# libblas = "*"
+# libcblas = "*"
+# libboost-devel = "*"
+# suitesparse = ">=5.10.1,<5.11"
+# eigen = ">=3.4.0,<3.5"
+# freeimage = ">=3.18.0,<3.19"
+# glog = "=0.6.0"
+# gflags = ">=2.2.2,<2.3"
+# glew = ">=2.1.0,<2.2"
+# cgal-cpp = ">=6.0.1,<6.1"
+# ceres-solver = ">=2.2.0,<2.3"
+# qt-main = ">=5.15.15,<5.16"
+# git = ">=2.47.1,<2.48"
+# flann = ">=1.9.2,<1.10"
+# sqlite = ">=3.47.0,<3.48"
+# vlfeat = ">=0.9.21,<0.10"
+# gmp = ">=6.3.0,<6.4"
+# lz4-c = ">=1.9.4,<1.10"
+# metis = ">=5.1.0,<5.2"
+# libcurand-dev = ">=10.3.7.77,<10.4"
+# cuda-nvcc = ">=12.6.85,<12.7"
+# python = ">=3.13.0,<3.14"
+# yq = ">=3.4.3,<3.5"
+# numpy = ">=2.1.3,<2.2"
+# scipy = ">=1.14.1,<1.15"
+# pyyaml = ">=6.0.2,<6.1"
+# matplotlib = ">=3.9.2,<3.10"
+# tbb-devel="*"
+# glomap-dev end
