@@ -1,8 +1,75 @@
-exp_test_mast3r_todelete:
+exp_video_mast3rslam_sweetcorals:
   Config: config_debug.yaml
   NumRuns: 1
-  Parameters: {verbose: 1}
-  Module: mast3rslam
+  Parameters: {verbose: 1, rgb_idx: [0,500], matcher_type: exhaustive}
+  Module: dpvo
+
+# exp_test_mast3r_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 1}
+#   Module: mast3rslam
+
+# exp_test_droidslam_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: droidslam
+
+# exp_test_dpvo_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: dpvo
+
+# exp_test_orbslam2_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: orbslam2
+
+# exp_test_monogs_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0, rgb_idx: [0,100]}
+#   Module: monogs
+
+# exp_test_mast3r-dev_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: mast3rslam-dev
+  
+# exp_test_droidslam-dev_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: droidslam-dev
+
+# exp_test_dpvo-dev_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: dpvo-dev
+
+# exp_test_orbslam2-dev_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0}
+#   Module: orbslam2-dev
+
+# exp_test_monogs-dev_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0, rgb_idx: [0,100]}
+#   Module: monogs-dev
+
+# exp_test_glomap_todelete:
+#   Config: config_debug.yaml
+#   NumRuns: 1
+#   Parameters: {verbose: 0, rgb_idx: [0,100]}
+#   Module: glomap
+
 
 # exp_test_graph:
 #   Config: config_debug.yaml
