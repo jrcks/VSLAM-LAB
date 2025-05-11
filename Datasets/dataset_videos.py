@@ -53,7 +53,7 @@ class VIDEOS_dataset(DatasetVSLAMLab):
         fx, fy, cx, cy = 0.0, 0.0, 0.0, 0.0
         k1, k2, p1, p2, k3 = 0.0, 0.0, 0.0, 0.0, 0.0
 
-        self.write_calibration_yaml('NONE', fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name)
+        self.write_calibration_yaml('UNKNOWN', fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name)
 
     def create_groundtruth_txt(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
