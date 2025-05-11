@@ -260,7 +260,6 @@ def boxplot_exp_seq(values, dataset_sequences, metric_name, comparison_path, exp
             whisker_max[sequence_name] = np.nan
             whisker_min[sequence_name] = np.nan
         else:
-            print(sequence_name)
             # if whisker_max_seq + width > 0.055 and ('56a0ec536c' in sequence_name) :
             #     whisker_max[sequence_name] = 0.03
             #     whisker_min[sequence_name] = 0.02
@@ -399,7 +398,6 @@ def radar_seq(values, dataset_sequences, exp_names, dataset_nicknames, metric_na
 
             median_sequence[sequence_name] = np.min(values_sequence[sequence_name])
 
-    print(median_sequence)
     num_vars = len(all_sequence_names)
     iExp = 0
     y = {}
