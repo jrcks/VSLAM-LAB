@@ -78,10 +78,3 @@ def create_rgb_exp_txt(exp, dataset, sequence_name):
         with open(rgb_exp_txt, 'w') as file:
             for row in downsampled_rows:
                 file.write(f"{row}\n")
-
-    if exp.module == 'droidslam':
-        downsampled_rows = get_rows(list(range(0, 150)), rgb_txt)
-            
-        with open(rgb_exp_txt, 'w') as file:
-            for row in downsampled_rows:
-                file.write(f"{row}\n")
