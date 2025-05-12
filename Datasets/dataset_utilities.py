@@ -49,7 +49,7 @@ def undistort_rgb_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coef
     x, y, w, h = roi
 
     # Undistort rgb images
-    for rgb_subpath in tqdm(rgb_paths):
+    for rgb_subpath in tqdm(rgb_paths, desc="Undistorting RGB Images"):
         rgb_path = os.path.join(sequence_path, rgb_subpath)
         rgb = cv2.imread(rgb_path)
         undistorted_rgb = cv2.remap(rgb, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)

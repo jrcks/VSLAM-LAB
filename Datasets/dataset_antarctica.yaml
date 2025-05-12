@@ -1,8 +1,10 @@
 dataset_name: antarctica
 rgb_hz: 30.0
-dataset_source_folder: "/media/alejandro/Elements/Antarctica/ROI_01/Q3_2024-01-11_P1"
 resolution_size: [640, 480]
 sequence_names:
+  - ASPA135
+  - ASPA136
+  - Robbos
   - DJI_202401111904_001
   - DJI_202401111932_002
   - DJI_202401111932_003

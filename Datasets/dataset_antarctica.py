@@ -1,12 +1,14 @@
-import os, yaml, shutil
-import re
+import piexif
 import numpy as np
 from PIL import Image
-import exifread
+from tqdm import tqdm
+import os, yaml, shutil
+from datetime import datetime
+import matplotlib.pyplot as plt
+from pyproj import CRS, Transformer
+
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
 from Datasets.dataset_utilities import undistort_rgb_rad_tan, resize_rgb_images
-from pyproj import CRS, Transformer
-from datetime import datetime
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -19,199 +21,204 @@ class ANTARCTICA_dataset(DatasetVSLAMLab):
         with open(self.yaml_file, 'r') as file:
             data = yaml.safe_load(file)
 
-        # Get download url
-        self.dataset_source_folder = data['dataset_source_folder']
-
         # Create sequence_nicknames
         self.sequence_nicknames = [s.replace('_', ' ') for s in self.sequence_names]
 
         # Get resolution size
         self.resolution_size = data['resolution_size']
 
-    # def download_sequence_data(self, sequence_name):
-    #     # Variables
-    #     sequence_path = os.path.join(self.dataset_path, sequence_name)
-    #     if not os.path.exists(sequence_path):
-    #          os.makedirs(sequence_path)
+    def download_sequence_data(self, sequence_name):
+        source_rgb_path = self.get_source_rgb_path(sequence_name)
 
-    #     self.create_groundtruth_txt(sequence_name)
-    #     exit(0)
+        if sequence_name == 'DJI_202401111932_002':
+            if os.path.exists(os.path.join(source_rgb_path,'DJI_20240111193348_0001.JPG')):
+                os.rename(os.path.join(source_rgb_path,'DJI_20240111193348_0001.JPG'), os.path.join(source_rgb_path,'DJI_20240111193348_0001.JPG.WRONG'))
+        if sequence_name == 'Robbos':
+            if os.path.exists(os.path.join(source_rgb_path,'DSC09166.JPG')):
+                os.rename(os.path.join(source_rgb_path,'DSC09166.JPG'), os.path.join(source_rgb_path,'DSC09166.JPG.WRONG'))
+                os.rename(os.path.join(source_rgb_path,'DSC09167.JPG'), os.path.join(source_rgb_path,'DSC09167.JPG.WRONG'))
+                os.rename(os.path.join(source_rgb_path,'DSC09168.JPG'), os.path.join(source_rgb_path,'DSC09168.JPG.WRONG'))
+                os.rename(os.path.join(source_rgb_path,'DSC09169.JPG'), os.path.join(source_rgb_path,'DSC09169.JPG.WRONG'))
+                os.rename(os.path.join(source_rgb_path,'DSC09170.JPG'), os.path.join(source_rgb_path,'DSC09170.JPG.WRONG'))
+                os.rename(os.path.join(source_rgb_path,'DSC09171.JPG'), os.path.join(source_rgb_path,'DSC09171.JPG.WRONG'))
 
-    # def create_rgb_folder(self, sequence_name):
-    #     sequence_path = os.path.join(self.dataset_path, sequence_name)
-    #     rgb_path = os.path.join(sequence_path, 'rgb')
-    #     source_rgb_path  = os.path.join(self.dataset_source_folder, sequence_name)
-    #     if os.path.exists(rgb_path):
-    #         return
+        return
 
-    #     os.makedirs(rgb_path, exist_ok=True)     
+    def create_rgb_folder(self, sequence_name):
+        
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        rgb_path = os.path.join(sequence_path, 'rgb')
+        if os.path.isdir(rgb_path) and bool(os.listdir(rgb_path)):
+            return
+        
+        os.makedirs(rgb_path, exist_ok=True)  
 
-    #     estimate_new_resolution = True
-    #     for file in os.listdir(source_rgb_path):
-    #         if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff')):
-    #             with Image.open(os.path.join(source_rgb_path, file)) as img:
-    #                 if estimate_new_resolution:
-    #                     scaled_height = np.sqrt(self.resolution_size[0] * self.resolution_size[1] * img.size[1] / img.size[0])
-    #                     scaled_width = self.resolution_size[0] * self.resolution_size[1] / scaled_height
-    #                     scaled_height = int(scaled_height)
-    #                     scaled_width = int(scaled_width)
-    #                     estimate_new_resolution = False
-                        
-    #                 resized_img = img.resize((scaled_width, scaled_height), Image.LANCZOS)
-    #                 resized_img.save(os.path.join(rgb_path, file))
-    
+        source_rgb_path = self.get_source_rgb_path(sequence_name)
+       
+        for file in tqdm(sorted(os.listdir(source_rgb_path)), desc='Copying images'):
+            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff')):
+                shutil.copy2(os.path.join(source_rgb_path, file), os.path.join(rgb_path, file))
+                    
     def create_rgb_txt(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         rgb_txt = os.path.join(sequence_path, 'rgb.txt')
-        
-        source_image_folder  = os.path.join(self.dataset_source_folder, sequence_name)
-        
+        source_rgb_path = self.get_source_rgb_path(sequence_name)
+
+        first_timestamp = True
         timestamps = []
         image_names = []
-        for fname in sorted(os.listdir(source_image_folder)):
-            if not fname.lower().endswith(".jpg"):
-                continue
+        for file in sorted(os.listdir(source_rgb_path)):
+            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff')):
+                timestamp_seconds = self.extract_timestamp_from_filename(os.path.join(source_rgb_path, file))
 
-            ts = self.extract_timestamp_from_filename(fname)
-            timestamps.append(ts)
-            image_names.append(fname)
-        
+                if first_timestamp:
+                    timestamp_seconds_0 = timestamp_seconds 
+                    first_timestamp = False
+                timestamp_seconds -= timestamp_seconds_0
+                formatted_timestamp = f"{timestamp_seconds:010d}"         
+
+                timestamps.append(formatted_timestamp)
+                image_names.append(file)
+                
         with open(rgb_txt, 'w') as f:
             for idx, ts in enumerate(timestamps):
-                f.write(f"{ts:.5f} rgb/{image_names[idx]}\n")
+                f.write(f"{ts} rgb/{image_names[idx]}\n")
 
-    # def create_calibration_yaml(self, sequence_name):
-    #     sequence_path = os.path.join(self.dataset_path, sequence_name)
-    #     rgb_txt = os.path.join(sequence_path, 'rgb.txt')
-    #     fx, fy, cx, cy, k1, k2, p1, p2, k3 = (
-    #         8154.29, 8154.29, 4076.2906, 2787.575 , -0.0331103, 0.0312571, -0.00133488, 0.00277011, -0.109366)
+    def create_calibration_yaml(self, sequence_name):
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        rgb_txt = os.path.join(sequence_path, 'rgb.txt')
+        fx, fy, cx, cy, k1, k2, p1, p2, k3 = self.get_calibration(sequence_name)
         
-    #     camera_matrix = np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1]])
-    #     distortion_coeffs = np.array([k1, k2, p1, p2, k3])
+        camera_matrix = np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1]])
+        distortion_coeffs = np.array([k1, k2, p1, p2, k3])
         
-    #     fx, fy, cx, cy = resize_rgb_images(rgb_txt, sequence_path, 640, 480, camera_matrix)
-    #     camera_matrix = np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1]])
-    #     fx, fy, cx, cy = undistort_rgb_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coeffs)
+        fx, fy, cx, cy = resize_rgb_images(rgb_txt, sequence_path, self.resolution_size[0], self.resolution_size[1], camera_matrix)
+        camera_matrix = np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1]])
+        fx, fy, cx, cy = undistort_rgb_rad_tan(rgb_txt, sequence_path, camera_matrix, distortion_coeffs)
 
-    #     self.write_calibration_yaml('OPENCV', fx, fy, cx, cy, 0.0, 0.0, 0.0, 0.0, 0.0, sequence_name)
+        self.write_calibration_yaml('PINHOLE', fx, fy, cx, cy, 0.0, 0.0, 0.0, 0.0, 0.0, sequence_name)
 
-    # def get_utm_transformer(self, lat, lon):
-    #     utm_zone = int((lon + 180) / 6) + 1
-    #     hemisphere = "north" if lat >= 0 else "south"
-    #     proj_str = f"+proj=utm +zone={utm_zone} +{hemisphere} +datum=WGS84 +units=m +no_defs"
-    #     utm_crs = CRS.from_proj4(proj_str)
-    #     return Transformer.from_crs("epsg:4326", utm_crs, always_xy=True)
+    def get_utm_transformer(self, lat, lon):
+        utm_zone = int((lon + 180) / 6) + 1
+        hemisphere = "north" if lat >= 0 else "south"
+        proj_str = f"+proj=utm +zone={utm_zone} +{hemisphere} +datum=WGS84 +units=m +no_defs"
+        utm_crs = CRS.from_proj4(proj_str)
+        return Transformer.from_crs("epsg:4326", utm_crs, always_xy=True)
 
     def extract_timestamp_from_filename(self,filename):
-        match = re.search(r'DJI_(\d{14})', filename)
-        if match:
-            dt = datetime.strptime(match.group(1), "%Y%m%d%H%M%S")
-            return dt.timestamp()
-        return None
+        with Image.open(filename) as img:
+            exif_data = img.info.get("exif")
+            exif_dict = piexif.load(exif_data)
+            timestamp_raw = exif_dict['Exif'].get(piexif.ExifIFD.DateTimeOriginal)
+            timestamp_str = timestamp_raw.decode("utf-8") 
+            dt = datetime.strptime(timestamp_str, "%Y:%m:%d %H:%M:%S")
+            timestamp_seconds = int(dt.timestamp())
+        return timestamp_seconds
 
-    # def create_groundtruth_txt(self, sequence_name):
-    #     sequence_path = os.path.join(self.dataset_path, sequence_name)
-    #     groundtruth_txt = os.path.join(sequence_path, 'groundtruth.txt')
-    #     source_image_folder  = os.path.join(self.dataset_source_folder, sequence_name)
+    def create_groundtruth_txt(self, sequence_name):
+        sequence_path = os.path.join(self.dataset_path, sequence_name)
+        groundtruth_txt = os.path.join(sequence_path, 'groundtruth.txt')
+        source_rgb_path = self.get_source_rgb_path(sequence_name)
+        
+        estimate_center = True
+        with open(groundtruth_txt, 'w') as out_file:
+            for fname in sorted(os.listdir(source_rgb_path)):
+                if not fname.lower().endswith(".jpg"):
+                    continue
+                fpath = os.path.join(source_rgb_path, fname)
+                ts = self.extract_timestamp_from_filename(fpath)
+                gps_data = self.get_gps_from_exif(fpath)
+                if gps_data == None:
+                    continue
+                lat, lon, alt = gps_data
+                transformer = self.get_utm_transformer(lat, lon)
+                x, y = transformer.transform(lon, lat)
+                z = alt
 
-    #     estimate_center = True
-    #     with open(groundtruth_txt, 'w') as out_file:
-    #         for fname in sorted(os.listdir(source_image_folder)):
-    #             if not fname.lower().endswith(".jpg"):
-    #                 continue
-    #             fpath = os.path.join(source_image_folder, fname)
-    #             with open(fpath, 'rb') as f:
-    #                 tags = exifread.process_file(f, details=False)
+                if estimate_center:
+                    center = (x, y)
+                    estimate_center = False
 
-    #             gps_data = self.extract_gps_and_altitude(tags)
-    #             ts = self.extract_timestamp_from_filename(fname)
+                x -= center[0]
+                y -= center[1]
+                qx = qy = qz = 0.0
+                qw = 1.0
 
-    #             lat, lon, alt = gps_data
-    #             print(f"{ts:.3f} {lat:.6f} {lon:.6f} {alt:.3f}")
-    #             transformer = self.get_utm_transformer(lat, lon)
-    #             x, y = transformer.transform(lon, lat)  # Now in UTM meters
-    #             z = alt
-
-    #             if estimate_center:
-    #                 center = (x, y)
-    #                 estimate_center = False
-
-    #             # x -= center[0]
-    #             # y -= center[1]
-    #             qx = qy = qz = 0.0
-    #             qw = 1.0
-
-    #             out_file.write(f"{ts:.3f} {x:.3f} {y:.3f} {z:.3f} {qx} {qy} {qz} {qw}\n")
-
-    #             #print(x, y, z)
-    #             # ts = extract_timestamp_from_filename(fname)
-    #             # if gps_data is None or ts is None:
-    #             #     print(f"Skipping {fname}")
-    #             #     continue
-
-    #     data = np.loadtxt(groundtruth_txt)
-
-    #     # Extract positions
-    #     timestamps = data[:, 0]
-    #     xs = data[:, 1]
-    #     ys = data[:, 2]
-    #     zs = data[:, 3]
-
-    #     import matplotlib.pyplot as plt
-    #     # Plot 2D trajectory (XY)
-    #     plt.figure(figsize=(8, 6))
-    #     plt.plot(xs, ys, marker='o', linestyle='-', markersize=2, label='Trajectory')
-    #     plt.xlabel("X [m]")
-    #     plt.ylabel("Y [m]")
-    #     plt.title("2D Trajectory")
-    #     plt.axis('equal')
-    #     plt.grid(True)
-    #     plt.legend()
-    #     plt.tight_layout()
-    #     plt.show()
-
-    # def remove_unused_files(self, sequence_name):
-    #     return
-        # sequence_path = os.path.join(self.dataset_path, sequence_name)
-        # glomap_results = os.path.join(sequence_path, 'colmap_00000')
-        # glomap_keyframe_trajectory = os.path.join(sequence_path, '00000_KeyFrameTrajectory.txt')
-        # glomap_calibration_log_file = os.path.join(sequence_path, 'calibration_log_file.txt')
-        # glomap_build_log_file = os.path.join(sequence_path, 'glomap_build_log_file.txt')
-        #
-        # if os.path.exists(glomap_results):
-        #     shutil.rmtree(glomap_results)
-        #
-        # if os.path.exists(glomap_keyframe_trajectory):
-        #     os.remove(glomap_keyframe_trajectory)
-        # if os.path.exists(glomap_calibration_log_file):
-        #     os.remove(glomap_calibration_log_file)
-        # if os.path.exists(glomap_build_log_file):
-        #     os.remove(glomap_build_log_file)
-
-    # def evaluate_trajectory_accuracy(self, trajectory_txt, groundtruth_txt):
-    #     return
+                out_file.write(f"{ts:.3f} {x:.3f} {y:.3f} {z:.3f} {qx} {qy} {qz} {qw}\n")
 
 
-    # def dms_to_dd(self, dms, ref):
-    #     degrees = dms[0].num / dms[0].den
-    #     minutes = dms[1].num / dms[1].den
-    #     seconds = dms[2].num / dms[2].den
-    #     dd = degrees + minutes / 60.0 + seconds / 3600.0
-    #     if ref in ["S", "W"]:
-    #         dd = -dd
-    #     return dd
+        # Plot 2D trajectory (XY)
+        data = np.loadtxt(groundtruth_txt)
+        if data.ndim != 2 or data.shape[1] < 3 or data.shape[0] == 0:
+            return
+        xs = data[:, 1]
+        ys = data[:, 2]
+        plt.figure(figsize=(8, 6))
+        plt.plot(xs, ys, marker='o', linestyle='-', markersize=2, label='Trajectory')
+        plt.xlabel("X [m]")
+        plt.ylabel("Y [m]")
+        plt.title("2D Trajectory")
+        plt.axis('equal')
+        plt.grid(True)
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(os.path.join(sequence_path, "groundtruth.png"), dpi=300)
+        # plt.show()
 
-    # def extract_gps_and_altitude(self, tags):
-    #     try:
-    #         lat = self.dms_to_dd(tags["GPS GPSLatitude"].values, tags["GPS GPSLatitudeRef"].printable)
-    #         lon = self.dms_to_dd(tags["GPS GPSLongitude"].values, tags["GPS GPSLongitudeRef"].printable)
+    def dms_to_decimal(self, dms, ref):
+        degrees = dms[0][0] / dms[0][1]
+        minutes = dms[1][0] / dms[1][1]
+        seconds = dms[2][0] / dms[2][1]
+        decimal = degrees + minutes / 60 + seconds / 3600
+        if ref in ['S', 'W']:
+            decimal = -decimal
+        return decimal
 
-    #         if tags["GPS GPSLatitudeRef"].printable == "S":
-    #             lat = -lat
-    #         if tags["GPS GPSLongitudeRef"].printable == "W":
-    #             lon = -lon
-    #         alt = float(tags.get("GPS GPSAltitude", 0).values[0].num) / tags.get("GPS GPSAltitude", 1).values[0].den
-    #     except Exception as e:
-    #         print(f"Error extracting GPS: {e}")
-    #         return None
-    #     return lat, lon, alt
+    def get_gps_from_exif(self,image_path):
+        img = Image.open(image_path)
+        exif_data = img.info.get("exif")
+        if not exif_data:
+            return None
+        exif_dict = piexif.load(exif_data)
+        gps = exif_dict.get("GPS")
+        if not gps:
+            return None
+
+        latitude = self.dms_to_decimal(gps[piexif.GPSIFD.GPSLatitude], gps[piexif.GPSIFD.GPSLatitudeRef].decode())
+        longitude = self.dms_to_decimal(gps[piexif.GPSIFD.GPSLongitude], gps[piexif.GPSIFD.GPSLongitudeRef].decode())
+
+        altitude = gps.get(piexif.GPSIFD.GPSAltitude)
+        if altitude:
+            altitude = altitude[0] / altitude[1]
+        else:
+            altitude = None
+
+        return latitude, longitude, altitude
+    
+    def get_source_rgb_path(self, sequence_name):
+        if sequence_name == 'ASPA135':
+            source_rgb_path = os.path.join(self.dataset_path, 'Sites', sequence_name, '2023-02-01_ASPA135_UAS-mapping', 'raw')
+        if sequence_name == 'ASPA136':
+            source_rgb_path = os.path.join(self.dataset_path, 'Sites', sequence_name, '2023-01-31_ASPA136_scouting-SC-rocky-area', 'raw_images')      
+        if sequence_name == 'Robbos':
+            source_rgb_path = os.path.join(self.dataset_path, 'Sites', sequence_name, '230114_F1')   
+        if 'DJI_' in sequence_name:
+            source_rgb_path = os.path.join(self.dataset_path, 'Sites', 'Bunger-Hills_ROI_01', 'Q3_2024-01-11_P1', sequence_name)    
+
+        return source_rgb_path
+    
+    def get_calibration(self, sequence_name):
+        if sequence_name == 'ASPA135':
+            fx, fy, cx, cy, k1, k2, p1, p2, k3 = (
+                3596.02, 3596.02, (4032/2) + 24.5481, (3024/2) -37.3991 , 0.19876, -0.578379, 0.000520889, -0.000552955, 0.678218)
+        if sequence_name == 'ASPA136':
+             fx, fy, cx, cy, k1, k2, p1, p2, k3 = (
+                3647.53, 3647.53, (4032/2) + 47.8637, (3024/2) -28.4652 , 0.195633, -0.628398, 0.000614648, -0.000380725, 0.743683)
+        if sequence_name == 'Robbos':
+             fx, fy, cx, cy, k1, k2, p1, p2, k3 = (
+                4000.96, 3647.53, (6000/2) -28.8893, (4000/2) -28.2806 , -0.0677109, 0.0901919, 0.000729385, 0.00105102, 0.00261822)
+        if 'DJI_' in sequence_name:
+            fx, fy, cx, cy, k1, k2, p1, p2, k3 = (
+                8154.29, 8154.29, (8192/2) -19.2094, (5460/2) +58.075 , -0.0331103, 0.0312571, -0.00133488, 0.00277011, -0.109366) 
+
+        return fx, fy, cx, cy, k1, k2, p1, p2, k3
