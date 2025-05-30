@@ -26,6 +26,7 @@ from Datasets.dataset_openloris import OPENLORIS_dataset
 from Datasets.dataset_madmax import MADMAX_dataset
 from Datasets.dataset_videos import VIDEOS_dataset
 from Datasets.dataset_sweetcorals import SWEETCORALS_dataset
+from Datasets.dataset_ntnu_arl_uw import NTNU_ARL_UW_dataset
 
 SCRIPT_LABEL = "[dataset_utilities.py] "
 
@@ -60,6 +61,7 @@ def get_dataset(dataset_name, benchmark_path):
         "madmax": lambda: MADMAX_dataset(benchmark_path),
         "videos": lambda: VIDEOS_dataset(benchmark_path),
         "sweetcorals": lambda: SWEETCORALS_dataset(benchmark_path),
+        "ntnu_arl_uw": lambda: NTNU_ARL_UW_dataset(benchmark_path),
     }
 
     return switcher.get(dataset_name, lambda: "Invalid case")()
