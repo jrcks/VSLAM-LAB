@@ -8,9 +8,9 @@ from Datasets.dataset_utilities import undistort_rgb_rad_tan, undistort_depth_ra
 from path_constants import VSLAMLAB_BENCHMARK_WEIGHT
 
 class RGBDTUM_dataset(DatasetVSLAMLab):
-    def __init__(self, benchmark_path):
+    def __init__(self, benchmark_path, dataset_name = 'rgbdtum'):
         # Initialize the dataset
-        super().__init__('rgbdtum', benchmark_path)
+        super().__init__(dataset_name, benchmark_path)
 
         # Load settings from .yaml file
         with open(self.yaml_file, 'r') as file:

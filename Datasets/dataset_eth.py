@@ -4,9 +4,9 @@ from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
 from utilities import downloadFile, decompressFile
 
 class ETH_dataset(DatasetVSLAMLab):
-    def __init__(self, benchmark_path):
+    def __init__(self, benchmark_path, dataset_name = 'eth'):
         # Initialize the dataset
-        super().__init__('eth', benchmark_path)
+        super().__init__(dataset_name, benchmark_path)
 
         # Load settings from .yaml file
         with open(self.yaml_file, 'r') as file:

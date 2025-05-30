@@ -123,7 +123,7 @@ class REPLICA_dataset(DatasetVSLAMLab):
     def remove_unused_files(self, sequence_name):
         return
 
-    def get_download_issues(self):
+    def get_download_issues(self, _):
         issues = []
         issue = {}
         issue['name'] = 'Complete dataset'

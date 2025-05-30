@@ -185,7 +185,7 @@ def check_experiment_sequences_available(exp_data, exp_yaml):
         if sequence_names == []:
             continue
         dataset = get_dataset(dataset_name, VSLAMLAB_BENCHMARK)
-        issues_seq = dataset.get_download_issues()
+        issues_seq = dataset.get_download_issues(sequence_names)
         for issue_seq in issues_seq:
             print_msg(f"\n{ws(4)}", f"[{dataset_name}][{issue_seq['name']}]: {issue_seq['description']}",'warning')
             print(f"{ws(8)}[{issue_seq['mode']}]: {issue_seq['solution']}")
