@@ -15,6 +15,7 @@ from Baselines.baseline_dpvo import DPVO_baseline_dev
 from Baselines.baseline_monogs import MONOGS_baseline
 from Baselines.baseline_monogs import MONOGS_baseline_dev
 from Baselines.baseline_glomap import GLOMAP_baseline
+from Baselines.baseline_vggt import VGGT_baseline_dev
 
 from Baselines.baseline_anyfeature import ANYFEATURE_baseline
 from Baselines.baseline_dso import DSO_baseline
@@ -38,6 +39,7 @@ def get_baseline(baseline_name):
         "monogs": lambda: MONOGS_baseline(),
         "monogs-dev": lambda: MONOGS_baseline_dev(),
         "glomap": lambda: GLOMAP_baseline(),
+        "vggt-dev": lambda: VGGT_baseline_dev(),
 
         "anyfeature": lambda: ANYFEATURE_baseline(),
         "dso": lambda: DSO_baseline(),
