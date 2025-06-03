@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from inputimeout import inputimeout, TimeoutOccurred
 
 from Datasets.get_dataset import get_dataset
-from Baselines.baseline_utilities import get_baseline
+from Baselines.get_baseline import get_baseline
 from utilities import ws, check_yaml_file_integrity, print_msg
 from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, VSLAM_LAB_DIR, CONFIG_DEFAULT, VSLAMLAB_VIDEOS
 

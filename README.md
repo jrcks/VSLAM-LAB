@@ -143,6 +143,39 @@ Datasets in **VSLAM-LAB** are stored in a folder named **VSLAM-LAB-Benchmark**, 
 ```
 
 ## Add a new Baseline
+pixi.toml
+```
+kill_all 
+
+header
+
+dependencies
+
+tasks
+
+  git-clone
+
+  execute
+```
+
+Baselines/get_baseline.py
+```
+# ADD your imports here
+from Baselines.baseline_droidslam import DROIDSLAM_baseline
+from Baselines.baseline_droidslam import DROIDSLAM_baseline_dev
+...
+
+def get_baseline(baseline_name):
+    baseline_name = baseline_name.lower()
+    switcher = {
+        # ADD your baselines here
+        "droidslam": lambda: DROIDSLAM_baseline(),
+        "droidslam-dev": lambda: DROIDSLAM_baseline_dev(),
+        ...
+    }
+
+    return switcher.get(baseline_name, lambda: "Invalid case")()
+```
 
 ## License
 **VSLAM-LAB** is released under a **LICENSE.txt**. For a list of code dependencies which are not property of the authors of **VSLAM-LAB**, please check **docs/Dependencies.md**.
