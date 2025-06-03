@@ -1,0 +1,11 @@
+exp_test_colmap:
+  Config: config_sfm.yaml
+  NumRuns: 1
+  Parameters: {verbose: 1}
+  Module: colmap
+
+exp_test_glomap:
+  Config: config_sfm.yaml
+  NumRuns: 1
+  Parameters: {verbose: 1}
+  Module: glomap
