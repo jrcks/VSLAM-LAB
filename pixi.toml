@@ -19,7 +19,7 @@ print_datasets = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities
 print_baselines = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py print_baselines"}
 get-benchmark-path = {cmd = "VSLAMLAB_BENCHMARK=$(python3 -c 'from path_constants import VSLAMLAB_BENCHMARK; print(VSLAMLAB_BENCHMARK)')"}
 clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
-kill_all = {cmd = "pkill -f -e 'droidslam|dpvo|orbslam2|mast3rslam|monogs|vslamlab' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
+kill_all = {cmd = "pkill -f -e 'droidslam|dpvo|orbslam2|mast3rslam|monogs|colmap|glomap|fastmap|vslamlab' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
 
 # environments begin
 [environments]
@@ -35,13 +35,16 @@ mast3rslam = {features = ["mast3rslam"], no-default-feature = true}
 dpvo = {features = ["dpvo"], no-default-feature = true}
 monogs = {features = ["monogs"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
-glomap = {features = ["glomap"], no-default-feature = true}
+colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
+glomap = {features = ["glomap", "colmap"], no-default-feature = true, solve-group = "colmap"}
 
 droidslam-dev = {features = ["droidslam-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126"}
 mast3rslam-dev = {features = ["mast3rslam-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126"}
 dpvo-dev = {features = ["dpvo-dev", "cuda126", "py11", "x11", "opengl"], no-default-feature = true, solve-group = "cuda126"}
 monogs-dev = {features = ["monogs-dev", "cuda126", "py10"], no-default-feature = true}
 orbslam2-dev = {features = ["orbslam2-dev", "x11", "opengl"], no-default-feature = true}
+vggt-dev = {features = ["vggt-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126"}
+
 # environments end
 
 # VSLAM-LAB
@@ -187,17 +190,34 @@ open3d="==0.17.0"
 
 ########################################################################################################################
 ########################################################################################################################
+# colmap begin
+[feature.colmap]
+channels = ["https://fast.prefix.dev/conda-forge"]
+platforms = ["linux-64"]
+
+[feature.colmap.dependencies]
+colmap="*"
+yq = "*"
+numpy = "*"
+scipy = "*"
+
+[feature.colmap.tasks]
+git-clone = {cmd = 'git clone https://huggingface.co/vslamlab/colmap', cwd = 'Baselines'}
+execute = {cmd = './Baselines/colmap/colmap_reconstruction.sh'}
+# colmap end
+
+########################################################################################################################
+########################################################################################################################
 # glomap begin
 [feature.glomap]
 channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
 [feature.glomap.dependencies]
-colmap="*"
 glomap="*"
-yq = "*"
 
 [feature.glomap.tasks]
+git-clone = {cmd = 'git clone https://huggingface.co/vslamlab/glomap', cwd = 'Baselines'}
 execute = {cmd = './Baselines/glomap/glomap_reconstruction.sh'}
 # glomap end
 
@@ -526,3 +546,38 @@ pyglfw = "*"
 [feature.monogs-dev.pypi-dependencies]
 open3d="==0.17.0"
 # monogs-dev end
+
+########################################################################################################################
+########################################################################################################################
+# vggt-dev begin
+[feature.vggt-dev]
+channels = ["https://fast.prefix.dev/conda-forge"]
+platforms = ["linux-64"]
+
+[feature.vggt-dev.dependencies]
+
+# Core Libraries
+pytorch-gpu = "*"
+torchvision = "*"
+
+numpy="<2"
+Pillow="*"
+huggingface_hub="*"
+einops="*"
+safetensors="*"
+opencv="*"
+tqdm="*"
+hydra-core="*"
+omegaconf="*"
+scipy="*"
+onnxruntime="*"
+requests="*"
+trimesh="*"
+matplotlib="*"
+gradio="*"
+viser="*"
+
+[feature.vggt-dev.tasks]
+git-clone = {cmd = "git-clone.sh VSLAM-LAB vggt VGGT-DEV"}
+execute = {cmd = 'python vslamlab_vggt.py', cwd = "Baselines/VGGT-DEV"}
+# vggt end
