@@ -13,10 +13,8 @@ from Baselines.baseline_colmap import COLMAP_baseline
 from Baselines.baseline_glomap import GLOMAP_baseline
 from Baselines.baseline_vggt import VGGT_baseline_dev
 
-def get_baseline(baseline_name):
-    baseline_name = baseline_name.lower()
-    switcher = {
-        # ADD your baselines here
+def get_baseline_switcher():
+    return {
         "droidslam": lambda: DROIDSLAM_baseline(),
         "droidslam-dev": lambda: DROIDSLAM_baseline_dev(),
         "mast3rslam": lambda: MAST3RSLAM_baseline(),
@@ -32,4 +30,10 @@ def get_baseline(baseline_name):
         "vggt-dev": lambda: VGGT_baseline_dev(),
     }
 
+def get_baseline(baseline_name):
+    baseline_name = baseline_name.lower()
+    switcher = get_baseline_switcher()
     return switcher.get(baseline_name, lambda: "Invalid case")()
+
+def list_available_baselines():
+    return list(get_baseline_switcher().keys())

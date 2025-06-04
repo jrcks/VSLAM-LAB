@@ -9,3 +9,9 @@ exp_test_glomap:
   NumRuns: 1
   Parameters: {verbose: 1}
   Module: glomap
+
+exp_test_vggt:
+  Config: config_sfm.yaml
+  NumRuns: 1
+  Parameters: {verbose: 1}
+  Module: vggt-dev
