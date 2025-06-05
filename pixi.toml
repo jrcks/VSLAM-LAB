@@ -595,7 +595,7 @@ cuda = "12.0"
 
 [feature.gensfm-dev.tasks]
 git-clone = "git-clone.sh VSLAM-LAB GenSfM GenSfM-DEV"
-install = {cmd = "./vslamlab_gensfm-dev_build.sh", cwd = "Baselines/GenSfM-DEV"}
+install = {cmd = "./vslamlab_gensfm-dev_build.sh && sudo /sbin/swapoff -a && sudo /sbin/swapon -a", cwd = "Baselines/GenSfM-DEV"}
 execute = {cmd = "./vslamlab_gensfm-dev_reconstruction.sh", cwd = "Baselines/GenSfM-DEV"}
 
 [feature.gensfm-dev.dependencies]
@@ -614,4 +614,6 @@ git = "*"
 qt-main = "*"
 pybind11 = "*"
 yq = "*"
+numpy = "*"
+scipy = "*"
 # gensfm-dev end
