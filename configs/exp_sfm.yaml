@@ -15,3 +15,9 @@ exp_test_vggt:
   NumRuns: 1
   Parameters: {verbose: 1}
   Module: vggt-dev
+
+exp_test_gensfm:
+  Config: config_sfm.yaml
+  NumRuns: 1
+  Parameters: {verbose: 1}
+  Module: gensfm-dev

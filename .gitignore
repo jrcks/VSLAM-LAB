@@ -23,6 +23,7 @@ Baselines/DPVO-DEV
 Baselines/MonoGS
 Baselines/MonoGS-DEV
 Baselines/VGGT-DEV
+Baselines/GenSfM-DEV
 
 Baselines/AnyFeature-VSLAM
 Baselines/dso

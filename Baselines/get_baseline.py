@@ -12,6 +12,7 @@ from Baselines.baseline_monogs import MONOGS_baseline_dev
 from Baselines.baseline_colmap import COLMAP_baseline
 from Baselines.baseline_glomap import GLOMAP_baseline
 from Baselines.baseline_vggt import VGGT_baseline_dev
+from Baselines.baseline_gensfm import GENSFM_baseline_dev
 
 def get_baseline_switcher():
     return {
@@ -28,6 +29,7 @@ def get_baseline_switcher():
         "colmap": lambda: COLMAP_baseline(),
         "glomap": lambda: GLOMAP_baseline(),
         "vggt-dev": lambda: VGGT_baseline_dev(),
+        "gensfm-dev": lambda: GENSFM_baseline_dev(),
     }
 
 def get_baseline(baseline_name):
