@@ -19,7 +19,7 @@ print_datasets = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities
 print_baselines = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py print_baselines"}
 get-benchmark-path = {cmd = "VSLAMLAB_BENCHMARK=$(python3 -c 'from path_constants import VSLAMLAB_BENCHMARK; print(VSLAMLAB_BENCHMARK)')"}
 clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
-kill_all = {cmd = "pkill -f -e 'droidslam|dpvo|orbslam2|mast3rslam|monogs|colmap|glomap|gensfm|vslamlab' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
+kill_all = {cmd = "pkill -f -e 'droidslam|dpvo|orbslam2|mast3rslam|monogs|colmap|glomap|gensfm|mast3r|vslamlab' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
 
 # environments begin
 [environments]
@@ -38,13 +38,14 @@ orbslam2 = {features = ["orbslam2"], no-default-feature = true}
 colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
 glomap = {features = ["glomap", "colmap"], no-default-feature = true, solve-group = "colmap"}
 
-droidslam-dev = {features = ["droidslam-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126"}
-mast3rslam-dev = {features = ["mast3rslam-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126"}
-dpvo-dev = {features = ["dpvo-dev", "cuda126", "py11", "x11", "opengl"], no-default-feature = true, solve-group = "cuda126"}
-monogs-dev = {features = ["monogs-dev", "cuda126", "py10"], no-default-feature = true}
+droidslam-dev = {features = ["droidslam-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126py11"}
+mast3rslam-dev = {features = ["mast3rslam-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126py11"}
+dpvo-dev = {features = ["dpvo-dev", "cuda126", "py11", "x11", "opengl"], no-default-feature = true, solve-group = "cuda126py11"}
+monogs-dev = {features = ["monogs-dev", "cuda126", "py10"], no-default-feature = true, solve-group = "cuda126py10"}
 orbslam2-dev = {features = ["orbslam2-dev", "x11", "opengl"], no-default-feature = true}
-vggt-dev = {features = ["vggt-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126"}
-gensfm-dev = {features = ["gensfm-dev", "cuda126", "py10", "x11", "opengl"], no-default-feature = true}
+vggt-dev = {features = ["vggt-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126py11"}
+gensfm-dev = {features = ["gensfm-dev", "cuda126", "py10", "x11", "opengl"], no-default-feature = true, solve-group = "cuda126py10"}
+mast3r-dev = {features = ["mast3r-dev", "cuda126", "py10"], no-default-feature = true, solve-group = "cuda126py10"}
 
 # environments end
 
@@ -617,3 +618,53 @@ yq = "*"
 numpy = "*"
 scipy = "*"
 # gensfm-dev end
+
+# ########################################################################################################################
+# ########################################################################################################################
+# mast3r-dev begin
+[feature.mast3r-dev]
+platforms = ["linux-64"]
+channels = ["https://fast.prefix.dev/conda-forge"]#,"fontan"]
+
+[feature.mast3r-dev.system-requirements]
+cuda = "12.0"
+
+[feature.mast3r-dev.tasks]
+git-clone = {cmd = "git-clone.sh VSLAM-LAB MASt3R MASt3R-DEV"}
+install = {cmd = "cd asmk && pip install . && cd .. && cd dust3r/croco/models/curope/ && python setup.py build_ext --inplace", cwd = "Baselines/MASt3R-DEV"}
+execute = {cmd = 'python3 vslamlab_mast3r_demo.py --model_name MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric',  cwd = 'Baselines/MASt3R-DEV'}
+execute_online_demo = {cmd = 'python3 demo.py --model_name MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric',  cwd = 'Baselines/MASt3R-DEV'}
+
+[feature.mast3r-dev.dependencies]
+# Build Tools
+compilers="*"
+pkg-config = "*"
+cmake = "*"
+make="*"
+
+# Torch libraries
+pytorch-gpu = "*"
+torchvision = "*"
+
+# Other
+einops = "*"
+faiss = "*"
+pydantic = "<2.11.0"
+huggingface_hub = "*"
+matplotlib = "*"
+numpy = "<2"
+opencv = "*"
+pyaml = "*"
+pyglet = "<2"
+safetensors = "*"
+scipy = "*"
+tensorboard = "*"
+tqdm = "*"
+trimesh = "*"
+cython = "*"
+scikit-learn = "*"
+
+[feature.mast3r-dev.pypi-dependencies]
+roma = "*"
+gradio = "*"
+# mast3rslam-dev end
