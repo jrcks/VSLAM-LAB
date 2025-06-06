@@ -6,7 +6,7 @@ from Run.run_functions import run_sequence
 from vslamlab_eval import evaluate, compare
 from Datasets.get_dataset import get_dataset
 from utilities import ws, show_time, filter_inputs
-from Baselines.baseline_utilities import get_baseline
+from Baselines.get_baseline import get_baseline
 from vslamlab_utilities import check_experiments
 from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, EXP_YAML_DEFAULT, VSLAM_LAB_DIR
 import subprocess

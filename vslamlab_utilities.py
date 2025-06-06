@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 from inputimeout import inputimeout, TimeoutOccurred
 
 from Datasets.get_dataset import get_dataset
-from Baselines.baseline_utilities import get_baseline
+from Baselines.get_baseline import get_baseline
 from utilities import ws, check_yaml_file_integrity, print_msg
 from path_constants import VSLAMLAB_BENCHMARK, VSLAMLAB_EVALUATION, VSLAM_LAB_DIR, CONFIG_DEFAULT, VSLAMLAB_VIDEOS
+from Baselines.get_baseline import list_available_baselines
 
 SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 
@@ -276,17 +277,6 @@ def list_datasets():
 
     return dataset_scripts
 
-def list_baselines():
-    baseline_scripts_path = os.path.join(VSLAM_LAB_DIR, 'Baselines')
-    baseline_scripts = []
-    for filename in os.listdir(baseline_scripts_path):
-        if 'baseline_' in filename and filename.endswith('.py') and 'utilities' not in filename:
-            baseline_scripts.append(filename)
-
-    baseline_scripts = [item.replace('baseline_', '').replace('.py', '') for item in baseline_scripts]
-
-    return baseline_scripts
-
 def baseline_info(baseline_name):
     baseline = get_baseline(baseline_name)
     baseline.info_print()
@@ -299,7 +289,7 @@ def print_datasets():
     print("")
 
 def print_baselines():
-    baseline_list = list_baselines()
+    baseline_list = list_available_baselines()
     print(f"\n{SCRIPT_LABEL}Accessible baselines in VSLAM-LAB:")
     for baseline in baseline_list:
         print(f" - {baseline}")

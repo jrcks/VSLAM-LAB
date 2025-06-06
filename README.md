@@ -143,6 +143,39 @@ Datasets in **VSLAM-LAB** are stored in a folder named **VSLAM-LAB-Benchmark**, 
 ```
 
 ## Add a new Baseline
+pixi.toml
+```
+kill_all 
+
+header
+
+dependencies
+
+tasks
+
+  git-clone
+
+  execute
+```
+
+Baselines/get_baseline.py
+```
+# ADD your imports here
+from Baselines.baseline_droidslam import DROIDSLAM_baseline
+from Baselines.baseline_droidslam import DROIDSLAM_baseline_dev
+...
+
+def get_baseline(baseline_name):
+    baseline_name = baseline_name.lower()
+    switcher = {
+        # ADD your baselines here
+        "droidslam": lambda: DROIDSLAM_baseline(),
+        "droidslam-dev": lambda: DROIDSLAM_baseline_dev(),
+        ...
+    }
+
+    return switcher.get(baseline_name, lambda: "Invalid case")()
+```
 
 ## License
 **VSLAM-LAB** is released under a **LICENSE.txt**. For a list of code dependencies which are not property of the authors of **VSLAM-LAB**, please check **docs/Dependencies.md**.
@@ -176,6 +209,7 @@ We provide a [spreadsheet](https://docs.google.com/spreadsheets/d/1V8_TLqlccipJ6
 | [**GLOMAP**](https://lpanaf.github.io/eccv24_glomap/)                       |  SfM   |       mono       |         [BSD-3](https://github.com/colmap/glomap/blob/main/LICENSE)         |   `glomap`   |
 | [**DUST3R**](https://dust3r.europe.naverlabs.com)                           |  SfM   |       mono       |    [CC BY-NC-SA 4.0](https://github.com/naver/dust3r/blob/main/LICENSE)     |   `dust3r`   | 
 | [**COLMAP**](https://colmap.github.io/)                                     |  SfM   |       mono       |                [BSD](https://colmap.github.io/license.html)                 |   `colmap`   | 
+| [**GenSfM**](https://github.com/Ivonne320/GenSfM)                                     |  SfM   |       mono       |                [BSD](https://github.com/Ivonne320/GenSfM/blob/main/COPYING.txt)                 |   `gensfm`   | 
 | [**DSO**](https://github.com/alejandrofontan/dso)                           |   VO   |       mono       |       [GPLv3](https://github.com/JakobEngel/dso/blob/master/LICENSE)        |    `dso`     |
 | [**AnyFeature-VSLAM**](https://github.com/alejandrofontan/AnyFeature-VSLAM) | VSLAM  |       mono       | [GPLv3](https://github.com/alejandrofontan/VSLAM-LAB/blob/main/LICENSE.txt) | `anyfeature` |
 | [**evo**](https://github.com/princeton-vl/DROID-SLAM)                       |  Eval  |        -         |    [GPLv3](https://github.com/MichaelGrupp/evo/blob/master/LICENSE)    |    `evo`     |

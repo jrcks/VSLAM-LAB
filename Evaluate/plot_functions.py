@@ -34,7 +34,7 @@ from sklearn.decomposition import PCA
 
 from path_constants import VSLAM_LAB_EVALUATION_FOLDER, VSLAMLAB_BENCHMARK
 from utilities import list_image_files_in_folder
-from Baselines.baseline_utilities import get_baseline
+from Baselines.get_baseline import get_baseline
 from Datasets.get_dataset import get_dataset
 
 import matplotlib.ticker as ticker
