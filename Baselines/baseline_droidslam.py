@@ -11,8 +11,8 @@ SCRIPT_LABEL = f"\033[95m[{os.path.basename(__file__)}]\033[0m "
 class DROIDSLAM_baseline(BaselineVSLAMLab):
     def __init__(self, baseline_name='droidslam', baseline_folder='DROID-SLAM'):
 
-        default_parameters = {'verbose': 1, 'mode': 'mono', 'upsample': 0, 
-                              'weights': f'{os.path.join(VSLAMLAB_BASELINES, baseline_folder, 'droid.pth')}'}
+        default_parameters = {'verbose': 1, 'mode': 'mono', 
+                              'upsample': 0, 'weights': f'{os.path.join(VSLAMLAB_BASELINES, baseline_folder, 'droid.pth')}'}
         
         # Initialize the baseline
         super().__init__(baseline_name, baseline_folder, default_parameters)
