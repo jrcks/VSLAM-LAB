@@ -65,11 +65,12 @@ class BaselineVSLAMLab:
 
     def info_print(self):
         print(f'Name: {self.label}')
-        is_installed = self.is_installed()
+        is_installed, install_msg = self.is_installed()
+        is_cloned = self.is_cloned()
         print(
-            f"Installed:\033[92m {is_installed}\033[0m" if is_installed else f"Installed:\033[91m {is_installed}\033[0m")
+            f"Installed:\033[92m {install_msg}\033[0m" if is_installed else f"Installed:\033[91m {is_installed}\033[0m")
         print(
-            f"Path:\033[92m {self.baseline_path}\033[0m" if is_installed else f"Path:\033[91m {self.baseline_path}\033[0m")
+            f"Path:\033[92m {self.baseline_path}\033[0m" if is_cloned else f"Path:\033[91m {self.baseline_path} (missing)\033[0m")
         print(f'Default parameters: {self.get_default_parameters()}')
 
     def download_vslamlab_settings(self): # Download vslamlab_{baseline_name}_settings.yaml
@@ -234,7 +235,9 @@ class BaselineVSLAMLab:
             else:
                 vslamlab_command += [f"--{str(parameter_name)} {str(parameter_value)}"]
 
-        vslamlab_command = f"pixi run --frozen -e {self.baseline_name} execute " + ' '.join(vslamlab_command)
+        if "--mode mono" in vslamlab_command:
+            vslamlab_command = f"pixi run --frozen -e {self.baseline_name} execute_mono " + ' '.join(vslamlab_command)
+
         return vslamlab_command
 
     def modify_yaml_parameter(self, settings_ablation_yaml, section_name, parameter_name, new_value):
