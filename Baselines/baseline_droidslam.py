@@ -25,11 +25,6 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
     def is_installed(self): 
         return (True, 'is installed') if self.is_cloned() else (False, 'not installed (conda package available)')
     
-    def info_print(self):
-        super().info_print()
-        print(f"Default executable: Baselines/{self.baseline_folder}/droidslam_vslamlab_mono.py")
-        
-    
 class DROIDSLAM_baseline_dev(DROIDSLAM_baseline):
     def __init__(self):
         super().__init__(baseline_name = 'droidslam-dev', baseline_folder =  'DROID-SLAM-DEV')

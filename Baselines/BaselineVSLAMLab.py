@@ -74,8 +74,8 @@ class BaselineVSLAMLab:
             print_msg(f"{ws(0)}", f"Installed:\033[93m {install_msg}\033[0m", verb='LOW')
   
         is_cloned = self.is_cloned()
-        print(
-            f"Path:\033[92m {self.baseline_path}\033[0m" if is_cloned else f"Path:\033[93m {self.baseline_path} (missing)\033[0m")
+        print(f"Path:\033[92m {self.baseline_path}\033[0m" if is_cloned else f"Path:\033[93m {self.baseline_path} (missing)\033[0m")
+        print(f'Modalities: {self.modes}')
         print(f'Default parameters: {self.get_default_parameters()}')
 
     def download_vslamlab_settings(self): # Download vslamlab_{baseline_name}_settings.yaml
