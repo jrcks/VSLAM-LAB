@@ -23,13 +23,7 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
         return super().build_execute_command_python(exp_it, exp, dataset, sequence_name)
         
     def is_installed(self): 
-        is_installed = self.is_cloned()
-        is_installed_msg = 'is installed'
-        not_installed_msg = 'not installed (conda package available)'
-        if is_installed:
-            return True, is_installed_msg
-        else:
-            return False, not_installed_msg
+        return (True, 'is installed') if self.is_cloned() else (False, 'not installed (conda package available)')
     
     def info_print(self):
         super().info_print()
@@ -46,12 +40,7 @@ class DROIDSLAM_baseline_dev(DROIDSLAM_baseline):
         
     def is_installed(self):
         is_installed = os.path.isfile(os.path.join(self.baseline_path, f'install_{self.baseline_name}.txt'))
-        is_installed_msg = 'is installed'
-        not_installed_msg = 'not installed (auto install available)'
-        if is_installed:
-            return True, is_installed_msg
-        else:
-            return False, not_installed_msg
+        return (True, 'is installed') if is_installed else (False, 'not installed (auto install available)')
         
     def droidslam_download_weights(self): # Download droid.pth
         weights_pth = os.path.join(self.baseline_path, 'droid.pth')
