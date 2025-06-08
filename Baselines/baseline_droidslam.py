@@ -23,7 +23,13 @@ class DROIDSLAM_baseline(BaselineVSLAMLab):
         return super().build_execute_command_python(exp_it, exp, dataset, sequence_name)
         
     def is_installed(self): 
-        return True, f'conda package available'
+        is_installed = self.is_cloned()
+        is_installed_msg = 'is installed'
+        not_installed_msg = 'not installed (conda package available)'
+        if is_installed:
+            return True, is_installed_msg
+        else:
+            return False, not_installed_msg
     
     def info_print(self):
         super().info_print()
@@ -50,7 +56,7 @@ class DROIDSLAM_baseline_dev(DROIDSLAM_baseline):
     def droidslam_download_weights(self): # Download droid.pth
         weights_pth = os.path.join(self.baseline_path, 'droid.pth')
         if not os.path.exists(weights_pth):
-            print_msg(SCRIPT_LABEL, "Downloading droid.pth ...",'info')
+            print_msg(f"\n{SCRIPT_LABEL}", f"Download weights: {self.baseline_path}/droid.pth",'info')
             file_path = hf_hub_download(repo_id=f'vslamlab/droidslam', filename='droid.pth', repo_type='model',
                                         local_dir=self.baseline_path)
             with ZipFile(file_path, 'r') as zip_ref:
