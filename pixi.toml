@@ -19,7 +19,7 @@ print_datasets = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities
 print_baselines = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py print_baselines"}
 get-benchmark-path = {cmd = "VSLAMLAB_BENCHMARK=$(python3 -c 'from path_constants import VSLAMLAB_BENCHMARK; print(VSLAMLAB_BENCHMARK)')"}
 clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
-kill_all = {cmd = "pkill -f -e 'droidslam|dpvo|orbslam2|mast3rslam|monogs|colmap|glomap|gensfm|mast3r|vslamlab' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
+kill_all = {cmd = "pkill -f -e 'droidslam|mast3rslam|dpvo|orbslam2|monogs|colmap|glomap|gensfm|mast3r|vslamlab' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
 
 # environments begin
 [environments]
@@ -88,6 +88,7 @@ platforms = ["linux-64"]
 cuda = "12.0"
 
 [feature.droidslam.tasks]
+git-clone = {cmd = 'git clone https://huggingface.co/vslamlab/droidslam Baselines/DROID-SLAM'}
 execute_mono = {cmd = 'vslamlab_droidslam_mono'}
 
 [feature.droidslam.dependencies]
@@ -100,8 +101,8 @@ open3d = ">=0.18.0,<0.19"
 # ########################################################################################################################
 # mast3rslam begin
 [feature.mast3rslam]
-platforms = ["linux-64"]
 channels = ["https://fast.prefix.dev/conda-forge","fontan"]
+platforms = ["linux-64"]
 
 [feature.mast3rslam.system-requirements]
 cuda = "12.0"
@@ -334,14 +335,12 @@ cuda = "12.0"
 
 [feature.droidslam-dev.tasks]
 git-clone = {cmd = "git-clone.sh VSLAM-LAB DROID-SLAM DROID-SLAM-DEV"}
-install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM-DEV", depends-on = ["git-clone"]}
+install = {cmd = "python setup.py install", cwd = "Baselines/DROID-SLAM-DEV"}
 execute_mono = {cmd = 'python vslamlab_droidslam_mono.py',  cwd = 'Baselines/DROID-SLAM-DEV'}
-execute_rgbd = {cmd = 'python vslamlab_droidslam_rgbd.py',  cwd = 'Baselines/DROID-SLAM-DEV'}
 
 [feature.droidslam-dev.dependencies]
 # Build Tools
 compilers="*"
-# pkg-config = "*"
 cmake = "*"
 make="*"
 
