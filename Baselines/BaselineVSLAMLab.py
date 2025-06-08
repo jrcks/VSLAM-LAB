@@ -19,6 +19,7 @@ class BaselineVSLAMLab:
 
     def __init__(self, baseline_name, baseline_folder, default_parameters=''):
         self.baseline_name = baseline_name
+        self.baseline_folder = baseline_folder
         self.baseline_path = os.path.join(VSLAMLAB_BASELINES, baseline_folder)
         self.label = f"\033[96m{baseline_name}\033[0m"
         self.settings_yaml = os.path.join(self.baseline_path, f'vslamlab_{baseline_name}_settings.yaml')
@@ -49,7 +50,7 @@ class BaselineVSLAMLab:
         return False
 
     def install(self):
-        if self.is_installed():
+        if self.is_installed()[0]:
             return
 
         log_file_path = os.path.join(self.baseline_path, f'install_{self.baseline_name}.txt')
@@ -66,11 +67,15 @@ class BaselineVSLAMLab:
     def info_print(self):
         print(f'Name: {self.label}')
         is_installed, install_msg = self.is_installed()
+
+        if is_installed:
+            print_msg(f"{ws(0)}", f"Installed:\033[92m {install_msg}\033[0m", verb='LOW')
+        else:    
+            print_msg(f"{ws(0)}", f"Installed:\033[93m {install_msg}\033[0m", verb='LOW')
+  
         is_cloned = self.is_cloned()
         print(
-            f"Installed:\033[92m {install_msg}\033[0m" if is_installed else f"Installed:\033[91m {is_installed}\033[0m")
-        print(
-            f"Path:\033[92m {self.baseline_path}\033[0m" if is_cloned else f"Path:\033[91m {self.baseline_path} (missing)\033[0m")
+            f"Path:\033[92m {self.baseline_path}\033[0m" if is_cloned else f"Path:\033[93m {self.baseline_path} (missing)\033[0m")
         print(f'Default parameters: {self.get_default_parameters()}')
 
     def download_vslamlab_settings(self): # Download vslamlab_{baseline_name}_settings.yaml
