@@ -108,7 +108,8 @@ platforms = ["linux-64"]
 cuda = "12.0"
 
 [feature.mast3rslam.tasks]
-execute = {cmd = 'vslamlab_mast3rslam_mono'}
+git-clone = {cmd = 'git clone https://huggingface.co/vslamlab/mast3rslam Baselines/MASt3R-SLAM'}
+execute_mono = {cmd = 'vslamlab_mast3rslam_mono'}
 
 [feature.mast3rslam.dependencies]
 mast3rslam = {channel = "fontan"}
@@ -366,8 +367,8 @@ huggingface_hub="*"
 # ########################################################################################################################
 # mast3rslam-dev begin
 [feature.mast3rslam-dev]
-platforms = ["linux-64"]
 channels = ["https://fast.prefix.dev/conda-forge","fontan"]
+platforms = ["linux-64"]
 
 [feature.mast3rslam-dev.system-requirements]
 cuda = "12.0"
@@ -375,7 +376,7 @@ cuda = "12.0"
 [feature.mast3rslam-dev.tasks]
 git-clone = {cmd = "git-clone.sh VSLAM-LAB MASt3R-SLAM MASt3R-SLAM-DEV"}
 install = {cmd = "pip install -e thirdparty/mast3r && pip install -e thirdparty/in3d && pip install --no-build-isolation -e .", cwd = "Baselines/MASt3R-SLAM-DEV"}
-execute = {cmd = 'python vslamlab_mast3rslam_mono.py',  cwd = 'Baselines/MASt3R-SLAM-DEV'}
+execute_mono = {cmd = 'python vslamlab_mast3rslam_mono.py',  cwd = 'Baselines/MASt3R-SLAM-DEV'}
 
 [feature.mast3rslam-dev.dependencies]
 # Build Tools
@@ -419,6 +420,7 @@ scipy = "*"
 tensorboard = "*"
 tqdm = "*"
 trimesh = "*"
+pyrealsense2 = "*"
 # mast3rslam-dev end
 
 ########################################################################################################################
