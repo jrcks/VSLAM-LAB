@@ -345,13 +345,12 @@ compilers="*"
 cmake = "*"
 make="*"
 
-# Core Libraries
-pytorch-gpu = "*"
-tqdm = "*"
-opencv = "*"
-
 # Specialized Libraries
 lietorch = {version = "*", channel = "fontan"}  
+
+# Core Libraries
+pytorch-gpu = "*"
+opencv = "*"
 torch-scatter ="*"
 
 # Logging, Evaluation & Visualization
@@ -361,6 +360,7 @@ suitesparse = ">=7.8.2,<8"
 matplotlib = ">=3.9.2,<4"
 pyyaml = ">=6.0.2,<7"
 huggingface_hub="*"
+tqdm = "*"
 # droidslam-dev end
 
 # ########################################################################################################################
