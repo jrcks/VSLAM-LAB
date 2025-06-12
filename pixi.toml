@@ -19,7 +19,7 @@ print_datasets = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities
 print_baselines = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py print_baselines"}
 get-benchmark-path = {cmd = "VSLAMLAB_BENCHMARK=$(python3 -c 'from path_constants import VSLAMLAB_BENCHMARK; print(VSLAMLAB_BENCHMARK)')"}
 clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
-kill_all = {cmd = "pkill -f -e 'droidslam|mast3rslam|dpvo|monogs|orbslam2|colmap|glomap|gensfm|mast3r|vslamlab' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
+kill_all = {cmd = "pkill -f -e 'droidslam|mast3rslam|dpvo|monogs|orbslam2|colmap|glomap|gensfm|mast3r|vggt|vslamlab' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
 
 # environments begin
 [environments]
@@ -46,7 +46,6 @@ orbslam2-dev = {features = ["orbslam2-dev", "x11", "opengl"], no-default-feature
 gensfm-dev = {features = ["gensfm-dev", "cuda126", "py10", "x11", "opengl"], no-default-feature = true, solve-group = "cuda126py10"}
 mast3r-dev = {features = ["mast3r-dev", "cuda126", "py10"], no-default-feature = true, solve-group = "cuda126py10"}
 vggt-dev = {features = ["vggt-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126py11"}
-
 # environments end
 
 # VSLAM-LAB
@@ -669,5 +668,5 @@ viser="*"
 
 [feature.vggt-dev.tasks]
 git-clone = {cmd = "git-clone.sh VSLAM-LAB vggt VGGT-DEV"}
-execute = {cmd = 'python vslamlab_vggt.py', cwd = "Baselines/VGGT-DEV"}
+execute_mono = {cmd = 'python vslamlab_vggt.py', cwd = "Baselines/VGGT-DEV"}
 # vggt end
