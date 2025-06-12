@@ -220,12 +220,12 @@ scipy = "*"
 channels = ["https://fast.prefix.dev/conda-forge"]
 platforms = ["linux-64"]
 
-[feature.glomap.dependencies]
-glomap="*"
-
 [feature.glomap.tasks]
 git-clone = {cmd = 'git clone https://huggingface.co/vslamlab/glomap', cwd = 'Baselines'}
-execute = {cmd = './Baselines/glomap/glomap_reconstruction.sh'}
+execute_mono = {cmd = './Baselines/glomap/glomap_reconstruction.sh'}
+
+[feature.glomap.dependencies]
+glomap="*"
 # glomap end
 
 ########################################################################################################################
