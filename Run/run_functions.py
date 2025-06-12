@@ -24,7 +24,7 @@ def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
         os.makedirs(exp_folder, exist_ok=True)
 
     # Select images
-    create_rgb_exp_txt(exp, dataset, sequence_name)
+    create_rgb_exp_txt(exp, dataset, sequence_name, baseline.default_parameters)
 
     # Build execution command
     exec_command = baseline.build_execute_command(exp_it, exp, dataset, sequence_name)
@@ -49,7 +49,7 @@ def run_sequence(exp_it, exp, baseline, dataset, sequence_name, ablation=False):
     return results
 
 
-def create_rgb_exp_txt(exp, dataset, sequence_name):
+def create_rgb_exp_txt(exp, dataset, sequence_name, default_parameters = ""):
     sequence_path = os.path.join(dataset.dataset_path, sequence_name)
     exp_folder = os.path.join(exp.folder, dataset.dataset_folder, sequence_name)
 
@@ -64,13 +64,14 @@ def create_rgb_exp_txt(exp, dataset, sequence_name):
         os.remove(rgb_exp_txt)
     shutil.copy(rgb_txt, rgb_exp_txt)
 
-    max_rgb = 'max_rgb' in exp.parameters
     rgb_idx = 'rgb_idx' in exp.parameters
-
+    max_rgb = 'max_rgb' in exp.parameters or 'max_rgb' in default_parameters and not rgb_idx
+       
     if max_rgb or rgb_idx:
         if max_rgb:
+            max_rgb_num = exp.parameters['max_rgb'] if 'max_rgb' in exp.parameters else default_parameters['max_rgb']
             min_fps = dataset.rgb_hz / 10
-            _, _, downsampled_rows = downsample_rgb_frames(rgb_txt, exp.parameters['max_rgb'], min_fps, True)
+            _, _, downsampled_rows = downsample_rgb_frames(rgb_txt, max_rgb_num, min_fps, True)
 
         if rgb_idx:
             downsampled_rows = get_rows(list(range(exp.parameters['rgb_idx'][0], exp.parameters['rgb_idx'][1]+1)), rgb_txt)

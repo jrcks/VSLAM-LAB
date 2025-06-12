@@ -3,7 +3,7 @@ import os, sys, yaml, shutil
 from vslamlab_utilities import check_experiments
 from Run.run_functions import run_sequence
 from Datasets.get_dataset import get_dataset
-from Baselines.baseline_utilities import get_baseline
+from Baselines.get_baseline import get_baseline
 from path_constants import  VSLAMLAB_BENCHMARK, VSLAM_LAB_DIR, VSLAMLAB_VIDEOS
 from vslamlab_utilities import add_video
 

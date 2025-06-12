@@ -1,14 +1,13 @@
-import os, yaml
-import shutil
+import os, yaml, shutil
 import csv
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
 from utilities import downloadFile, decompressFile
 
 class NUIM_dataset(DatasetVSLAMLab):
-    def __init__(self, benchmark_path):
+    def __init__(self, benchmark_path, dataset_name = 'nuim'):
         # Initialize the dataset
-        super().__init__('nuim', benchmark_path)
+        super().__init__(dataset_name, benchmark_path)
 
         # Load settings from .yaml file
         with open(self.yaml_file, 'r') as file:

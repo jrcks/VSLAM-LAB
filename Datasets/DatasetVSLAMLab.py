@@ -87,7 +87,7 @@ class DatasetVSLAMLab:
     def remove_unused_files(self, sequence_name):
         return
 
-    def get_download_issues(self):
+    def get_download_issues(self, sequence_names):
         return {}
 
     def get_calibration_yaml(self, camera_model, fx, fy, cx, cy, k1, k2, p1, p2, k3, sequence_name):

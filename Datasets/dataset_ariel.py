@@ -1,30 +1,19 @@
-import os
-import yaml
-import shutil
+import cv2
 import subprocess
 import numpy as np
-import cv2
 from tqdm import tqdm
+import os, yaml, shutil
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
-from utilities import downloadFile
-from utilities import decompressFile
-
-from Evaluate.align_trajectories import align_trajectory_with_groundtruth
-from Evaluate import metrics
-
 
 class ARIEL_dataset(DatasetVSLAMLab):
-    def __init__(self, benchmark_path):
+    def __init__(self, benchmark_path, dataset_name = 'ariel'):
         # Initialize the dataset
-        super().__init__('ariel', benchmark_path)
+        super().__init__(dataset_name, benchmark_path)
 
         # Load settings from .yaml file
         with open(self.yaml_file, 'r') as file:
             data = yaml.safe_load(file)
-
-        # Get download url
-        self.url_download_root = data['url_download_root']
 
         # Create sequence_nicknames
         self.sequence_nicknames = [s.replace('_', ' ') for s in self.sequence_names]
@@ -162,3 +151,31 @@ class ARIEL_dataset(DatasetVSLAMLab):
 
     def get_calibration_configs(self, sequence_name):
         return self.calibration_configs[self.seq_name_wo_cam(sequence_name)]
+    
+    def get_download_issues(self, sequence_names):
+        
+        missing_rosbags = []
+        for sequence_name in sequence_names: 
+            sequence_path = os.path.join(self.dataset_path, sequence_name)
+            rosbag_names = self.get_rosbag_names(sequence_name)
+            for rosbag_name in rosbag_names:
+                if not os.path.isfile(os.path.join(self.dataset_path, rosbag_name)):
+                    missing_rosbags.append(os.path.join(self.dataset_path, rosbag_name))
+        
+        if not missing_rosbags:
+            return []
+        
+        solution_msg = f'Please manually download the rosbags and ground-truth files from: \'https://github.com/ntnu-arl/underwater-datasets\', '
+        solution_msg += f'\n         and place them in: \'{self.dataset_path}\'. '
+        solution_msg += f'Missing rosbags are:'
+        for missing_rosbag in missing_rosbags:
+            solution_msg += f'\n             {missing_rosbag}.bag'
+
+        issues = []
+        issue = {}
+        issue['name'] = 'Manual download'
+        issue['description'] = f"The \'{self.dataset_name}\' dataset cannot be downloaded automatically."
+        issue['solution'] = solution_msg
+        issue['mode'] = '\033[92mmanual download\033[0m'
+        issues.append(issue)
+        return issues
