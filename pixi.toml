@@ -186,6 +186,7 @@ channels = ["https://fast.prefix.dev/conda-forge", "fontan"]
 platforms = ["linux-64"]
 
 [feature.orbslam2.tasks]
+git-clone = {cmd = 'git clone https://huggingface.co/vslamlab/orbslam2 Baselines/ORB_SLAM2'}
 execute_mono = {cmd = "vslamlab_orbslam2_mono"}
 
 [feature.orbslam2.dependencies]
