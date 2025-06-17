@@ -2,16 +2,14 @@ import os
 import re
 import yaml
 import shutil
-from inputimeout import inputimeout, TimeoutOccurred
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
 from Datasets.DatasetVSLAMLab import DatasetVSLAMLab
-from utilities import downloadFile
-from utilities import decompressFile
+from utilities import downloadFile, decompressFile
 
-from Evaluate.align_trajectories import align_trajectory_with_groundtruth
-from Evaluate import metrics
+from Datasets.dataset_utilities import resize_rgb_images
+
 
 
 class UT_CODA_dataset(DatasetVSLAMLab):
@@ -30,6 +28,10 @@ class UT_CODA_dataset(DatasetVSLAMLab):
         # Create sequence_nicknames
         self.sequence_nicknames = [f"seq{s}" for s in self.sequence_names]
 
+
+        # Get resolution size
+        self.resolution_size = data['resolution_size']
+        
     def download_sequence_data(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
 
@@ -93,7 +95,8 @@ class UT_CODA_dataset(DatasetVSLAMLab):
     def create_calibration_yaml(self, sequence_name):
         sequence_path = os.path.join(self.dataset_path, sequence_name)
         calibration_file_yaml = os.path.join(sequence_path, 'calibrations', sequence_name, 'calib_cam0_intrinsics.yaml')
-               
+        rgb_txt = os.path.join(sequence_path, 'rgb.txt')
+
         # Load calibration from .yaml file
         with open(calibration_file_yaml, 'r') as file:
             data = yaml.safe_load(file)
@@ -101,6 +104,10 @@ class UT_CODA_dataset(DatasetVSLAMLab):
         intrinsics = data['projection_matrix']['data']
         fx, fy, cx, cy = intrinsics[0], intrinsics[5], intrinsics[2], intrinsics[6]
         
+        camera_matrix = np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1]])
+        
+        fx, fy, cx, cy = resize_rgb_images(rgb_txt, sequence_path, self.resolution_size[0], self.resolution_size[1], camera_matrix)
+
         self.write_calibration_yaml('PINHOLE', fx, fy, cx, cy, 0.0, 0.0, 0.0, 0.0, 0.0, sequence_name)
 
     def create_groundtruth_txt(self, sequence_name):
