@@ -26,7 +26,9 @@
     <a href="https://scholar.google.com/citations?user=eq46ylAAAAAJ&hl=en"><strong>Tobias Fischer</strong></a>
     ·
     <a href="https://nmarticorena.github.io/"><strong>Nicolas Marticorena</strong></a>
-    ·
+  </p>
+
+  <p align="center">
      <a href="https://www.linkedin.com/in/somayeh-hussaini/?originalSubdomain=au"><strong>Somayeh Hussaini</strong></a>
     ·
      <a href="https://github.com/TedVanderfeen"><strong>Ted Vanderfeen </strong></a>
