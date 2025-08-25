@@ -245,6 +245,7 @@ cuda = "12.6"
 [feature.pycuvslam.tasks]
 git-clone = {cmd = "git clone https://github.com/NVlabs/PyCuVSLAM Baselines/PyCuVSLAM && wget https://gist.githubusercontent.com/jrcks/28f94c5dd3dda5b10e52b3632be9bb78/raw/track.py -O Baselines/PyCuVSLAM/track.py"}
 install = {cmd = "pip install bin/x86_64 && echo 'PyCuVSLAM installation completed successfully'", cwd = "Baselines/PyCuVSLAM"}
+execute_mono = {cmd = "python track.py", cwd = "Baselines/PyCuVSLAM"}
 
 [feature.pycuvslam.dependencies]
 python = "3.10.*"

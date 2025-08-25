@@ -19,7 +19,8 @@ class PyCuVSLAM_baseline(BaselineVSLAMLab):
     def __init__(self, baseline_name: str = 'pycuvslam', baseline_folder: str = 'PyCuVSLAM'):
         default_parameters = {
             'verbose': 1, 
-            'mode': 'mono'
+            'mode': 'mono',
+            'visualization': False
         }
         super().__init__(baseline_name, baseline_folder, default_parameters)
         
@@ -40,33 +41,7 @@ class PyCuVSLAM_baseline(BaselineVSLAMLab):
                 print_msg(SCRIPT_LABEL, f"Updated LD_LIBRARY_PATH to include {new_ld_path}")
 
     def build_execute_command(self, exp_it: int, exp: Any, dataset: Any, sequence_name: str) -> str:
-        """
-        Build the command to execute PyCuVSLAM for a specific sequence.
-        
-        Args:
-            exp_it: Experiment iteration number
-            exp: Experiment object
-            dataset: Dataset object
-            sequence_name: Name of the sequence to process
-            
-        Returns:
-            Command string to execute
-        """
-        dataset_path = os.path.join(dataset.dataset_path, sequence_name)
-        output_path = os.path.join(exp.folder, dataset.dataset_folder, sequence_name)
-        script_path = os.path.join(self.baseline_path, 'track.py')
-        
-        # Ensure output directory exists
-        os.makedirs(output_path, exist_ok=True)
-        
-        # Build command using pixi environment
-        cmd = (
-            f"cd {self.baseline_path} && "
-            f"pixi run -e pycuvslam python {script_path} "
-            f"--sequence_dir {dataset_path} "
-            f"--output_dir {output_path}"
-        )
-        return cmd
+        return super().build_execute_command_python(exp_it, exp, dataset, sequence_name)
 
     def is_installed(self) -> Tuple[bool, str]:
         """
