@@ -19,7 +19,7 @@ print_datasets = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities
 print_baselines = {cmd = "pixi run --frozen -e vslamlab python vslamlab_utilities.py print_baselines"}
 get-benchmark-path = {cmd = "VSLAMLAB_BENCHMARK=$(python3 -c 'from path_constants import VSLAMLAB_BENCHMARK; print(VSLAMLAB_BENCHMARK)')"}
 clean_swap = {cmd = "sudo /sbin/swapoff -a && sudo /sbin/swapon -a"}
-kill_all = {cmd = "pkill -f -e 'droidslam|mast3rslam|dpvo|monogs|orbslam2|colmap|glomap|gensfm|mast3r|vggt|vslamlab' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
+kill_all = {cmd = "pkill -f -e 'droidslam|mast3rslam|dpvo|monogs|orbslam2|colmap|glomap|gensfm|mast3r|vggt|vslamlab|pycuvslam' && sudo /sbin/swapoff -a && sudo /sbin/swapon -a"} 
 
 # environments begin
 [environments]
@@ -37,6 +37,7 @@ monogs = {features = ["monogs"], no-default-feature = true}
 orbslam2 = {features = ["orbslam2"], no-default-feature = true}
 colmap = {features = ["colmap"], no-default-feature = true, solve-group = "colmap"}
 glomap = {features = ["glomap", "colmap"], no-default-feature = true, solve-group = "colmap"}
+pycuvslam = {features = ["pycuvslam", "cuda126", "py10"], no-default-feature = true}
 
 droidslam-dev = {features = ["droidslam-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126py11"}
 mast3rslam-dev = {features = ["mast3rslam-dev", "cuda126", "py11"], no-default-feature = true, solve-group = "cuda126py11"}
@@ -226,6 +227,35 @@ execute_mono = {cmd = './Baselines/glomap/glomap_reconstruction.sh'}
 [feature.glomap.dependencies]
 glomap="*"
 # glomap end
+
+########################################################################################################################
+########################################################################################################################
+# PyCuVSLAM begin
+[feature.pycuvslam]
+channels = ["https://fast.prefix.dev/conda-forge"]
+platforms = ["linux-64"]
+
+[feature.pycuvslam.activation.env]
+LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
+CONDA_OVERRIDE_CUDA = "12.6"
+
+[feature.pycuvslam.system-requirements]
+cuda = "12.6"
+
+[feature.pycuvslam.tasks]
+git-clone = {cmd = "git clone https://github.com/NVlabs/PyCuVSLAM Baselines/PyCuVSLAM && wget https://gist.githubusercontent.com/jrcks/28f94c5dd3dda5b10e52b3632be9bb78/raw/track.py -O Baselines/PyCuVSLAM/track.py"}
+install = {cmd = "pip install bin/x86_64 && echo 'PyCuVSLAM installation completed successfully'", cwd = "Baselines/PyCuVSLAM"}
+
+[feature.pycuvslam.dependencies]
+python = "3.10.*"
+git-lfs = "*" 
+
+numpy = "*"
+scipy = "*"
+pillow = "*"
+pyyaml = "*"
+rerun-sdk = "*"
+# PyCuVSLAM end
 
 ########################################################################################################################
 ########################################################################################################################
